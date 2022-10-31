@@ -1,2 +1,2 @@
 # ArchXS.com
-### Contact e-mail: contact@archxs.xom
+### Contact E-mail: contact@archxs.com
