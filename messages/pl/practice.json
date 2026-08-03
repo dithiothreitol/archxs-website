@@ -1,0 +1,95 @@
+{
+  "practice": {
+    "title": "Pięć obszarów, w których pracujemy.",
+    "lead": "To nie katalog usług, tylko pięć rodzajów problemów, przy których byliśmy wystarczająco długo, żeby znać ich zwyczajowe miejsca pęknięć. Każdy obszar opisujemy tak samo: jak na niego patrzymy, co konkretnie zbudowaliśmy i co z tego wynika dla organizacji. Z nazwami standardów i liczbami, ogólniki nie niosą odpowiedzialności.",
+    "sections": {
+      "reframe": "Jak na to patrzymy",
+      "evidence": "Co zbudowaliśmy",
+      "consequence": "Co z tego wynika",
+      "artifacts": "Co zostaje po naszej stronie stołu"
+    },
+    "items": {
+      "enterprise-architecture": {
+        "short": "Architektura korporacyjna",
+        "title": "Architektura korporacyjna na żądanie",
+        "lead": "Nakład architektoniczny jest kosztem i jak każdy koszt wymaga uzasadnienia. Uzasadnieniem jest ryzyko: decyzje drogie w odwróceniu dostają analizę, zapis i przegląd, pozostałe, rejestr decyzji i tyle. Ta dyscyplina dawkowania to nasza metoda od początku istnienia praktyki.",
+        "teaser": "Nakład architektoniczny proporcjonalny do ryzyka, model w repozytorium, walidacja zwracająca kod błędu, zamiast dokumentów, które nikogo przed niczym nie chronią.",
+        "evidenceLine": "Praktyka EA w banku o IT 300+ osób i wymiana core bankingu · własny toolchain: ArchiMate 3.2 walidowany wobec XSD Open Group, dyspensy z datą wygaśnięcia",
+        "reframe": "Większość organizacji nie cierpi na brak architektury, tylko na brak dowodu, że architektura jest przestrzegana, i na przerost artefaktów, które powstały, bo metodyka je przewiduje, a nie dlatego, że przed czymś chronią. Dlatego dawkujemy: pełny komitet architektury tam, gdzie dziesięć zespołów zmienia system centralny banku, i pojedynczy rejestr decyzji tam, gdzie trzyosobowy zespół buduje produkt. Kryterium jest zawsze to samo, koszt odwrócenia decyzji. Resztę rozstrzyga kod, bo w kodzie odstępstwo od standardu widać, a w prezentacji nie.",
+        "evidence": "Prowadziliśmy praktykę architektury korporacyjnej w państwowym banku rozwoju: organizacja IT ponad 300 osób, przewodniczenie Architecture Review Board, przez który przechodziły wszystkie istotne decyzje technologiczne, architektura wymiany systemu centralnego koordynowana w ponad dziesięciu równoległych zespołach. Drugi biegun tej samej metody to nasz otwarty toolchain, który utrzymuje cykl define, document, govern, maintain w repozytorium git: własny DSL kompilowany do ArchiMate 3.2 w formacie Open Exchange i walidowany wobec XSD Open Group, opis architektury generowany w kształcie ISO/IEC/IEEE 42010, portfel aplikacyjny z kwadrantami TIME, standardy z cyklem życia i dyspensy z datą wygaśnięcia, model dwustrefowy staging i approved z bramkowaną promocją. Polecenie validate zwraca kod błędu, więc działa jako bramka CI. Osobny mechanizm, oracle, weryfikuje każde twierdzenie modelu językowego o semantyce ArchiMate wobec zawendorowanych źródeł pierwotnych, z lokalizacją cytatu; to odpowiedź na halucynacje, nie deklaracja ostrożności.",
+        "consequence": "Governance przestaje zależeć od czyjejś pamięci i obecności na spotkaniu: zmiana łamiąca standard zatrzymuje się w pipeline, a nie na przeglądzie po sześciu tygodniach. Organizacja zyskuje też zdolność rzadszą niż się wydaje, powiedzieć: tu świadomie odstępujemy od standardu, do końca kwartału, i mieć na to zapis, który sam wygaśnie. A tam, gdzie ryzyko nie uzasadnia nakładu, architektura po prostu nie powstaje i nikt nie musi jej potem utrzymywać.",
+        "artifacts": [
+          "Opis architektury w kształcie ISO/IEC/IEEE 42010 z rejestrem interesariuszy i ich trosk, tylko tam, gdzie skala go uzasadnia",
+          "Model w ArchiMate 3.2 utrzymywany w repozytorium, z widokami generowanymi automatycznie",
+          "Portfel aplikacyjny z oceną w kwadrantach TIME i mapa zdolności",
+          "Rejestr decyzji architektonicznych i rejestr dyspens z datami wygaśnięcia",
+          "Walidacja architektury podpięta jako bramka w pipeline"
+        ]
+      },
+      "business-process-automation": {
+        "short": "Procesy biznesowe",
+        "title": "Procesy biznesowe i ich automatyzacja",
+        "lead": "Automatyzacja procesu, którego nikt nie zmierzył, utrwala jego wady w kodzie. Zaczynamy od policzenia, gdzie proces naprawdę traci czas i pieniądze, a dopiero potem decydujemy, co zautomatyzować, a co po prostu usunąć.",
+        "teaser": "Najpierw policzone straty w procesie AS-IS, potem automatyzacja z maszyną stanów i audytowalnym śladem. W odwrotnej kolejności utrwala się wady w kodzie.",
+        "evidenceLine": "KSeF FA(3) z białą listą KAS i generatorem JPK_V7M(3) · windykacja do e-Sądu przez SOAP · planowanie produkcji wg ISA-95 z solverem CP-SAT",
+        "reframe": "Proces biznesowy rzadko dzieje się tam, gdzie jest opisany. Prawdziwy przebieg widać w skrzynkach mailowych, arkuszach i ręcznych mostkach między systemami, i to tam mierzymy koszt. W jednej z naszych analiz punktem wyjścia było policzenie czterech ręcznych przepisań danych między systemami oraz pozycji zamówień gubionych, bo przychodziły wolnym tekstem w wiadomości. Dopiero taka lista rozstrzyga, co automatyzować najpierw, i pokazuje kroki, które taniej skasować, niż przyspieszać.",
+        "evidence": "Budujemy systemy, w których proces jest wykonywalny, a nie opisany. Obieg dokumentów: silnik BPMN z macierzą akceptacji uwzględniającą rozdział obowiązków, timery SLA i eskalacje. Faktury: pełna integracja z KSeF 2.0 ze schemą FA(3), pobieranie per NIP, parser odporny na ataki XXE, walidacja XSD, kontrola sumy kontrolnej NIP, biała lista KAS, mechanizm podzielonej płatności, deduplikacja, oraz generator JPK_V7M(3). Windykacja jako proces prawny od monitu, przez notę odsetkową z wersjonowaną stopą NBP i rekompensatą 40, 70 lub 100 euro, po pozew w elektronicznym postępowaniu upominawczym składany przez interfejs SOAP e-Sądu. Planowanie produkcji według ISA-95 na czterech poziomach, od S&OP przez RCCP i MPS po harmonogram szczegółowy, z kroczącym horyzontem, strefami zamrożenia planu i solverem ograniczeń CP-SAT jako decydentem. Integracje z ERP wyłącznie przez idempotentny wzorzec outbox, bo powtórzone zdarzenie księgowe to nie usterka techniczna, tylko błąd w księgach.",
+        "consequence": "Zmiana procesu przestaje być projektem informatycznym, a staje się zmianą konfiguracji przepływu, którą widać w danych. Każda tranzycja ma ślad, więc proces daje się rozliczyć i pokazać audytorowi. Ubocznym efektem pomiaru jest zwykle skrócenie procesu: gdy widać koszt każdego kroku, część kroków znika zamiast dostać automatyzację.",
+        "artifacts": [
+          "Analiza AS-IS z policzonym kosztem ręcznych mostków i punktów utraty danych",
+          "Model procesu TO-BE z jawnymi bramkami decyzyjnymi i punktami kontroli",
+          "Wdrożony przepływ z maszyną stanów, SLA i audytowalnym śladem tranzycji",
+          "Integracje z ERP i systemami zewnętrznymi na wzorcu outbox, z gwarancją idempotencji"
+        ]
+      },
+      "cybersecurity-identity": {
+        "short": "Cyberbezpieczeństwo i tożsamość",
+        "title": "Cyberbezpieczeństwo i tożsamość cyfrowa",
+        "lead": "Bezpieczeństwo rzadko przegrywa na braku narzędzi, częściej na granicach, których nikt nie narysował. Projektujemy tożsamość i kontrolę dostępu jako element architektury systemu, nie jako warstwę dokładaną na końcu.",
+        "teaser": "Granice zaufania rysowane świadomie: izolacja wymuszona w bazie, audyt, którego nie da się nadpisać, i serwer, który niczego nie przyjmuje na słowo.",
+        "evidenceLine": "Własne SPI Keycloak 26: EIP-191 z nonce przeciw powtórzeniom, passkeys · RLS i hash-chain audytu w bazie · SBOM i podpisy artefaktów w CI",
+        "reframe": "Pytanie o to, czy mamy uwierzytelnianie, jest mniej istotne niż pytanie, gdzie przebiega granica zaufania i co się dzieje, gdy klient jest niezaufany. Systemy, które projektujemy, zakładają, że wszystko po stronie użytkownika może być sfałszowane, dlatego serwer odtwarza i waliduje operacje własnym silnikiem, zamiast przyjmować wynik na słowo. Ta sama logika obejmuje dostawcę modelu językowego: dane osobowe są redagowane, zanim opuszczą organizację. I obejmuje nas samych: kontrola, której nie wymusza baza danych albo pipeline, jest tylko dobrą intencją.",
+        "evidence": "Napisaliśmy własne rozszerzenia SPI dla Keycloak 26, authenticator i credential provider dla logowania podpisem kryptograficznym w standardzie EIP-191, z jednorazowym nonce o ograniczonym czasie życia przeciw atakom powtórzeniowym, OTP jako drugim czynnikiem i passkeys na webauthn4j; drugi, niezależny system ma osobne SPI, więc to metoda pracy, nie jednorazowy wyczyn. W aplikacjach mobilnych: Authorization Code z PKCE S256 i magazyn kluczy systemu. W systemach wielodostępnych izolację wymusza baza, Row-Level Security i kontrola atrybutowa per podmiot, a ślad audytowy jest łańcuchem haszy SHA-256 w tabeli tylko do dopisywania, z triggerem blokującym modyfikację i usunięcie; ten wzorzec działa u nas w trzech systemach. Każdy upload przechodzi skan antywirusowy w trybie fail-closed i białą listę typów. W CI: skan zależności, analiza statyczna, SBOM w formacie CycloneDX i podpisy artefaktów. W publicznej arenie gier serwer odtwarza każdą rankingową rozgrywkę własnym silnikiem i odrzuca nielegalne ruchy oraz niemożliwe czasy, a to, że klucz API użytkownika nie opuszcza przeglądarki, jest pilnowane testem. Granice bywają też fizyczne: jeden z produktów ma dedykowaną instancję serwera tożsamości i odizolowaną sieć, żeby dwa systemy nie widziały nawzajem swoich zasobów nawet po błędzie w konfiguracji.",
+        "consequence": "Kontrola dostępu wraca z rozproszenia po kodzie aplikacji do miejsc, które da się audytować: dostawcy tożsamości, bazy danych, pipeline. Zmiana polityki bezpieczeństwa staje się zmianą konfiguracji, a nie przeglądem kilkunastu repozytoriów. A gdy audytor pyta o ślad, ślad istnieje i nie dało się go poprawić po fakcie.",
+        "artifacts": [
+          "Model tożsamości i uprawnień z jawnie narysowanymi granicami zaufania",
+          "Wdrożenie dostawcy tożsamości z MFA, federacją i, gdy trzeba, własnym rozszerzeniem SPI",
+          "Izolacja danych w systemach wielodostępnych wymuszona w bazie, nie w kodzie aplikacji",
+          "Niemodyfikowalny ślad audytowy oraz kontrola łańcucha dostaw w pipeline: skan zależności, SBOM, podpisy artefaktów"
+        ]
+      },
+      "applied-ai": {
+        "short": "Applied AI",
+        "title": "AI i automatyzacja, które przechodzą audyt",
+        "lead": "Model językowy jest znakomitym generatorem propozycji i złym miejscem na podejmowanie decyzji. Budujemy systemy, w których AI proponuje, deterministyczny kod orzeka, a człowiek zatwierdza wszystko, co wychodzi poza organizację.",
+        "teaser": "Model proponuje, deterministyczny kod orzeka, człowiek zatwierdza to, co wychodzi na zewnątrz, z policzonym kosztem jednostkowym i śladem każdej decyzji.",
+        "evidenceLine": "Sześć własnych serwerów MCP i gateway WhatsApp dla pięciu aplikacji · pięć warstw weryfikacji · 2 827 zdjęć z 7 rynków → 26 864 obserwacje",
+        "reframe": "Większość nieudanych wdrożeń AI nie wynika ze słabego modelu, tylko z trzech pytań bez odpowiedzi: kto ponosi konsekwencję błędu, gdzie stoi bramka jakości i ile to kosztuje przy realnym wolumenie. Zaczynamy od tych pytań, bo to one przesądzają o architekturze, nie wybór dostawcy modelu, który i tak zmieni cennik albo wycofa wersję w ciągu roku. Wiemy też z własnych rachunków, że pilotaż zawsze wygląda tanio: odtworzenie jednego z naszych artefaktów analitycznych kosztuje około szesnastu milionów tokenów i tę liczbę znaliśmy przed decyzją o cyklicznym uruchamianiu, nie po fakturze.",
+        "evidence": "Zbudowaliśmy firmowy hub AI z sześcioma własnymi serwerami MCP, CRM, poczta i kalendarz, ERP, wyszukiwanie po dokumentach, pamięć per użytkownik, oraz gatewayem WhatsApp, który spina jeden numer z pięcioma aplikacjami: weryfikacja podpisów HMAC, deduplikacja w Redisie, routing po komendzie i sesji. Koszt każdego zapytania jest widoczny w warstwie obserwowalności przez OpenTelemetry; tani model klasyfikuje i odsiewa, drogi tylko syntetyzuje, a powtarzalne pytania łapie cache semantyczny na wektorach. W systemie weryfikującym zgodność etykiet z wymogami FEDIAF i prawem unijnym działa pięć warstw kontroli rzetelności, ocena pewności, niezależny drugi odczyt liczb z porównaniem krzyżowym, progi liczone deterministycznie w kodzie, eskalacja do człowieka, stały zestaw testowy, cztery z tych pięciu warstw nie są modelem. Audyt ekspozycji półkowej zamienił 2 827 zdjęć z siedmiu rynków i 54 sieci handlowych w 26 864 obserwacje produktowe, 86 procent z odczytaną ceną. Walidacja cenników dostawców skróciła 8–12 godzin pracy ręcznej do kilku minut maszynowych plus 15–30 minut przeglądu, obie liczby raportujemy, bo tylko razem są prawdziwe. W planowaniu produkcji decydentem jest solver ograniczeń, nie model. W systemie rekrutacyjnym nie ma automatycznych odrzuceń: każda ocena niesie uzasadnienie i cytat źródłowy, a całość jest projektowana pod wymogi EU AI Act dla systemów wysokiego ryzyka, z DPIA i zdefiniowaną retencją.",
+        "consequence": "Powstaje system, który da się pokazać audytorowi i regulatorowi: z zapisanym uzasadnieniem każdej sugestii, redakcją danych osobowych przed wysłaniem do modelu i policzonym kosztem jednostkowym. Kosztuje to więcej na etapie projektowania i wygląda mniej efektownie w demonstracji, za to nie trzeba tego przepisywać, gdy rozwiązanie wychodzi z pilotażu.",
+        "artifacts": [
+          "Ocena portfela zastosowań AI z policzonym kosztem jednostkowym i ryzykiem błędu",
+          "Architektura z deterministycznymi bramkami obok modelu i punktami zatwierdzenia przez człowieka",
+          "Wdrożenie z pomiarem kosztu per zapytanie i śladem audytowym decyzji",
+          "Zasady redakcji danych osobowych przed modelem i plan wyjścia od dostawcy"
+        ]
+      },
+      "software-delivery": {
+        "short": "Wytwarzanie oprogramowania",
+        "title": "Wytwarzanie systemów i przekazanie",
+        "lead": "Budujemy systemy produkcyjne, backend, web i mobile, z dokumentacją i rejestrem decyzji powstającymi razem z kodem. Od pierwszego dnia zakładamy, że utrzymywał je będzie ktoś inny.",
+        "teaser": "Systemy budowane z założeniem, że utrzyma je ktoś inny: rejestr decyzji z odrzuconymi opcjami, środowisko odtwarzalne z repozytorium, testy, które faktycznie coś wykluczają.",
+        "evidenceLine": "Dwa ekosystemy backendowe (Java 21/Quarkus, Python 3.12/FastAPI) · OPC UA i MQTT Sparkplug B na hali · golden testy i testy własności",
+        "reframe": "Koszt systemu ujawnia się nie przy pierwszym wdrożeniu, tylko przy pierwszej zmianie zespołu. Dlatego dokumentacja, rejestr decyzji i runbooki są częścią produktu, a nie zadaniem na koniec, i dlatego wybieramy stack otwarty, który da się utrzymać bez zgody żadnego dostawcy na dalsze istnienie systemu. Architekturę dawkujemy tu tak samo jak wszędzie: fundamenty, których nie da się tanio dołożyć później, identyfikator magazynu na każdym agregacie, outbox od pierwszej migracji, wchodzą od razu; cała reszta czeka na dowód, że jest potrzebna.",
+        "evidence": "Prowadzimy równolegle kilkanaście produkcyjnych repozytoriów w dwóch niezależnych ekosystemach: Java 21 z Quarkusem, Panache, GraphQL, Flyway, oraz Python 3.12 z FastAPI. Web i aplikacje mobilne powstają z jednego kodu w monorepo; około dziesięciu systemów działa na wspólnej platformie z jednym dostawcą tożsamości, jednym klastrem PostgreSQL, jednym reverse proxy i jedną warstwą obserwowalności. Schodzimy też do warstwy przemysłowej: OPC UA według IEC 62541 z własnym mostem do szyny zdarzeń, MQTT ze Sparkplug B, telemetria w TimescaleDB. Ewolucję modelu danych pokazuje jedna liczba: 237 ponumerowanych migracji schematu w najdłużej żyjącym systemie. Jakości pilnują testy, które faktycznie coś wykluczają: testy własności dla solvera planowania, golden testy silnika geometrycznego z jawnym, świadomym trybem regeneracji wzorców, testy dostępności w przeglądarce i testy end-to-end na fizycznych urządzeniach mobilnych. Nad jednym systemem produkcyjnym pracujemy w kilkunastu równoległych kopiach roboczych gałęzi, to dyscyplina, która pozwala małej praktyce utrzymać tempo bez wzajemnego deptania sobie po zmianach.",
+        "consequence": "Klient dostaje system, który można przejąć: decyzje i odrzucone alternatywy na piśmie, środowisko odtwarzalne z repozytorium, brak licencji zmieniających model rozliczeń w połowie roku. Współpraca, z której nie da się wyjść bez szkody dla klienta, jest w naszej ocenie źle zaprojektowana, więc projektujemy ją tak, żeby dało się ją zakończyć.",
+        "artifacts": [
+          "Działający system z odtwarzalnym środowiskiem uruchomieniowym",
+          "Rejestr decyzji architektonicznych wraz z odrzuconymi alternatywami",
+          "Dokumentacja operacyjna i runbooki napisane dla zespołu utrzymania",
+          "Pipeline z testami i bramkami jakości, przekazany razem z kodem"
+        ]
+      }
+    }
+  }
+}

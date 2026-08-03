@@ -1,0 +1,122 @@
+---
+title: "AI proponuje, człowiek decyduje, wzorzec, nie zastrzeżenie"
+description: "Zasada „AI proponuje, człowiek decyduje” to wzorzec architektoniczny z deterministycznymi bramkami i weryfikacją, nie ostrożnościowy frazes na końcu oferty."
+takeaways:
+  - "Decyzja to moment zmiany stanu, pytanie architektoniczne brzmi, który komponent ją wykonuje, a nie czy w systemie jest model."
+  - "Model dostarcza sądu, narzędzie dostarcza dowodu: każde twierdzenie modelu o treści źródła jest sprawdzane kodem wobec zlokalizowanego cytatu."
+  - "Bramka człowieka stoi tam, gdzie działanie wychodzi poza organizację albo dotyczy pojedynczej osoby, nie wszędzie."
+  - "Ta zasada kosztuje: jest wolniej, drożej w projektowaniu i mniej efektownie w demie, a bramka bez właściciela produkuje pozorną odpowiedzialność."
+date: "2026-05-12"
+topic: "Applied AI"
+readingMinutes: 6
+---
+
+W systemie produkcyjnym model językowy ma prawo proponować. Decyzję podejmuje człowiek albo
+deterministyczny kod obok modelu. Nie jest to zastrzeżenie prawne dopisane na końcu projektu, a wzorzec
+architektoniczny: rozdzielamy wygenerowanie hipotezy od jej zatwierdzenia, bo tylko wtedy da się wskazać,
+kto odpowiada za skutek, i odtworzyć po fakcie, dlaczego decyzja wyglądała tak, a nie inaczej.
+
+Ta zasada przechodzi konsekwentnie przez około osiem systemów, które utrzymujemy w produkcji. Poniżej
+jest to, co z niej wynika w kodzie, i ile kosztuje.
+
+## Co właściwie znaczy „decyduje”
+
+Decyzja to moment, w którym zmienia się stan: faktura dostaje dekretację, kandydat przechodzi do
+kolejnego etapu, receptura zostaje dopuszczona, plan produkcji trafia na halę. Pytanie architektoniczne
+nie brzmi „czy używać modelu”, a „który komponent wykonuje tę zmianę stanu”.
+
+W weryfikatorze etykiet paszowych, zgodność z FEDIAF i rozporządzeniem UE 767/2009, model czyta
+etykietę i proponuje odczyt. Progi, na których opiera się werdykt, liczy Python: deterministycznie, na
+liczbach, które są potem widoczne w logu. Nie pytamy modelu, czy zawartość białka mieści się w
+tolerancji. Pytamy, ile tam jest napisane, a tolerancję liczymy sami.
+
+W planowaniu produkcji decydentem jest solver OR-Tools CP-SAT. Model językowy jest copilotem: tłumaczy
+ograniczenia z języka planisty, wyjaśnia, dlaczego wariant jest gorszy, przygotowuje porównanie.
+Harmonogram wychodzi jednak z solvera, a zatwierdza go człowiek. Solver ma dwie cechy, których LLM nie
+ma i mieć nie będzie: przy tych samych danych daje ten sam wynik i potrafi powiedzieć, że rozwiązania
+nie ma.
+
+To jest sedno podziału pracy. Model jest dobry w czytaniu wejścia, którego nikt nie ustandaryzował. Jest
+zły w gwarantowaniu, że jutro z tego samego wejścia wyjdzie to samo. Deterministyczny komponent obok
+modelu jest odpowiedzią na drugą część tego zdania.
+
+## Skąd wiadomo, że propozycja nie jest zmyślona
+
+Weryfikator etykiet ma pięć warstw kontroli rzetelności i żadna z nich nie jest kosmetyczna. Confidence
+scoring HIGH/MED/LOW rozstrzyga o dalszej ścieżce. Liczby są odczytywane drugi raz, niezależnie, i
+porównywane krzyżowo, rozjazd jest sygnałem, nie danymi do uśrednienia. Progi liczy kod, nie model.
+Human-in-the-loop ma auto-eskalację, więc niska pewność nie ląduje w ciszy. Na końcu jest zestaw testowy
+na ręcznie zweryfikowanych etykietach, jedyny sposób, żeby po zmianie promptu albo modelu stwierdzić, że
+nic się nie zepsuło.
+
+W toolchainie architektury korporacyjnej ta sama myśl ma krótszą postać: **model dostarcza sądu,
+narzędzie dostarcza dowodu**. Każde twierdzenie modelu o semantyce ArchiMate albo o treści źródła jest
+sprawdzane kodem wobec cytatu zlokalizowanego w tym źródle; powstaje rejestr faktów i miara pokrycia.
+Powód jest prozaiczny: halucynacja cytatu to najgroźniejszy tryb awarii w dokumentacji architektury, bo
+wygląda dokładnie jak praca wykonana dobrze.
+
+Publiczna arena ewaluacji modeli, [ticbottoe.lol](https://ticbottoe.lol), doprowadza to do końca. Modele
+i ludzie grają w gry turowe na jednym rankingu Elo, a każda gra rankingowa jest odtwarzana i walidowana
+serwerowo wspólnym silnikiem: odrzucane są nielegalne ruchy, fałszywi zwycięzcy, niemożliwe czasy i
+duplikaty. Nawet zdania „wygrałem” nie przyjmujemy od modelu na słowo.
+
+## Gdzie stoi człowiek
+
+Bramka człowieka nie stoi wszędzie. Stoi tam, gdzie działanie wychodzi na zewnątrz organizacji albo
+dotyczy pojedynczej osoby.
+
+W systemie obiegu dokumentów dekretacja faktury jest AI-suggested, nigdy auto-applied. Zanim cokolwiek
+pójdzie do modelu, następuje redakcja PII, bo pytanie „czy model jest dokładny” jest osobne od pytania
+„co właściwie wysłaliśmy poza firmę”. W silniku ekspansji eksportowej człowiek zatwierdza każdą wysyłkę
+zewnętrzną; AI nie wysyła korespondencji do urzędu i nie orzeka o zgodności.
+
+W systemie rekrutacyjnym zakaz automatycznych odrzuceń jest wpisany w architekturę, nie w regulamin.
+Scoring idzie według jawnej rubryki, każda ocena nosi pola `rationale` i `evidence_quote`, a tranzycje
+kandydata trafiają do append-only audit logu. To projekt pod EU AI Act Annex III, rekrutacja jest tam
+systemem wysokiego ryzyka, z DPIA i retencją 6/24 miesięcy. Warto jednak zauważyć kolejność:
+rozporządzenie wymusza to, co i tak trzeba mieć, żeby odpowiedzieć kandydatowi, dlaczego jego zgłoszenie
+zmieniło status. Organizacja, która nie umie odpowiedzieć na to pytanie, nie ma systemu, ma generator
+wyników.
+
+## Kiedy model nie ma prawa nawet proponować
+
+Bywa mocniejszy wariant zasady: model nie proponuje artefaktu, tylko jego wygląd. W narzędziu CAD do
+mebli warianty aranżacji powstają zawsze z modelu parametrycznego, a AI odpowiada wyłącznie za
+stylizację. Nigdy nie jest to czysta generacja obrazu, bo obrazu nie da się pociąć na formatki. Ładny
+render, którego nie wykona piła panelowa, nie jest propozycją; jest kosztem.
+
+Reguła obowiązuje szerzej niż w meblach. Jeśli wyjście modelu ma trafić do procesu, który je wykona,
+model musi produkować reprezentację, którą ten proces potrafi przyjąć: parametry, wiersz w tabeli,
+XML walidowany wobec XSD. Swobodny tekst jest wygodny w demie i drogi w integracji.
+
+## Ile ta zasada kosztuje
+
+Kosztuje realnie i warto powiedzieć to wprost.
+
+Jest wolniej. Każda bramka to praca projektowa: co eskaluje, do kogo, w jakim czasie, co się dzieje, gdy
+nikt nie odpowie. Bramka bez właściciela i bez czasu reakcji jest kolejką, która cicho rośnie.
+
+Jest drożej w projektowaniu, choć nie w inferencji. Model jest tanią częścią budżetu. Drogie są warstwy
+weryfikacji, zestawy testowe, redakcja PII, audit log i observability kosztu, czyli wszystko, czego nie
+widać na ekranie.
+
+Jest mniej efektownie. „AI proponuje, ty zatwierdzasz” wygląda w demie słabiej niż pełna automatyzacja, a
+różnica ujawnia się dopiero przy pierwszym błędzie, którego nikt nie umie wytłumaczyć.
+
+Zasada ma też własny tryb awarii: bramka, przez którą wszyscy klikają odruchowo, jest gorsza niż jej
+brak, bo produkuje pozorną odpowiedzialność. Recenzent zatwierdzający dwieście pozycji dziennie nie
+recenzuje. Wtedy trzeba albo zwęzić zakres, albo przenieść część decyzji do deterministycznego kodu,
+albo przyznać, że proces nie jest gotowy.
+
+## Kiedy jej nie stosować
+
+Nie ma sensu tam, gdzie błąd jest tani i odwracalny, a odbiorcą wyjścia jest człowiek, który i tak je
+czyta: szkic tekstu, streszczenie na własny użytek, propozycja kodu w edytorze, gdzie bramką są
+kompilator i testy. Nie ma sensu tam, gdzie wolumen czyni przegląd fikcją, lepiej zawęzić zakres, niż
+utrzymywać bramkę na papierze. I nie ma sensu tam, gdzie wystarcza sam deterministyczny kod: część
+zadań, do których dziś proponuje się model, to reguły, które ktoś kiedyś zapomniał zapisać.
+
+Zaufanie do modelu jest tanie, dopóki wynik jest dobry, cenę widać wyłącznie przy złym. Dlatego pytanie,
+które warto zadać o system z AI, nie brzmi „jak często model się myli”, a „gdzie w tym systemie błąd się
+zatrzymuje i kto to zauważy”. Jeśli odpowiedzią jest nazwa komponentu albo konkretna rola, plan jest
+gotowy. Jeśli odpowiedzią jest „model jest dobry”, nie ma jeszcze architektury, jest demo.

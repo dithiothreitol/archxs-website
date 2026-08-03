@@ -1,0 +1,96 @@
+---
+title: "Architecture documentation that is not stale on the day it ships"
+summary: "How to make an architecture model and its governance leave machine-checkable evidence, instead of diagrams and meeting notes that nobody ever verifies."
+sector: "Own tooling, open source"
+period: "2026"
+disclosure: "public"
+metrics:
+  - label: "Lifecycle coverage"
+    value: "19 skills, define through maintain"
+  - label: "Output format"
+    value: "ArchiMate 3.2 validated against XSD"
+  - label: "Enforcement"
+    value: "validate exits 1, so it acts as a CI gate"
+capabilities:
+  - "Enterprise architecture"
+  - "Applied AI"
+  - "Software delivery"
+stack:
+  - "Custom DSL"
+  - "ArchiMate 3.2 Open Exchange XML"
+  - "Open Group XSD"
+  - "git"
+  - "ISO/IEC/IEEE 42010"
+  - "ADR"
+  - "TIME quadrants"
+  - "SVG view generator"
+order: 5
+---
+
+## Context
+
+Enterprise architecture practice produces artefacts that age faster than they are written: diagrams in a
+drawing tool, decisions in meeting minutes, standards in documents nobody enforces. We built a toolchain
+that treats the architecture model as code, kept in git and checked by machine.
+
+## Problem
+
+Two failure modes are typical and independent of the tool chosen. First, documentation is out of date on
+the day it is published, because updating it belongs to no workflow, it is a separate task for a separate
+role. Second, governance leaves no evidence. A review board takes a decision, the decision goes into a
+note, and six months later nobody can say whether a given system conforms to it. Beyond an opinion.
+
+The obvious answer, an architecture repository with a decent interface, addresses storage, not
+enforcement. A model can be internally consistent inside the tool's database and completely detached from
+reality, because nothing checks it at the moment of change.
+
+The third difficulty is newer: a language model writes about architecture very well and fabricates
+citations while doing so. A claim about ArchiMate semantics or about the content of a standard reads
+identically whether it is true or not.
+
+## Approach
+
+The core is deterministic. Architecture is authored in a custom DSL, passes a three-layer validator, then
+compiles to ArchiMate 3.2 in Open Exchange XML, validated against the Open Group XSD. This is not an
+aesthetic choice: an interchange format means the model can be opened in a tool that has not been bought
+yet, and the output can be checked by a machine rather than by inspection. SVG views are generated from
+the model, so a diagram cannot describe anything other than the model.
+
+Governance received a data structure rather than a folder of files: a standards base with enforced
+lifecycle, dispensations carrying an expiry date, a decision register (ADR), conformance records with a
+six-level verdict, and health reports. The most important of these is the simplest, a dispensation with
+no expiry date is quietly the new norm.
+
+The model has two zones, `staging` and `approved`, with gated promotion. The `validate` command exits with
+code 1 when the model fails, so it joins CI like any other test. From that point on, staleness stops
+being a matter of discipline and becomes a red build.
+
+Nineteen skills cover the define → document → govern → maintain cycle, which is precisely where reaching
+for a language model is natural. One rule holds: the model supplies judgement, the tool supplies
+evidence. Every claim about ArchiMate semantics or about the content of a source is verified in code
+against a quotation located in that source, which yields a fact register and measurable coverage. A
+separate component, the oracle, checks relationship legality against vendored primary sources. We do not
+forbid the model from asserting things, we remove its right to be the final authority.
+
+Documentation is generated in the shape of ISO/IEC/IEEE 42010 clause 6: a register of stakeholders and
+their concerns, an application portfolio with TIME quadrants, a capability map, change triage.
+
+## Outcome
+
+The architecture model lives in the same repository and the same pull-request rhythm as code. Conformance
+to a standard is a record with a verdict rather than a sentence; an exception has a deadline; a decision
+has a number and a rationale. Checking whether the model is valid takes as long as a build takes.
+
+The limits are real. The toolchain enforces textual authoring, so a team unwilling to write its model as
+text will not start because a tool exists. And it still does not answer whether the model describes
+reality, it guards internal consistency, not truthfulness against production. That is a separate problem
+which no amount of syntax validation solves.
+
+## What it taught us
+
+Governance without a machine-checkable artefact degenerates into ritual, and not through bad faith:
+nobody can hold several hundred elements consistent by hand. A rule that cannot be executed in CI is a
+recommendation.
+
+The second lesson concerns using language models in architecture work. Their usefulness depends less on
+how good their answers are than on whether a cheaper authority exists that is able to reject one.

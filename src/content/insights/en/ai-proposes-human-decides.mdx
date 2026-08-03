@@ -1,0 +1,126 @@
+---
+title: "AI proposes, the human decides, a pattern, not a disclaimer"
+description: "AI proposes and a human decides is an architectural pattern built from deterministic gates and verification, not a cautious sentence at the end of a proposal."
+takeaways:
+  - "A decision is the moment state changes, so the architectural question is which component performs it, not whether the system contains a model."
+  - "The model supplies judgement, the tooling supplies evidence: every claim a model makes about a source is checked in code against a quotation located in that source."
+  - "The human gate belongs where an action leaves the organisation or bears on an individual person, not everywhere."
+  - "The principle has a price: it is slower, more expensive to design, less impressive in a demo, and a gate without an owner manufactures the appearance of accountability."
+date: "2026-05-12"
+topic: "Applied AI"
+readingMinutes: 6
+---
+
+In a production system a language model is entitled to propose. The decision is taken by a person, or by
+deterministic code sitting next to the model. This is not a legal caveat appended at the end of a project
+but an architectural pattern: we separate generating a hypothesis from approving it, because only then
+can we point to who answers for the outcome, and reconstruct afterwards why the decision took the shape
+it did.
+
+The principle runs consistently through the eight or so systems we keep in production. What follows is
+what it amounts to in code, and what it costs.
+
+## What deciding actually means
+
+A decision is the moment state changes: an invoice is coded, a candidate moves to the next stage, a
+formulation is released, a production plan reaches the shop floor. The architectural question is not
+whether to use a model, but which component performs that change of state.
+
+In the feed label verifier, conformance with FEDIAF and EU Regulation 767/2009, the model reads the
+label and proposes a reading. The thresholds the verdict rests on are computed by Python:
+deterministically, on figures that are afterwards visible in the log. We do not ask the model whether the
+protein content falls within tolerance. We ask what figure is printed there, and we compute the tolerance
+ourselves.
+
+In production planning the decision-maker is an OR-Tools CP-SAT solver. The language model is a copilot:
+it translates constraints out of the planner's language, explains why one variant is worse, prepares a
+comparison. The schedule itself comes out of the solver, and a person approves it. The solver has two
+properties an LLM does not have and will not acquire: given the same data it returns the same result, and
+it can state that no solution exists.
+
+That is the heart of the division of labour. The model is good at reading input nobody has standardised.
+It is bad at guaranteeing that tomorrow the same input yields the same output. A deterministic component
+alongside the model is the answer to the second half of that sentence.
+
+## How we know a proposal is not invented
+
+The label verifier has five layers of integrity control, and none of them is cosmetic. Confidence scoring
+of HIGH/MED/LOW determines the onward path. Figures are read a second time, independently, and
+cross-compared, a divergence is a signal, not two numbers to average. Thresholds are computed by code,
+not by the model. The human-in-the-loop step escalates automatically, so low confidence does not settle
+quietly. And at the end there is a test set of manually verified labels, the only way to establish after
+a prompt or model change that nothing has broken.
+
+In the enterprise architecture toolchain the same thought has a shorter form: **the model supplies
+judgement, the tooling supplies evidence**. Every claim the model makes about ArchiMate semantics or
+about the content of a source is checked in code against a quotation located in that source; a fact
+register and a coverage measure follow from it. The reason is mundane: a hallucinated citation is the
+most dangerous failure mode in architecture documentation, because it looks exactly like work done well.
+
+The public model evaluation arena, [ticbottoe.lol](https://ticbottoe.lol), takes this to its conclusion.
+Models and humans play turn-based games on a single Elo ladder, and every ranked game is replayed and
+validated server-side by a shared engine: illegal moves, false winners, impossible timings and duplicates
+are rejected. Not even a model's claim to have won is taken on trust.
+
+## Where the human sits
+
+The human gate does not sit everywhere. It sits where an action leaves the organisation, or where it
+bears on an individual person.
+
+In the document workflow system, invoice coding is AI-suggested and never auto-applied. Before anything
+reaches a model, personal data is redacted, because the question of whether the model is accurate is
+separate from the question of what we actually sent outside the company. In the export expansion engine a
+person approves every outbound communication; AI does not send correspondence to a public authority and
+does not rule on compliance.
+
+In the recruitment system the prohibition on automatic rejections is written into the architecture rather
+than into a policy document. Scoring follows an explicit rubric, every assessment carries `rationale` and
+`evidence_quote` fields, and candidate transitions land in an append-only audit log. It is designed
+against EU AI Act Annex III, recruitment is a high-risk system there, with a DPIA and 6/24-month
+retention. The order is worth noting, though: the regulation compels what you need anyway in order to
+tell a candidate why their application changed status. An organisation that cannot answer that question
+does not have a system; it has a results generator.
+
+## When the model may not even propose
+
+There is a stronger version of the principle: the model does not propose the artefact, only its
+appearance. In the furniture CAD tool, layout variants always originate from a parametric model, and AI
+is responsible for styling alone. It is never plain image generation, because an image cannot be cut into
+panels. A handsome render that a beam saw cannot produce is not a proposal; it is a cost.
+
+The rule holds more widely than furniture. If a model's output is to reach a process that will execute
+it, the model has to produce a representation that process can accept: parameters, a row in a table, XML
+validated against an XSD. Free text is convenient in a demo and expensive in integration.
+
+## What the principle costs
+
+It costs, and it is worth saying so plainly.
+
+It is slower. Every gate is design work: what escalates, to whom, within what time, and what happens when
+nobody responds. A gate without an owner and without a response time is a queue that grows quietly.
+
+It is more expensive to design, though not to run. The model is the cheap part of the budget. The
+expensive parts are the verification layers, the test sets, PII redaction, the audit log and cost
+observability, everything that is not visible on screen.
+
+It is less impressive. AI proposes and you approve looks weaker in a demo than full automation, and the
+difference only surfaces at the first error nobody can explain.
+
+The principle has its own failure mode as well: a gate everyone clicks through by reflex is worse than no
+gate, because it manufactures the appearance of accountability. A reviewer approving two hundred items a
+day is not reviewing. At that point you either narrow the scope, or move part of the decision into
+deterministic code, or admit the process is not ready.
+
+## When not to apply it
+
+It makes no sense where an error is cheap and reversible and the consumer of the output is a person who
+reads it anyway: a draft, a summary for personal use, a code suggestion in an editor where the compiler
+and the tests are the gate. It makes no sense where volume turns review into fiction, better to narrow
+the scope than to keep a gate on paper. And it makes no sense where deterministic code alone would do: a
+fair share of the tasks a model is proposed for today are rules somebody once forgot to write down.
+
+Trust in a model is cheap as long as the output is good; the price becomes visible only when it is bad.
+So the question worth asking about a system with AI in it is not how often the model is wrong, but where
+in that system an error stops and who will notice. If the answer is the name of a component or a specific
+role, the plan is ready. If the answer is that the model is good, there is no architecture yet, there is
+a demo.

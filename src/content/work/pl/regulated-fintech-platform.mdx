@@ -1,0 +1,89 @@
+---
+title: "Platforma finansowania społecznościowego od zera, pod nadzorem"
+summary: "Jak zbudować platformę fintech od pustego repozytorium do produkcji w chmurze, gdy wymagania nadzorcze obowiązują od pierwszego dnia, a nie od pierwszego audytu."
+sector: "Fintech pod nadzorem KNF"
+period: "2021–2022"
+disclosure: "public"
+metrics:
+  - label: "Punkt startu"
+    value: "Od zera do produkcji"
+  - label: "Środowisko"
+    value: "Chmura Azure"
+  - label: "Reżim"
+    value: "Nadzór KNF"
+capabilities:
+  - "Architektura korporacyjna"
+  - "Cyberbezpieczeństwo i tożsamość"
+  - "Wytwarzanie oprogramowania"
+stack:
+  - "Microsoft Azure"
+  - "Platforma finansowania społecznościowego"
+  - "DevOps"
+  - "CI/CD"
+  - "Wymogi nadzorcze KNF"
+  - "Wymogi dotyczące przetwarzania w chmurze"
+order: 3
+---
+
+## Kontekst
+
+StockAmbit S.A. to regulowany fintech działający pod nadzorem KNF. Odpowiadaliśmy tam za technologię
+w roli CTO: strategię technologiczną, architekturę, budowę i rozwój zespołu, kulturę DevOps oraz
+zgodność regulacyjną. Punktem wyjścia było puste repozytorium, platforma finansowania społecznościowego
+powstawała od zera i miała trafić na produkcję w chmurze Azure.
+
+## Problem
+
+Startup technologiczny i podmiot nadzorowany optymalizują dwie różne rzeczy. Startup kupuje sobie czas
+skrótami: wdrożyć, zmierzyć, poprawić, a dokumentację dopisać, kiedy będzie już wiadomo, co się utrzymało.
+Podmiot nadzorowany nie ma tej opcji, musi umieć wykazać, jak działa, na podstawie zapisów powstałych
+wtedy, gdy to działanie miało miejsce. Zgodności nie da się dopisać wstecz, bo dowodem jest ślad,
+a nie oświadczenie.
+
+Naiwne podejście brzmi: najpierw MVP, potem warstwa zgodności. Nie działa, bo dwie decyzje z pierwszego
+tygodnia są praktycznie nieodwracalne. Pierwsza to model danych osobowych i granice ich przetwarzania.
+Druga to sposób, w jaki system rejestruje zdarzenia, jeśli logi nie są rozliczalne i niezmienne od
+początku, to każde późniejsze pytanie o to, kto co zatwierdził, kończy się rekonstrukcją z pamięci.
+Koszt cofnięcia obu rośnie z każdym tygodniem szybciej niż koszt zrobienia ich od razu.
+
+## Podejście
+
+Odwróciliśmy typową kolejność prac. Zaczęliśmy od tych elementów, które są najdroższe do zmiany później,
+a nie od tych, które najlepiej wyglądają w demonstracji: tożsamość i kontrola dostępu, rozliczalność
+operacji, model danych i podstawy ich przetwarzania, a dopiero potem funkcje produktowe budowane na
+gotowym fundamencie.
+
+Wybór chmury publicznej w podmiocie nadzorowanym nie jest decyzją infrastrukturalną, lecz decyzją
+o zgodności. Architekturę na Azure projektowaliśmy wobec wymogów nadzorczych dotyczących przetwarzania
+informacji w chmurze: klasyfikacja informacji przed wyborem usług, jawna lokalizacja i szyfrowanie
+danych, zdefiniowany scenariusz wyjścia. To zawężało katalog usług, z których mogliśmy korzystać,
+świadomie kosztem części wygody, jaką daje chmura zarządzana.
+
+DevOps traktowaliśmy jako mechanizm dowodowy, nie jako kulturę pracy w sensie deklaratywnym. Wdrożenie
+przechodzące przez potok CI/CD z rejestrem tego, co, kiedy i za czyją zgodą trafiło na produkcję, jest
+jednocześnie praktyką inżynierską i materiałem, który da się przedstawić. Ręczne wdrożenie na produkcję
+nie jest w takiej organizacji wygodnym skrótem, jest luką w dokumentacji.
+
+Rekrutację uznaliśmy za element architektury, bo w małym zespole rozkład kompetencji przekłada się
+bezpośrednio na to, jakie rozwiązania są utrzymywalne. Zespół, który nie ma nikogo od bezpieczeństwa,
+zawsze zbuduje system, w którym bezpieczeństwo jest opcją konfiguracyjną.
+
+Koszt tej kolejności był realny: pierwsze widoczne funkcje produktowe pojawiły się później, niż
+pojawiłyby się bez reżimu regulacyjnego. To nie jest cena, którą da się negocjować, to warunek wejścia
+na ten rynek.
+
+## Rezultat
+
+Platforma finansowania społecznościowego przeszła od zera do produkcji w chmurze Azure w reżimie wymogów
+KNF, z zespołem i praktyką wytwarzania zbudowanymi w tym samym czasie. Zgodność była właściwością
+architektury, a nie osobnym projektem prowadzonym obok wytwarzania.
+
+## Wnioski
+
+„Compliance by design" ma sens tylko wtedy, gdy oznacza kolejność prac, a nie deklarację w dokumencie.
+W praktyce sprowadza się do jednego pytania zadawanego przy każdej decyzji: czy za rok będziemy w stanie
+wykazać, jak to działało, na podstawie zapisów, które powstają dziś.
+
+Drugi wniosek jest mniej oczywisty: reżim nadzorczy bywa dla młodej organizacji korzystny. Wymusza
+rozstrzygnięcie kwestii tożsamości, rozliczalności i danych w momencie, gdy jeszcze nic nie jest
+zastane, czyli wtedy, gdy jest to najtańsze.

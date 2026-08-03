@@ -1,0 +1,352 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   ArchXS design system — "Engineering Blueprint"
+   Deliberate inversion of the 2026 AI-generated-site look: paper-light default
+   (not dark navy→purple), serif + mono typography (not Inter-everywhere),
+   drafting linework instead of glassmorphism, one accent colour used sparingly.
+   Dark mode is a second, equally intentional theme: "blueprint at night".
+   ──────────────────────────────────────────────────────────────────────────── */
+
+:root {
+  --radius: 0.25rem; /* near-square: drafting, not consumer-app */
+
+  /* Paper & ink */
+  --paper: #f7f5f0;
+  --paper-raised: #fffdf8;
+  --ink: #1a1c1e;
+  --ink-soft: #55595d;
+
+  /* Single accent: drafting redline */
+  --redline: #c8431f;
+  --redline-strong: #a8361a;
+  /* Secondary technical hue: steel blue (fills, diagrams) */
+  --steel: #46647f;
+
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --card: var(--paper-raised);
+  --card-foreground: var(--ink);
+  --popover: var(--paper-raised);
+  --popover-foreground: var(--ink);
+  --primary: var(--ink);
+  --primary-foreground: #faf9f6;
+  --secondary: #ebe7de;
+  --secondary-foreground: var(--ink);
+  --muted: #edeae2;
+  --muted-foreground: #5d6266;
+  --accent: #e9e4d9;
+  --accent-foreground: var(--ink);
+  --destructive: #b3261e;
+  --border: rgba(26, 28, 30, 0.14);
+  --input: rgba(26, 28, 30, 0.2);
+  --ring: var(--redline);
+
+  --grid-line: rgba(26, 28, 30, 0.055);
+  --grid-line-strong: rgba(26, 28, 30, 0.1);
+
+  --chart-1: #46647f;
+  --chart-2: #c8431f;
+  --chart-3: #6b7f5c;
+  --chart-4: #8a6d3f;
+  --chart-5: #5a5f63;
+
+  --sidebar: var(--paper-raised);
+  --sidebar-foreground: var(--ink);
+  --sidebar-primary: var(--ink);
+  --sidebar-primary-foreground: var(--primary-foreground);
+  --sidebar-accent: var(--accent);
+  --sidebar-accent-foreground: var(--ink);
+  --sidebar-border: var(--border);
+  --sidebar-ring: var(--ring);
+}
+
+.dark {
+  /* Blueprint at night: drafting navy + cyan linework */
+  --paper: #0e1b2c;
+  --paper-raised: #13253a;
+  --ink: #e6edf4;
+  --ink-soft: #a6bacb;
+
+  --redline: #ff7f52;
+  --redline-strong: #ff9670;
+  --steel: #7ea9c9;
+
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --card: var(--paper-raised);
+  --card-foreground: var(--ink);
+  --popover: var(--paper-raised);
+  --popover-foreground: var(--ink);
+  --primary: var(--ink);
+  --primary-foreground: #0e1b2c;
+  --secondary: #1b3049;
+  --secondary-foreground: var(--ink);
+  --muted: #1a2c43;
+  --muted-foreground: #9db1c3;
+  --accent: #1e3550;
+  --accent-foreground: var(--ink);
+  --destructive: #ff6b5e;
+  --border: rgba(230, 237, 244, 0.16);
+  --input: rgba(230, 237, 244, 0.24);
+  --ring: var(--redline);
+
+  --grid-line: rgba(126, 169, 201, 0.09);
+  --grid-line-strong: rgba(126, 169, 201, 0.16);
+
+  --chart-1: #7ea9c9;
+  --chart-2: #ff7f52;
+  --chart-3: #8fae7c;
+  --chart-4: #c8a86b;
+  --chart-5: #9db1c3;
+
+  --sidebar: var(--paper-raised);
+  --sidebar-foreground: var(--ink);
+  --sidebar-primary: var(--ink);
+  --sidebar-primary-foreground: var(--primary-foreground);
+  --sidebar-accent: var(--accent);
+  --sidebar-accent-foreground: var(--ink);
+  --sidebar-border: var(--border);
+  --sidebar-ring: var(--ring);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* Brand extras */
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-paper: var(--paper);
+  --color-paper-raised: var(--paper-raised);
+  --color-redline: var(--redline);
+  --color-redline-strong: var(--redline-strong);
+  --color-steel: var(--steel);
+
+  --radius-sm: calc(var(--radius) - 2px);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) + 2px);
+  --radius-xl: calc(var(--radius) + 6px);
+
+  --font-sans: var(--font-body);
+  --font-heading: var(--font-display);
+  --font-mono: var(--font-technical);
+
+  --animate-draw-line: draw-line 1.2s ease-out forwards;
+  --animate-rise: rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+
+  @keyframes draw-line {
+    from {
+      stroke-dashoffset: var(--dash, 1000);
+    }
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(14px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/40;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-feature-settings: "kern" 1, "liga" 1, "cv05" 1;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-heading;
+    font-variation-settings: "SOFT" 0, "WONK" 0;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background: color-mix(in srgb, var(--redline) 22%, transparent);
+  }
+
+  /* Focus visible: drafting-square ring, never a rounded glow */
+  :focus-visible {
+    outline: 2px solid var(--redline);
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer utilities {
+  /* ── Drafting paper: 8px millimetre grid with a 64px major rule ───────── */
+  .blueprint-grid {
+    background-image:
+      linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px),
+      linear-gradient(to right, var(--grid-line-strong) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--grid-line-strong) 1px, transparent 1px);
+    background-size:
+      8px 8px,
+      8px 8px,
+      64px 64px,
+      64px 64px;
+  }
+
+  .blueprint-grid-fade {
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 35%, black 30%, transparent 78%);
+  }
+
+  /* Subtle paper tooth — kills the "flat AI gradient" read */
+  .paper-grain::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.5;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  }
+
+  /* ── Sheet labels: sections numbered like drawing sheets (A-01, A-02…) ── */
+  .sheet-label {
+    @apply font-mono text-[0.6875rem] uppercase tracking-[0.18em] text-muted-foreground;
+  }
+
+  /* ── Redline: hand-marked underline on hover, not a colour swap ───────── */
+  .redline-mark {
+    position: relative;
+    text-decoration: none;
+  }
+  .redline-mark::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -2px;
+    height: 1px;
+    background: var(--redline);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .redline-mark:hover::after,
+  .redline-mark:focus-visible::after {
+    transform: scaleX(1);
+  }
+
+  /* ── Dimension line: technical annotation with end ticks ─────────────── */
+  .dimension-line {
+    position: relative;
+    border-top: 1px solid var(--border);
+  }
+  .dimension-line::before,
+  .dimension-line::after {
+    content: "";
+    position: absolute;
+    top: -4px;
+    width: 1px;
+    height: 9px;
+    background: var(--border);
+  }
+  .dimension-line::before {
+    left: 0;
+  }
+  .dimension-line::after {
+    right: 0;
+  }
+
+  /* ── Corner ticks: registration marks around a figure ────────────────── */
+  .reg-marks {
+    position: relative;
+  }
+  .reg-marks::before,
+  .reg-marks::after {
+    content: "";
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border-color: var(--redline);
+    opacity: 0.55;
+  }
+  .reg-marks::before {
+    top: -1px;
+    left: -1px;
+    border-top: 1px solid;
+    border-left: 1px solid;
+  }
+  .reg-marks::after {
+    bottom: -1px;
+    right: -1px;
+    border-bottom: 1px solid;
+    border-right: 1px solid;
+  }
+
+  /* Content column widths tuned for reading, not for filling the viewport */
+  .measure {
+    max-width: 68ch;
+  }
+  .measure-tight {
+    max-width: 56ch;
+  }
+}

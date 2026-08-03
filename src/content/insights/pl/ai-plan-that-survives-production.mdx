@@ -1,0 +1,101 @@
+---
+title: "Plan AI, który przetrwa produkcję"
+description: "Sześć pytań, którymi zarząd może sprawdzić własny plan wdrożenia AI albo ofertę dostawcy, zanim podpisze umowę. Realny plan ma na nie odpowiedzi."
+takeaways:
+  - "Pilotaż zawsze wygląda tanio, bo koszt jednostkowy ujawnia się dopiero przy realnym wolumenie, policz go zanim zdecydujesz."
+  - "Najważniejsze pytanie nie brzmi, jak dobry jest model, tylko kto ponosi konsekwencję, gdy się myli."
+  - "Plan, który nie zmienia procesu, a jedynie dokłada asystenta obok niego, zwykle nie zmienia też wyniku."
+  - "Dostawca modelu zmieni cennik albo wycofa wersję w ciągu roku, plan bez ścieżki wyjścia jest planem na jeden sezon."
+date: "2026-06-24"
+topic: "Applied AI"
+readingMinutes: 6
+---
+
+Realny plan wdrożenia AI różni się od życzeniowego nie jakością technologii, tylko obecnością odpowiedzi
+na sześć pytań: ile kosztuje jedna operacja przy docelowym wolumenie, kto odpowiada za błąd modelu, gdzie
+stoi bramka jakości, jakie dane opuszczają organizację, jak zmierzycie efekt i co się stanie, gdy dostawca
+zmieni warunki. Plan, który milczy w którymkolwiek z tych punktów, nie jest planem, jest kosztorysem pilotażu.
+
+Poniższe pytania mają sens zarówno wobec własnego zespołu, jak i wobec oferty zewnętrznej. W obu przypadkach
+odpowiedzi trwają krócej niż wdrożenie i kosztują nieporównanie mniej.
+
+## Ile kosztuje jedna operacja przy docelowym wolumenie?
+
+Pilotaż jest zawsze tani, bo przetwarza kilkadziesiąt przypadków. Koszt ujawnia się dopiero, gdy pomnożymy go
+przez realny miesiąc, i wtedy potrafi zmienić uzasadnienie biznesowe o rząd wielkości.
+
+W jednym z naszych systemów odtworzenie pojedynczego artefaktu analitycznego, przetworzenia 2 827 zdjęć w
+26 864 obserwacje produktowe, kosztowało około 16 milionów tokenów. To liczba, którą trzeba znać **przed**
+decyzją o cyklicznym uruchamianiu takiego procesu, a nie po pierwszej fakturze. Ta świadomość zmienia
+architekturę: opłaca się kaskada modeli, w której tani model klasyfikuje i odsiewa, a drogi tylko syntetyzuje
+wynik; opłaca się semantyczny cache zapytań na wektorach, bo w realnym ruchu pytania się powtarzają.
+
+Pytanie kontrolne brzmi prosto: jaki jest koszt na dokument, na zgłoszenie, na klienta, i kto w organizacji
+patrzy na ten wskaźnik co miesiąc. Jeśli nikt, koszt będzie rósł niezauważony aż do momentu, w którym ktoś
+zażąda wyłączenia całości.
+
+## Kto ponosi konsekwencję, gdy model się myli?
+
+To pytanie o odpowiedzialność, nie o dokładność. Model o skuteczności 95% brzmi znakomicie, dopóki nie zapytamy,
+co dzieje się w pozostałych pięciu przypadkach na sto i kto je zauważy.
+
+Odpowiedź „człowiek zweryfikuje" jest niewystarczająca, jeśli nie towarzyszy jej projekt tej weryfikacji.
+Weryfikacja, która wymaga tyle samo pracy co wykonanie zadania od zera, jest fikcją, ludzie po dwóch tygodniach
+zaczynają klikać „zatwierdź". Sensowna weryfikacja jest tańsza od zadania: model pokazuje, skąd wziął każdą
+wartość, zaznacza miejsca niepewne i sam eskaluje przypadki poniżej progu, zamiast oddawać wszystko w tym samym
+formacie.
+
+W systemie weryfikującym zgodność etykiet z wymogami branżowymi zbudowaliśmy pięć warstw: ocenę pewności,
+niezależny drugi odczyt liczb i porównanie krzyżowe, progi liczone deterministycznie w kodzie, automatyczną
+eskalację do człowieka i stały zestaw testowy na ręcznie zweryfikowanych przykładach. Cztery z tych pięciu
+warstw nie są modelem, i to jest istota rzeczy.
+
+## Gdzie stoi bramka jakości i czy jest deterministyczna?
+
+Jeżeli jedynym sprawdzeniem wyniku modelu jest inny model, cała konstrukcja stoi na tym samym rodzaju
+niepewności. Bramka, która ma coś gwarantować, musi być kodem: walidacją schematu, regułą liczbową, testem
+na znanym zbiorze, sprawdzeniem sumy kontrolnej.
+
+Dobrą praktyką jest odwrócenie ról. W planowaniu produkcji, które budowaliśmy, decydentem jest solver
+optymalizacyjny, deterministyczny, powtarzalny, dający się wytłumaczyć, a model językowy pełni funkcję
+copilota: tłumaczy, o co pyta użytkownik, i objaśnia wynik. Odwrotny układ, w którym model podejmuje decyzję,
+a solver ją tylko sprawdza, wygląda podobnie na schemacie i zachowuje się zupełnie inaczej pod obciążeniem.
+
+## Jakie dane wychodzą poza organizację i co jest z nich usuwane?
+
+To pytanie zadaje się na etapie architektury, bo później odpowiedź bywa niewykonalna. Trzeba wiedzieć, które
+pola trafiają do dostawcy modelu, co jest redagowane przed wysłaniem, gdzie fizycznie są przetwarzane dane i
+czy zapytania są wykorzystywane do trenowania.
+
+W systemach obiegu dokumentów redakcja danych osobowych następuje przed wysłaniem treści do modelu, a nie po
+otrzymaniu odpowiedzi. Różnica jest zasadnicza: w pierwszym przypadku dane nigdy nie opuszczają organizacji,
+w drugim opuściły ją i wróciły. Jeśli w grę wchodzą dane szczególnej kategorii albo tajemnica przedsiębiorstwa,
+w rachunku pojawia się też opcja modelu uruchomionego lokalnie, droższa w utrzymaniu, tańsza w ryzyku.
+
+## Jak zmierzycie, że coś się poprawiło?
+
+Miara musi istnieć przed wdrożeniem, bo po wdrożeniu wszyscy pamiętają stan wyjściowy nieco lepszym, niż był.
+
+Użyteczna miara jest kompletna, to znaczy obejmuje pracę, która pozostaje po stronie człowieka. W walidacji
+ofert dostawców przetwarzanie cennika zajmowało wcześniej 8–12 godzin pracy ręcznej; po wdrożeniu zajmuje kilka
+minut maszynowych **plus 15–30 minut przeglądu**. Ta druga liczba jest równie ważna jak pierwsza, bez niej
+powstaje wskaźnik, który wygląda spektakularnie i nie odpowiada niczemu w rzeczywistości.
+
+## Co się stanie, gdy dostawca zmieni warunki?
+
+W ciągu ostatniego roku modele były wycofywane, przemianowywane i przecenianie w obie strony. Plan, który
+zakłada jednego dostawcę i jedną wersję modelu, ma horyzont jednego sezonu.
+
+Ochrona jest prosta i tania, jeśli zastosuje się ją od początku: warstwa pośrednia zamiast bezpośrednich wywołań
+w kodzie aplikacji, prompty i schematy odpowiedzi trzymane jako artefakty w repozytorium, zestaw testowy
+pozwalający porównać nowy model ze starym w jeden wieczór. Wtedy zmiana dostawcy jest decyzją operacyjną,
+a nie projektem.
+
+## Jedno pytanie na koniec
+
+Jest jeszcze siódme, najbardziej niewygodne: czy ten plan zmienia proces, czy tylko dokłada asystenta obok
+istniejącego procesu? Wdrożenia drugiego rodzaju są łatwiejsze do przeprowadzenia i prawie zawsze rozczarowują,
+bo oszczędność powstaje w miejscu, które nie było wąskim gardłem.
+
+Najlepsze rezultaty widzieliśmy tam, gdzie automatyzacja doprowadziła do skasowania kroku, nie do jego
+przyspieszenia. To wymaga zgody na zmianę procesu, a ta jest decyzją zarządu, nie zespołu technicznego.

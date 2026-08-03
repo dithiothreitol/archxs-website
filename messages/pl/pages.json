@@ -1,0 +1,229 @@
+{
+  "pages": {
+    "work": {
+      "kicker": "Realizacje",
+      "title": "Realizacje, w których widać sposób pracy.",
+      "lead": "Część projektów jest publiczna z natury, narodowy produkt blockchain albo platforma, którą można kliknąć. Część opisujemy sektorowo, bez nazw i rozpoznawalnych szczegółów. To normalna cena za pracę wewnątrz organizacji, które nie publikują swoich architektur, i nie zamierzamy jej obchodzić aluzjami."
+    },
+    "insights": {
+      "kicker": "Teksty",
+      "title": "Rozdajemy myślenie, sprzedajemy wykonanie.",
+      "lead": "Teksty pisane z pozycji osoby, która te systemy buduje i utrzymuje, z liczbami, kosztami i tym, co się nie udało. Bez zapisów, bez bramki mailowej, bez ciągu dalszego za opłatą.",
+      "empty": "Ten tekst nie ma jeszcze wersji w tym języku."
+    },
+    "method": {
+      "kicker": "Metoda",
+      "title": "Architektura na żądanie.",
+      "lead": "Metoda tej praktyki jest starsza niż ta strona i prostsza, niż brzmi: nakład architektoniczny jest kosztem, więc ponosimy go tylko tam, gdzie redukuje ryzyko, którego organizacja nie może sobie pozwolić ponieść. Resztę wysiłku oddajemy budowie działającego systemu. Wariant ciągły tej metody, architecture as a service, to nadzór architektoniczny kupowany wtedy, gdy pojawia się decyzja warta nadzoru, zamiast etatu, który musi się czymś wykazać.",
+      "doctrineTitle": "Cztery reguły dawkowania",
+      "doctrine": [
+        {
+          "title": "Proporcjonalnie do ryzyka",
+          "body": "Miarą potrzebnej architektury jest koszt odwrócenia decyzji, nie rozmiar projektu. Granice systemów, model danych, tożsamość, integracje, to decyzje drogie w odwróceniu i one dostają analizę, zapis i przegląd. W banku oznaczało to pełny komitet architektury nad wymianą systemu centralnego; w budowie produktu, jeden rejestr decyzji i szkic granic na jednej stronie. Oba nakłady były właściwe, bo oba były proporcjonalne."
+        },
+        {
+          "title": "Ostatni odpowiedzialny moment",
+          "body": "Decyzję odraczamy dotąd, aż dalsza zwłoka zaczęłaby odbierać opcje, bo najdroższe architektury powstają z odpowiedzi na pytania, których nikt jeszcze nie zadał. W praktyce wygląda to tak: fundamenty, których nie da się tanio dołożyć później, wchodzą od pierwszej migracji; funkcje czekają na dowód potrzeby; a każda odroczona decyzja ma zapisaną ścieżkę odwrotu, łącznie z wersjami zapasowymi zależności."
+        },
+        {
+          "title": "Architektura wykonywalna",
+          "body": "Standard, którego nie sprawdza maszyna, jest opinią z dobrą frekwencją na spotkaniach. Model architektury trzymamy w repozytorium, walidacja zwraca kod błędu i działa jako bramka w pipeline, a odstępstwa istnieją wyłącznie jako dyspensy z datą wygaśnięcia. To jest to samo, co architektura ewolucyjna nazywa fitness functions, z tą różnicą, że u nas naprawdę zatrzymuje builda."
+        },
+        {
+          "title": "Minimalny artefakt: decyzja",
+          "body": "Jeśli z całej dokumentacji architektonicznej ma zostać jedno, niech zostanie rejestr decyzji: kontekst, rozważane opcje, powody odrzucenia pozostałych. Prowadzimy też tabele build-vs-buy z werdyktem przy każdej odrzuconej opcji. Diagramy się dezaktualizują; powody decyzji nie."
+        }
+      ],
+      "lineageTitle": "Rodowód",
+      "lineageBody": "Nie wymyśliliśmy tych reguł, złożyliśmy je z rzeczy sprawdzonych i nazwanych przez innych. Proporcjonalność do ryzyka to teza książki Just Enough Software Architecture George'a Fairbanksa. Architektura wykonywalna to fitness functions z Building Evolutionary Architectures Neala Forda i Rebekki Parsons. Rejestr decyzji w tej formie opisał Michael Nygard. Ostatni odpowiedzialny moment pochodzi z lean software development Mary i Toma Poppendiecków, a sylwetka architekta, który pisze kod zamiast oceniać go z góry, z eseju Martina Fowlera o architectus oryzus. Nasz wkład jest gdzie indziej: w dyscyplinie stosowania tych reguł w środowiskach, które zwykle uważają je za zbyt lekkie, w banku, w regulowanym fintechu, na hali produkcyjnej.",
+      "processTitle": "Przebieg",
+      "processLead": "Nie ma dwóch identycznych zaangażowań, ale kolejność jest zwykle ta sama.",
+      "process": [
+        {
+          "step": "01",
+          "title": "Rozmowa",
+          "body": "Bez prezentacji i bez zobowiązań. Interesuje nas, co konkretnie boli i co się stanie, jeśli nic się nie zmieni. Jeśli po tej rozmowie widać, że nie jesteśmy właściwym adresem, mówimy to od razu."
+        },
+        {
+          "step": "02",
+          "title": "Rozpoznanie",
+          "body": "Kilka dni na zobaczenie stanu faktycznego: architektury, procesu albo kodu, zależnie od problemu. Rozmawiamy z ludźmi, którzy system utrzymują, nie tylko z tymi, którzy go zamawiali."
+        },
+        {
+          "step": "03",
+          "title": "Diagnoza i kierunek",
+          "body": "Raport, który da się przeczytać w zarządzie i w zespole technicznym: co jest ryzykiem, co można zostawić, co należy zrobić w jakiej kolejności i ile to mniej więcej kosztuje. Zawsze z opcjami, nie z jedną rekomendacją."
+        },
+        {
+          "step": "04",
+          "title": "Wykonanie albo nadzór",
+          "body": "Albo budujemy, albo prowadzimy decyzje przy zespole klienta. W obu przypadkach dokumentacja i rejestr decyzji powstają razem z pracą, a nie po niej."
+        },
+        {
+          "step": "05",
+          "title": "Przekazanie",
+          "body": "Runbooki, środowisko odtwarzalne z repozytorium i przegląd z zespołem, który przejmuje. Uznajemy zaangażowanie za udane wtedy, gdy da się je zakończyć bez szkody dla klienta."
+        }
+      ],
+      "aiTitle": "AI w naszej pracy",
+      "aiBody": "Używamy agentów AI w codziennym wytwarzaniu oprogramowania, to jeden z powodów, dla których niewielka praktyka jest w stanie prowadzić kilkanaście produkcyjnych repozytoriów naraz. Obowiązuje przy tym dokładnie ta sama zasada, którą stosujemy u klientów: model proponuje, testy i deterministyczna walidacja orzekają, człowiek odpowiada za wynik. Specyfikacja i rejestr decyzji są źródłem prawdy, kod jest ich konsekwencją."
+    },
+    "engage": {
+      "kicker": "Współpraca",
+      "title": "Jak zwykle zaczyna się współpraca.",
+      "lead": "Nie mamy pakietów ani cennika na stronie, nie z tajemniczości, tylko dlatego, że sensowny zakres da się ustalić dopiero po rozmowie o problemie. Poniżej opisujemy formy, które w praktyce się powtarzają.",
+      "formsTitle": "Formy zaangażowania",
+      "forms": [
+        {
+          "title": "Diagnoza",
+          "body": "Krótkie, intensywne spojrzenie na architekturę, plan AI albo bezpieczeństwo. Kończy się raportem i roadmapą z priorytetami. Najczęstszy początek, także dlatego, że jest łatwy do zamknięcia, jeśli dalsza współpraca nie ma sensu."
+        },
+        {
+          "title": "Doradztwo ciągłe",
+          "body": "Stała obecność na styku zarządu i technologii: przegląd decyzji, weryfikacja dostawców, prowadzenie architektury. Rozliczane dniami w miesiącu, dla organizacji, które nie potrzebują etatowego CTO albo właśnie go szukają."
+        },
+        {
+          "title": "Wytworzenie systemu",
+          "body": "Budowa systemu end-to-end i przekazanie go zespołowi klienta albo dostawcy utrzymania. Z dokumentacją, rejestrem decyzji i runbookami powstającymi razem z kodem."
+        },
+        {
+          "title": "Nadzór architektoniczny",
+          "body": "Ciągła opieka architektoniczna dla organizacji, która nie ma własnego architekta: standardy, przegląd zmian, bramki jakości w pipeline. Kontynuacja tego, od czego ta praktyka się zaczęła."
+        }
+      ],
+      "selectivityTitle": "Ile zaangażowań naraz",
+      "selectivityBody": "Kilka. Ta praktyka nie skaluje się rekrutacją, skaluje się metodą i narzędziami. To oznacza, że czasem trzeba poczekać na termin, a czasem powiemy, że nie jesteśmy w stanie wziąć projektu w danym kwartale. Uważamy to za uczciwsze niż podstawienie zespołu, którego nie znamy.",
+      "pricingTitle": "A ceny?",
+      "pricingBody": "Ustalamy je w rozmowie, po zrozumieniu zakresu. Publikowanie widełek bez kontekstu prowadzi albo do zaniżonej wyceny źle zdefiniowanego problemu, albo do odsiania rozmów, które warto było odbyć."
+    },
+    "about": {
+      "kicker": "O praktyce",
+      "title": "Praktyka, nie agencja.",
+      "lead": "ArchXS łączy dwie rzeczy, które zwykle rozchodzą się wraz ze stażem: architekturę i zarządzanie technologią w dużej skali oraz nieprzerwaną praktykę wykonawczą. To połączenie jest tu głównym narzędziem pracy, nie ciekawostką biograficzną.",
+      "paragraphs": [
+        "Praktyka wyrosła z dwóch dekad pracy w organizacjach, w których błąd architektoniczny jest kosztowny: osiem lat w globalnych płatnościach kartowych pod reżimem PCI-DSS, architektura korporacyjna w państwowym banku rozwoju i przy wymianie systemu centralnego, technologia w regulowanym fintechu, produkt blockchain w skali ogólnokrajowej, wreszcie technologia w firmie produkcyjnej, od hali po e-commerce.",
+        "Równolegle powstaje kod. Kilkanaście czynnych repozytoriów produkcyjnych, systemy backendowe w dwóch niezależnych ekosystemach, aplikacje web i mobilne, integracje przemysłowe, własne rozszerzenia serwera tożsamości, narzędzia open source. To nie jest portfolio, to sposób weryfikowania własnych rekomendacji, zanim trafią do kogoś innego.",
+        "Stąd bierze się zakres tej strony. Nie znajdziesz tu biografii ani zdjęć z konferencji, bo nie one są przedmiotem pracy. Znajdziesz stanowiska, dowody i teksty, po których można ocenić sposób myślenia, a to jedyna rzecz, którą naprawdę kupuje się w doradztwie."
+      ],
+      "credentialsLabel": "Certyfikacje",
+      "sectorsLabel": "Sektory",
+      "sectors": [
+        "Bankowość rozwojowa i sektor publiczny",
+        "Płatności kartowe (PCI-DSS)",
+        "Fintech pod nadzorem KNF",
+        "Poczta i logistyka",
+        "Ochrona zdrowia",
+        "Produkcja i przemysł spożywczy"
+      ],
+      "founderLabel": "Podmiot",
+      "founderNote": "Praktykę prowadzi Dariusz Tyszka. Szczegóły przebiegu pracy zawodowej, na LinkedIn; ta strona celowo ich nie powiela."
+    },
+    "resources": {
+      "kicker": "Materiały",
+      "title": "Rzeczy do wzięcia.",
+      "lead": "Bez zapisów, bez podawania adresu e-mail i bez ciągu dalszego za opłatą. Jeśli materiał jest coś wart, powinien być użyteczny także dla kogoś, kto nigdy się nie odezwie.",
+      "ossTitle": "Otwarte narzędzia",
+      "ossLead": "Repozytoria są publikowane na koncie GitHub praktyki. Część powstała na potrzeby konkretnych projektów, część dlatego, że nie było czego użyć.",
+      "oss": [
+        {
+          "name": "Toolchain architektury korporacyjnej",
+          "desc": "Cykl define → document → govern → maintain z modelem w git. Własny DSL, kompilator do ArchiMate 3.2 Open Exchange walidowanego wobec XSD Open Group, opis architektury w kształcie ISO/IEC/IEEE 42010, standardy z cyklem życia, dyspensy z datą wygaśnięcia i walidator zwracający kod błędu w pipeline."
+        },
+        {
+          "name": "Rozszerzenia serwera tożsamości",
+          "desc": "SPI dla Keycloak 26: authenticator i credential provider do logowania podpisem kryptograficznym (EIP-191) z ochroną przed powtórzeniem żądania, OTP jako drugi czynnik, passkeys, własne szablony ekranów i dokumentacja wdrożeniowa."
+        },
+        {
+          "name": "@archxs/keycloak-wagmi",
+          "desc": "Pakiet npm na licencji MIT: connector wagmi dla portfeli EVM zarządzanych przez dostawcę tożsamości, z implementacją EIP-1193 i obsługą kont inteligentnych (ERC-4337)."
+        },
+        {
+          "name": "Asystent księgowy dla jednoosobowych działalności",
+          "desc": "Self-hosted alternatywa dla księgowego SaaS: KSeF 2.0 ze schemą FA(3), JPK_V7M i JPK_EWP, ZUS DRA, PIT-28, kalendarz terminów, OCR dokumentów kosztowych i agent obsługiwany z czatu. Licencja MIT, około 180 testów."
+        },
+        {
+          "name": "Arena ewaluacji modeli językowych",
+          "desc": "Publiczne narzędzie do porównywania modeli w zadaniach wieloturowych: wspólny ranking Elo dla modeli i ludzi, serwerowa walidacja każdej gry rankingowej, telemetria kosztu i czasu per ruch, ranking halucynacji. Klucz API użytkownika nie opuszcza przeglądarki."
+        }
+      ],
+      "writingTitle": "Teksty",
+      "writingLead": "Najwięcej praktycznej treści jest w esejach, checklisty i zestawy pytań są ich częścią, nie osobnym produktem do pobrania."
+    },
+    "contact": {
+      "kicker": "Kontakt",
+      "title": "Kontakt.",
+      "lead": "Dwie drogi: poczta i formularz. Odpowiadamy w ciągu dwóch dni roboczych. Jeśli nie jesteśmy właściwym adresem, mówimy to wprost i w miarę możliwości wskazujemy kierunek.",
+      "bookTitle": "Kalendarz",
+      "bookBody": "Dla spraw, które łatwiej omówić niż opisać: trzydzieści minut rozmowy, bez prezentacji.",
+      "book": "Kalendarz",
+      "emailTitle": "Poczta",
+      "emailBody": "Zwykle najszybsza droga. Wystarczą dwa, trzy zdania o tym, co jest problemem.",
+      "formTitle": "Formularz",
+      "formNote": "Formularz obsługuje zewnętrzny dostawca; szczegóły w polityce prywatności. Nie zapisujemy adresów do newslettera, nie mamy newslettera.",
+      "form": {
+        "name": "Imię i nazwisko",
+        "email": "Adres e-mail",
+        "org": "Organizacja (opcjonalnie)",
+        "message": "Na czym polega problem?",
+        "messagePlaceholder": "Dwa–trzy zdania wystarczą.",
+        "submit": "Wyślij",
+        "sending": "Wysyłanie…",
+        "success": "Dziękujemy, odpowiemy w ciągu dwóch dni roboczych.",
+        "error": "Nie udało się wysłać. Napisz proszę bezpośrednio na contact@archxs.com.",
+        "fallback": "Formularz nie jest w tej chwili skonfigurowany. Napisz proszę na contact@archxs.com."
+      }
+    },
+    "privacy": {
+      "title": "Prywatność",
+      "updated": "Aktualizacja: sierpień 2026",
+      "sections": [
+        {
+          "heading": "Administrator danych",
+          "body": "Administratorem danych osobowych przekazanych za pośrednictwem tej strony jest Dariusz Tyszka, prowadzący praktykę doradczą pod marką ArchXS. Kontakt w sprawach danych osobowych: contact@archxs.com."
+        },
+        {
+          "heading": "Jakie dane zbieramy",
+          "body": "Wyłącznie dane, które przekażesz nam sam: imię i nazwisko, adres e-mail, opcjonalnie nazwę organizacji oraz treść wiadomości. Strona nie stosuje plików cookie do celów marketingowych ani profilowania. Statystyki odwiedzin, jeśli są zbierane, mają charakter zagregowany i nie pozwalają na identyfikację osoby."
+        },
+        {
+          "heading": "Cel i podstawa prawna",
+          "body": "Dane z formularza przetwarzamy w celu odpowiedzi na zapytanie i ewentualnego podjęcia współpracy, na podstawie prawnie uzasadnionego interesu administratora, jakim jest komunikacja z osobami zainteresowanymi usługami (art. 6 ust. 1 lit. f RODO), a po rozpoczęciu współpracy w celu jej realizacji (art. 6 ust. 1 lit. b RODO)."
+        },
+        {
+          "heading": "Odbiorcy danych",
+          "body": "Obsługę formularza kontaktowego i rezerwację terminu rozmowy realizują zewnętrzni dostawcy usług, którzy przetwarzają dane wyłącznie w naszym imieniu. Poczta elektroniczna jest obsługiwana przez dostawcę hostingu poczty. Nie sprzedajemy ani nie udostępniamy danych w celach marketingowych."
+        },
+        {
+          "heading": "Okres przechowywania",
+          "body": "Korespondencję, która nie doprowadziła do współpracy, usuwamy nie później niż po dwunastu miesiącach od ostatniego kontaktu. Dane związane ze zrealizowaną współpracą przechowujemy przez okres wymagany przepisami podatkowymi i przedawnieniem roszczeń."
+        },
+        {
+          "heading": "Twoje prawa",
+          "body": "Masz prawo dostępu do danych, ich sprostowania, usunięcia, ograniczenia przetwarzania, przenoszenia oraz wniesienia sprzeciwu wobec przetwarzania opartego na prawnie uzasadnionym interesie. Przysługuje Ci również skarga do Prezesa Urzędu Ochrony Danych Osobowych."
+        }
+      ]
+    },
+    "terms": {
+      "title": "Zastrzeżenia prawne",
+      "updated": "Aktualizacja: sierpień 2026",
+      "sections": [
+        {
+          "heading": "Charakter treści",
+          "body": "Treści publikowane na tej stronie, w tym eseje i opisy realizacji, mają charakter informacyjny i wyrażają stanowisko autora. Nie stanowią porady prawnej, podatkowej ani inwestycyjnej i nie mogą zastąpić analizy konkretnego przypadku. Zastosowanie opisanych rozwiązań we własnym środowisku odbywa się na własną odpowiedzialność."
+        },
+        {
+          "heading": "Opisy realizacji",
+          "body": "Realizacje oznaczone jako opisane sektorowo nie zawierają nazw organizacji ani szczegółów pozwalających je zidentyfikować. Podane liczby dotyczą stanu z okresu realizacji. Nazwy własne i znaki towarowe należą do ich właścicieli, a ich przywołanie służy wyłącznie identyfikacji technologii lub standardu."
+        },
+        {
+          "heading": "Prawa autorskie",
+          "body": "Teksty i grafiki na tej stronie są chronione prawem autorskim. Cytowanie fragmentów z podaniem źródła jest dozwolone i mile widziane, dotyczy to również systemów opartych na modelach językowych. Kopiowanie całości materiałów w celach komercyjnych wymaga zgody."
+        },
+        {
+          "heading": "Podmiot",
+          "body": "Praktyka doradcza ArchXS, Dariusz Tyszka. Kontakt: contact@archxs.com. Szczegóły rejestrowe podajemy na etapie zawierania umowy."
+        }
+      ]
+    }
+  }
+}

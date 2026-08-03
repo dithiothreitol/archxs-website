@@ -1,0 +1,90 @@
+---
+title: "Ten internal systems without ten separate stacks"
+summary: "How to build a dozen internal systems for a manufacturing plant and its sales operation without reaching the point where maintenance costs more than the build."
+sector: "Pet food manufacturing, B2B private label"
+period: "2026"
+disclosure: "anonymised"
+metrics:
+  - label: "Systems on shared infrastructure"
+    value: "About 10, on a single VPS"
+  - label: "Supplier price list validation"
+    value: "8–12 h of manual work to ~5 min plus 15–30 min of review"
+  - label: "Shelf audit"
+    value: "2,827 photographs to 26,864 product observations"
+  - label: "Marketing automation"
+    value: "19 workflows"
+capabilities:
+  - "Enterprise architecture"
+  - "Business processes"
+  - "Applied AI"
+  - "Software delivery"
+stack:
+  - "ISA-95 (APS/MOM)"
+  - "OPC UA"
+  - "MQTT / Sparkplug B"
+  - "TimescaleDB"
+  - "PostgreSQL"
+  - "Keycloak"
+  - "Redis"
+  - "KSeF"
+order: 6
+---
+
+## Context
+
+A private-label pet food manufacturer with B2B partners across several European countries ran its plant
+and its sales operation on a set of spreadsheets, email threads and knowledge held in a few people's
+heads. The demand was not for one system but for a dozen: production planning and monitoring, document
+workflow, recipe compliance, sales, warehousing, recruitment.
+
+## Problem
+
+The instinctive response is to buy a dozen products or to build a dozen applications. Both options run
+into the same wall. Every application wants its own authentication, its own database, its own deployment,
+its own notification channel. At ten systems and one team, maintenance starts costing more than the
+build, and integration becomes a separate product that nobody ordered.
+
+The second difficulty is substantive. Some of these processes are regulated or computationally hard:
+recipes have to comply with FEDIAF and EU regulation, invoices with KSeF requirements, and the production
+plan has to respect the real constraints of the lines. These are domains where a result that is
+"probably correct" is worth nothing.
+
+## Approach
+
+The first decision, ahead of any feature, was the shared layer: one Keycloak with one realm, one
+PostgreSQL cluster with a database per application, one Redis with allocated database numbers, one
+reverse proxy, one WhatsApp gateway routing traffic to five applications, one LLM gateway with full cost
+observability. Every new system receives those as inputs rather than rebuilding them. Bounded context
+boundaries are justified in ADRs, because without that discipline "reuse" turns, within a few months,
+into a single monolith carrying ten names.
+
+The production layer is built to ISA-95 (APS/MOM), with data acquisition over OPC UA and MQTT/Sparkplug B
+and time series in TimescaleDB. Conformance to the ISA-95 model is not decoration here, it is the only
+way we know of to make the words "resource", "operation" and "order" mean the same thing in a
+conversation with a controls engineer, in the interface and in the database schema.
+
+One rule governs the AI layer: AI proposes, a person decides. Models read documents, classify,
+summarise and prepare the decision. Approval stays with a human everywhere the effect is external or
+regulated. The cost of that rule is explicit: full automation cannot be promised, and every process needs
+a review queue kept running. So is the gain: no system creates an obligation nobody approved, and each
+one can be defended in an audit.
+
+## Outcome
+
+About ten internal systems run on the shared infrastructure, production planning and monitoring,
+document workflow with KSeF, recipe compliance in R&D, sales and marketing automation (19 workflows),
+e-commerce, an ATS. The warehouse system is still being built. All of it is maintained on a single VPS.
+
+Two operational changes can be stated in numbers. Supplier price list validation, previously 8–12 hours
+of manual work, is now around 5 minutes of processing and 15–30 minutes of human review. The shelf audit
+turned 2,827 photographs into 26,864 product observations.
+
+## What it taught us
+
+A dozen internal systems are not a dozen projects; they are one platform and a dozen features. The
+decision that settles which of the two you get is taken before the first line of feature code, and it is
+in practice irreversible later without rewriting every deployment.
+
+The second lesson concerns how far AI reaches in a manufacturing and regulated environment. The limit of
+usefulness does not sit where model accuracy ends, but where accountability for the outcome begins.
+Systems that draw that line explicitly get used daily. Systems that do not stay in pilot.

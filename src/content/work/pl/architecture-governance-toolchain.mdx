@@ -1,0 +1,99 @@
+---
+title: "Dokumentacja architektury, która nie starzeje się w dniu publikacji"
+summary: "Jak sprawić, żeby model architektury i governance zostawiały dowód sprawdzalny maszynowo, zamiast diagramów i notatek ze spotkań, których nikt nie weryfikuje."
+sector: "Narzędzia własne, open source"
+period: "2026"
+disclosure: "public"
+metrics:
+  - label: "Pokrycie cyklu"
+    value: "19 skills, define do maintain"
+  - label: "Format wyjściowy"
+    value: "ArchiMate 3.2 walidowany wobec XSD"
+  - label: "Egzekwowanie"
+    value: "validate zwraca exit 1, więc jest bramką CI"
+capabilities:
+  - "Architektura korporacyjna"
+  - "Applied AI"
+  - "Wytwarzanie oprogramowania"
+stack:
+  - "Własny DSL"
+  - "ArchiMate 3.2 Open Exchange XML"
+  - "XSD Open Group"
+  - "git"
+  - "ISO/IEC/IEEE 42010"
+  - "ADR"
+  - "Kwadranty TIME"
+  - "Generator widoków SVG"
+order: 5
+---
+
+## Kontekst
+
+Praktyka architektury korporacyjnej wytwarza artefakty, które starzeją się szybciej, niż powstają:
+diagramy w narzędziu graficznym, decyzje w protokołach spotkań, standardy w dokumentach, których nikt
+nie egzekwuje. Zbudowaliśmy toolchain, który traktuje model architektury jak kod, trzyma go w git
+i sprawdza maszynowo.
+
+## Problem
+
+Dwie awarie są typowe i niezależne od wybranego narzędzia. Pierwsza: dokumentacja jest nieaktualna
+w dniu publikacji, bo jej aktualizacja nie należy do żadnego przepływu pracy, jest osobnym zadaniem
+dla osobnej roli. Druga: governance nie zostawia dowodu. Rada architektury podejmuje decyzję, decyzja
+trafia do notatki, a pół roku później nikt nie umie odpowiedzieć, czy dany system jest z nią zgodny.
+Poza opinią.
+
+Oczywiste rozwiązanie, czyli repozytorium architektury z porządnym interfejsem, adresuje
+przechowywanie, nie egzekwowanie. Model może być wewnętrznie spójny w bazie narzędzia i całkowicie
+rozjechany z rzeczywistością, ponieważ nic go nie sprawdza w momencie zmiany.
+
+Trzecia trudność jest nowa: model językowy bardzo dobrze pisze o architekturze i przy tym zmyśla
+cytaty. Podpowiedź o semantyce ArchiMate albo o treści standardu brzmi identycznie, gdy jest prawdziwa,
+i gdy nie jest.
+
+## Podejście
+
+Rdzeń jest deterministyczny. Architektura zapisywana jest we własnym DSL, przechodzi trójwarstwowy
+walidator, a potem kompiluje się do ArchiMate 3.2 w formacie Open Exchange XML, walidowanym wobec XSD
+Open Group. To nie estetyka: format wymienialny oznacza, że model da się otworzyć w narzędziu, którego
+jeszcze nie kupiono, a wyjście da się sprawdzić maszyną zamiast oglądaniem. Widoki SVG są generowane
+z modelu, więc diagram nie może opisywać czegoś innego niż model.
+
+Governance dostało strukturę danych, nie katalog plików: bazę standardów z wymuszanym cyklem życia,
+dyspensy z datą wygaśnięcia, rejestr decyzji (ADR), rekordy zgodności z sześciostopniowym werdyktem
+i raporty zdrowia. Najważniejszy z tych elementów jest najprostszy, dyspensa bez daty wygaśnięcia jest
+po cichu nową normą.
+
+Model ma dwie strefy, `staging` i `approved`, z bramkowaną promocją. Polecenie `validate` kończy się
+kodem wyjścia 1, gdy model nie przechodzi, więc wchodzi do CI jak każdy inny test. Od tego momentu
+nieaktualność modelu przestaje być kwestią dyscypliny i staje się czerwonym buildem.
+
+Dziewiętnaście „skills" pokrywa cykl define → document → govern → maintain, czyli dokładnie te
+czynności, przy których naturalnie sięga się po model językowy. Obowiązuje jedna zasada: model
+dostarcza sądu, narzędzie dostarcza dowodu. Każde twierdzenie o semantyce ArchiMate albo o treści źródła
+jest weryfikowane kodem wobec cytatu zlokalizowanego w tym źródle; powstaje z tego rejestr faktów
+i mierzalne pokrycie. Osobny komponent, „oracle", sprawdza dopuszczalność relacji wobec zawendorowanych
+źródeł pierwotnych. Nie zakazujemy modelowi twierdzić, odbieramy mu prawo bycia ostatnią instancją.
+
+Dokumentacja generuje się w kształcie klauzuli 6 normy ISO/IEC/IEEE 42010: rejestr interesariuszy i ich
+trosk, portfel aplikacyjny z kwadrantami TIME, mapa zdolności, triage zmian.
+
+## Rezultat
+
+Model architektury żyje w tym samym repozytorium i tym samym rytmie pull requestów co kod. Zgodność ze
+standardem jest rekordem z werdyktem, a nie zdaniem; wyjątek ma termin; decyzja ma numer i uzasadnienie.
+Sprawdzenie, czy model jest poprawny, trwa tyle, ile trwa build.
+
+Ograniczenia są realne. Toolchain wymusza dyscyplinę zapisu, więc zespół, który nie chce pisać modelu
+w tekście, nie zacznie go pisać dzięki narzędziu. I dalej nie odpowiada na pytanie, czy model opisuje
+rzeczywistość, pilnuje spójności modelu, nie prawdziwości wobec produkcji. To osobny problem, którego
+nie rozwiązuje żadna walidacja składni.
+
+## Wnioski
+
+Governance bez artefaktu sprawdzalnego maszynowo zamienia się w rytuał, i to nie z powodu złej woli:
+nikt nie umie ręcznie utrzymać spójności kilkuset elementów. Reguła, której nie da się wykonać na CI,
+jest rekomendacją.
+
+Drugi wniosek dotyczy używania modeli językowych w pracy architekta. Przydatność nie zależy od tego, jak
+dobre są ich odpowiedzi, tylko od tego, czy istnieje tańsza od nich instancja, która potrafi tę odpowiedź
+odrzucić.
