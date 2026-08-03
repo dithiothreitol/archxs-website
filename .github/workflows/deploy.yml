@@ -21,9 +21,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Node 24 on purpose: it ships npm 11, the same resolver used locally.
+      # On npm 10 `npm ci` rejects this lockfile over a transitive @swc/helpers
+      # version it resolves differently, even though the lockfile is valid.
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
           cache: npm
 
       - run: npm ci
