@@ -1,0 +1,96 @@
+---
+title: "Cryptographic-signature login without giving up the corporate IdP"
+summary: "How to accept Ethereum signature authentication while keeping the roles, MFA, audit trail and federation that an enterprise-grade identity provider gives you."
+sector: "Own products, open source"
+period: "2025–2026"
+disclosure: "public"
+metrics:
+  - label: "Extension depth"
+    value: "Custom SPI, not configuration"
+  - label: "Client side"
+    value: "Published npm package (MIT)"
+  - label: "Repeatability"
+    value: "Two independent systems on custom SPI"
+capabilities:
+  - "Cybersecurity & identity"
+  - "Software delivery"
+  - "Enterprise architecture"
+stack:
+  - "Keycloak 26.x"
+  - "Java 17"
+  - "EIP-191"
+  - "web3j, BouncyCastle"
+  - "webauthn4j (passkeys)"
+  - "wagmi v3, EIP-1193, ERC-4337"
+  - "PKCE S256"
+  - "Docker"
+order: 4
+---
+
+## Context
+
+Several of our own products shared one requirement: users sign in with an EVM wallet, by cryptographic
+signature, without a password. Those same products also need everything an enterprise-grade identity
+provider gives you, roles, a second factor, login audit, federation with external IdPs, and one place
+where access can be revoked.
+
+## Problem
+
+An Ethereum signature and a conventional IdP describe identity differently. In the first model, identity
+is a key and nobody vouches for it. In the second, identity is an account in a register that somebody
+administers. The two cannot be stitched together by configuration, because Keycloak has no notion of
+“the holder of an address who has proven control of a private key”.
+
+The obvious workaround is a separate authorisation service alongside Keycloak: it verifies signatures
+and issues its own tokens, Keycloak handles the rest. We rejected it. Two services issuing identity mean
+two user registers, two audit trails and two places where access has to be withdrawn, and during an
+incident what matters is that there is exactly one. The price of that decision was writing Java inside
+Keycloak instead of configuring an off-the-shelf provider.
+
+## Approach
+
+We extended Keycloak 26.x with custom SPIs so that a signature is simply one more authentication method
+in the same realm. `Web3Authenticator` runs the challenge-response flow per EIP-191;
+`Web3CredentialProvider` holds the binding between account and address. The nonce carries a TTL,
+without it, one intercepted signature stays a permanent entry ticket.
+
+Everything else follows from identity staying in one place. The OTP module as a second factor and
+passkeys (webauthn4j) work for signature-based accounts exactly as they do for the rest. RBAC, claim
+mapping and federation remain Keycloak configuration rather than code to be written a second time. The
+presentation layer is a set of custom FreeMarker templates. Stack: Java 17, web3j, BouncyCastle,
+deployed in Docker with documented operational procedures, an SPI that cannot be reproduced on a clean
+environment is debt, not a feature.
+
+On the client side the problem was inverted. A web application expects an EIP-1193 wallet, but the
+wallet is managed by the IdP (embedded, custodial), not by a browser extension. Hence the published npm
+package `@archxs/keycloak-wagmi` under MIT: a wagmi v3 connector that looks like an ordinary wallet to
+the application while using the Keycloak session underneath. It also covers ERC-4337, that is accounts
+implemented as smart contracts.
+
+In the mobile app we took no shortcuts: Authorization Code with PKCE S256 via `expo-auth-session`,
+tokens in `expo-secure-store`, a dedicated public client, return by deep link.
+
+Security boundaries were a separate decision. One product received a dedicated Keycloak instance and an
+isolated Docker network, so that the backend of one system cannot see the containers of another. A shared
+IdP is an economy right up to the moment it becomes a shared blast radius.
+
+## Outcome
+
+What exists is custom SPI rather than configuration, and the same approach was repeated in a second,
+independent system, with its own realms and providers in the repository. That settles the question of
+whether it was a one-off experiment. The client layer is public as an MIT-licensed npm package.
+Repositories: [github.com/dithiothreitol](https://github.com/dithiothreitol).
+
+The limitation deserves stating plainly: custom SPI is coupled to the Keycloak version. Every upgrade is
+a compatibility test, not an image swap. The most recent one, to 26.7, confirmed this is a recurring
+cost rather than a single payment.
+
+## What it taught us
+
+When a new authentication method appears, signature, passkey, whatever comes next, the question is not
+whether it can be supported, but where identity is going to live. Standing up a second service next to
+the IdP is weeks faster, and the bill arrives at the first audit or the first access revocation.
+
+The second lesson concerns choosing an identity platform at all. Its extensibility is the criterion
+almost nobody tests before buying, because it only gets exercised once you need a factor the vendor
+never anticipated.

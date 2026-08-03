@@ -1,0 +1,78 @@
+---
+title: "Keycloak beyond configuration: when you need your own SPI"
+description: "An identity server covers 90% of cases by configuration. The remaining 10% turns on whether identity may be scattered across applications, and usually it may not."
+takeaways:
+  - "The boundary does not run where configuration options end, but where identity starts being scattered across applications."
+  - "A custom authenticator and credential provider are a few hundred lines of code; losing the single point of truth about a user costs considerably more."
+  - "A new way of signing in has to bring its own protection against a replayed request, the protocol will not supply it for you."
+  - "Extending the identity server preserves MFA, federation and audit; a service built beside it starts recreating them from scratch."
+date: "2026-06-03"
+topic: "Identity"
+readingMinutes: 6
+---
+
+Configuring an identity server is enough for most rollouts, and it is worth staying there as long as you can.
+The moment at which you have to write your own SPI extension is recognisable not by running out of options in
+the admin console, but by the alternative becoming a move of some identity logic into the application. That
+is usually the most expensive architectural decision in a project, though in any given week it looks like the
+cheapest.
+
+## Where the temptation to build it alongside comes from
+
+The scenario repeats in the same shape. A requirement appears that the identity server does not support
+directly: signing in with a cryptographic signature, an unusual second factor, binding an account to an
+external registry, a bespoke verification rule. There is a sprint in the calendar and no checkbox in Keycloak.
+
+So a small service appears alongside: it accepts the signature, checks it, issues its own token. It works in
+a week. The problem is that from then on the organisation has two sources of truth about who the user is,
+and everything the identity server provided for free has to be built a second time. Session revocation.
+Enforcing a second factor. Credential reset. Account lockout. An event log for the auditor. Federation with
+the corporate directory. Role mapping. Each of these is achievable on its own; together they constitute a
+product nobody planned to maintain.
+
+## What a custom SPI actually amounts to
+
+Considerably less than the name suggests. We wrote extensions for Keycloak 26 that handle signing in with a
+cryptographic signature under the EIP-191 standard, and it comes down to a few well-defined pieces: an
+authenticator that drives the authentication flow, a credential provider that knows how to store and verify
+that kind of credential, a data model for the credential, and a handful of screen templates.
+
+The flow is short: the server generates a one-time message to be signed, the user signs it with a private
+key, the server recovers the address from the signature and compares it with the one bound to the account.
+The critical detail sits in the first step, the message has to be single-use and have a limited lifetime.
+Without that, an intercepted signature can be used again and the whole mechanism ends up worse than a
+password. This is the part no library will do for the designer, because it requires decisions about the
+validity window, about where the message is held, and about what happens on concurrent sign-in attempts.
+
+What matters is that with this arrangement everything else stays in place. The second factor, OTP or a
+passkey, keeps working, because it is a separate step in the same flow. Roles, attribute mapping, the event
+log, session policies: unchanged. The application still sees an ordinary OIDC token and does not need to know
+that the user signed in an unusual way. That is the whole benefit: a new authentication method is absorbed by
+the identity system instead of growing beside it.
+
+## Three things that are easy to get wrong
+
+**A credential with no model.** Attaching the identifier to user attributes is tempting. A credential has its
+own lifecycle, though: it gets added, revoked, replaced, and it may exist in several copies. An attribute
+does not express that, and a year later nobody can say when the key was bound to the account, or by whom.
+
+**A public client without PKCE.** A mobile application cannot hold a client secret safely, so the only correct
+construction is Authorization Code with PKCE and the operating system keystore. This is not a stylistic
+recommendation but the condition under which intercepting the browser response is not enough to take over the
+session.
+
+**One instance for everything.** Sharing an identity server between systems with different risk profiles is
+often a false economy. In one of our products the security boundary is a separate instance on an isolated
+network, so that the backend of one system cannot see the resources of the other even after a configuration
+mistake. The cost: one more container and some discipline. The alternative cost: an incident whose blast
+radius covers both systems.
+
+## When not to write an SPI
+
+When the requirement can be met with attribute mapping, an authentication flow assembled from stock steps, or
+an existing federation provider. When the team has nobody to build the extension and deploy it on the server
+across successive versions, because an extension has to be maintained through every major upgrade. When the
+problem is really a process problem: a missing account recovery procedure is rarely fixed with code.
+
+The rule we apply fits in one sentence: we write the extension when the alternative is scattering identity
+decisions across applications. Everything else is configuration, and it is better that it stays that way.

@@ -1,0 +1,90 @@
+---
+title: "Wymiana systemu centralnego jako problem organizacyjny"
+summary: "Jak przeprowadzić największą transformację technologiczną w historii banku, gdy trudność nie leży w nowym systemie, lecz w liczbie równoległych decyzji i zależności między zespołami."
+sector: "Bankowość rozwojowa, sektor publiczny"
+period: "2017–2021"
+disclosure: "anonymised"
+metrics:
+  - label: "Organizacja IT"
+    value: "300+ osób"
+  - label: "Równoległe zespoły projektowe"
+    value: "10+"
+  - label: "Zakres"
+    value: "Wymiana systemu centralnego"
+capabilities:
+  - "Architektura korporacyjna"
+  - "Procesy biznesowe"
+  - "Wytwarzanie oprogramowania"
+stack:
+  - "System core banking"
+  - "Integracja systemów"
+  - "Migracja danych"
+  - "Architecture Review Board"
+  - "Governance architektoniczne"
+  - "Koordynacja wielu dostawców"
+order: 2
+---
+
+## Kontekst
+
+Państwowy bank rozwoju, organizacja IT liczona w setkach osób, ponad 300, i portfel systemów rosnący
+przez dwie dekady wokół jednego systemu centralnego. Prowadziliśmy w tej organizacji praktykę
+architektury korporacyjnej i przewodniczyliśmy Architecture Review Board, przez który przechodziły
+wszystkie istotne decyzje technologiczne. W tym czasie bank zdecydował się na wymianę core bankingu:
+największą transformację technologiczną w swojej historii.
+
+## Problem
+
+System centralny w banku nie jest aplikacją, którą się podmienia. Jest miejscem, w którym przez lata
+osiadła wiedza o produktach, wyjątkach i procesach, w tym ta, która nigdy nie została zapisana nigdzie
+poza kodem i danymi. Wokół niego działa kilkadziesiąt integracji, sprawozdawczość i procesy, których
+właściciele biznesowi nie wiedzą, że zależą od core'u, dopóki nie przestanie działać.
+
+Naturalny odruch, potraktować to jako duży projekt wdrożeniowy z jednym dostawcą i jednym planem,
+zawodzi z powodu arytmetyki, nie technologii. Ponad 10 zespołów projektowych pracowało równolegle,
+z różnymi dostawcami i różnymi cyklami. Każdy z nich musiał podejmować decyzje szybciej, niż jakikolwiek
+centralny plan potrafił je zatwierdzić. Bez wspólnych ram te decyzje rozjeżdżają się cicho i spotykają
+dopiero na testach integracyjnych, czyli w najdroższym możliwym momencie.
+
+Drugi problem był mierzalny dopiero późno: migracja danych. W planach zajmuje jedną linię, a w praktyce
+jest miejscem, gdzie ujawnia się każda rozbieżność między modelem starym a nowym, rekordy bez
+odpowiednika, historia w formatach, których nowy model nie przewiduje, dane poprawne technicznie
+i bezużyteczne merytorycznie.
+
+## Podejście
+
+Rolą architektury nie było projektowanie za zespoły, lecz utrzymanie jednej, wspólnej mapy zależności
+i wąskiego zestawu decyzji, które nie podlegają negocjacji lokalnej: kontrakty integracyjne, model
+danych referencyjnych, granice odpowiedzialności między systemem centralnym a satelitami. Wszystko poza
+tym zestawem zostawaliśmy w zespołach.
+
+Architecture Review Board bardzo łatwo staje się wąskim gardłem, każdy projekt czeka na czwartkowe
+posiedzenie. Rozwiązaliśmy to trzema regułami. Decyzje odwracalne nie wymagają rady; wymagają zapisu.
+Do rady wchodzi to, co jest kosztowne do odwrócenia lub przekracza granicę między zespołami. Wniosek
+niekompletny nie jest odrzucany na posiedzeniu, lecz zawracany wcześniej, wraz z informacją, czego
+brakuje. Rada, która głównie mówi „nie", w ciągu kwartału przestaje dostawać wnioski, projekty
+przestają pytać, a decyzje architektoniczne dzieją się i tak, tylko poza rejestrem.
+
+Migrację danych potraktowaliśmy jako strumień prac z własnym cyklem, a nie jako etap końcowy wdrożenia:
+próbne przebiegi na produkcyjnych wolumenach od wczesnej fazy, uzgodnienia liczbowe podpisywane przez
+biznes, a nie przez IT, i jawna decyzja o tym, czego nie migrujemy do nowego core'u, lecz zostawiamy
+w archiwum z dostępem do odczytu. Ta ostatnia decyzja była politycznie najtrudniejsza i technicznie
+najbardziej opłacalna.
+
+## Rezultat
+
+Bank przeszedł wymianę systemu centralnego z zachowaną koordynacją architektoniczną w ponad 10 zespołach
+i wielu dostawcach, przy organizacji IT liczącej ponad 300 osób. Trwalszym efektem niż samo wdrożenie
+było to, że rejestr decyzji architektonicznych i kontrakty integracyjne przetrwały projekt i stały się
+punktem wejścia dla kolejnych zmian.
+
+## Wnioski
+
+Wymiana core'u jest problemem organizacyjnym, który ma techniczny objaw. Rozstrzyga się nie na wyborze
+dostawcy, lecz na tym, czy organizacja potrafi utrzymać spójność decyzji podejmowanych równolegle
+w kilkunastu miejscach.
+
+Governance architektoniczne działa tylko wtedy, gdy jest szybsze niż obejście go. Rada, do której trzeba
+czekać dwa tygodnie, nie jest kontrolą, jest zachętą do podejmowania decyzji bez niej. I jeśli plan
+transformacji poświęca migracji danych mniej uwagi niż wyborowi platformy, to nie jest plan, tylko
+kolejność wydatków.

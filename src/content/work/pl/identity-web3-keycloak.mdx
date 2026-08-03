@@ -1,0 +1,96 @@
+---
+title: "Logowanie podpisem kryptograficznym bez rezygnacji z korporacyjnego IdP"
+summary: "Jak dopuścić uwierzytelnianie podpisem Ethereum, nie tracąc ról, MFA, audytu i federacji, które daje dostawca tożsamości klasy korporacyjnej."
+sector: "Produkty własne, open source"
+period: "2025–2026"
+disclosure: "public"
+metrics:
+  - label: "Zakres rozszerzenia"
+    value: "Własne SPI, nie konfiguracja"
+  - label: "Część kliencka"
+    value: "Publikowany pakiet npm (MIT)"
+  - label: "Powtarzalność"
+    value: "Dwa niezależne systemy z własnym SPI"
+capabilities:
+  - "Cyberbezpieczeństwo i tożsamość"
+  - "Wytwarzanie oprogramowania"
+  - "Architektura korporacyjna"
+stack:
+  - "Keycloak 26.x"
+  - "Java 17"
+  - "EIP-191"
+  - "web3j, BouncyCastle"
+  - "webauthn4j (passkeys)"
+  - "wagmi v3, EIP-1193, ERC-4337"
+  - "PKCE S256"
+  - "Docker"
+order: 4
+---
+
+## Kontekst
+
+Kilka produktów własnych miało ten sam wymóg: użytkownik loguje się portfelem EVM, podpisem
+kryptograficznym, bez hasła. Te same produkty potrzebują jednocześnie wszystkiego, co daje dostawca
+tożsamości klasy korporacyjnej, ról, drugiego czynnika, audytu logowań, federacji z zewnętrznymi IdP
+i jednego miejsca, w którym można komuś odebrać dostęp.
+
+## Problem
+
+Podpis Ethereum i klasyczny IdP opisują tożsamość inaczej. W pierwszym modelu tożsamością jest klucz
+i nie ma nikogo, kto ją potwierdza. W drugim tożsamością jest konto w rejestrze, którym ktoś
+administruje. Zszycie ich konfiguracją jest niemożliwe, bo Keycloak nie zna pojęcia „posiadacz adresu,
+który udowodnił kontrolę nad kluczem prywatnym".
+
+Oczywiste obejście to postawić własny serwis autoryzacyjny obok Keycloaka: on weryfikuje podpisy
+i wydaje własne tokeny, Keycloak obsługuje resztę. Odrzuciliśmy ten wariant. Dwa serwisy wydające
+tożsamość to dwa rejestry użytkowników, dwie ścieżki audytu i dwa miejsca, w których trzeba odebrać
+dostęp, a w trakcie incydentu liczy się dokładnie to, że jest jedno. Kosztem tej decyzji było pisanie
+kodu w Javie wewnątrz Keycloaka zamiast konfigurowania gotowego providera.
+
+## Podejście
+
+Rozszerzyliśmy Keycloak 26.x własnymi SPI tak, żeby podpis był po prostu kolejnym sposobem
+uwierzytelnienia w tym samym realmie. `Web3Authenticator` prowadzi przepływ challenge-response zgodnie
+z EIP-191, `Web3CredentialProvider` trzyma powiązanie konta z adresem. Nonce ma TTL, bez tego raz
+przechwycony podpis pozostaje bezterminowym biletem wejścia.
+
+Reszta wynika z tego, że tożsamość została w jednym miejscu. Moduł OTP jako drugi czynnik i passkeys
+(webauthn4j) działają dla kont podpisowych tak samo jak dla pozostałych. RBAC, mapowanie roszczeń
+i federacja pozostają konfiguracją Keycloaka, a nie kodem do napisania jeszcze raz. Warstwę prezentacji
+stanowią własne szablony FreeMarker. Stos: Java 17, web3j, BouncyCastle, wdrożenie w Dockerze
+z opisanymi procedurami operacyjnymi, SPI, którego nie da się odtworzyć na czystym środowisku, jest
+długiem, nie funkcją.
+
+Po stronie klienta problem był odwrotny. Aplikacja webowa oczekuje portfela zgodnego z EIP-1193,
+a portfel jest zarządzany przez IdP (embedded, custodial), nie przez rozszerzenie w przeglądarce. Stąd
+publikowany pakiet npm `@archxs/keycloak-wagmi` na licencji MIT: connector wagmi v3, który wobec
+aplikacji wygląda jak zwykły portfel, a pod spodem korzysta z sesji Keycloaka. Obsługuje też ERC-4337,
+czyli konta jako smart kontrakty.
+
+W aplikacji mobilnej nie skracaliśmy drogi: Authorization Code z PKCE S256 przez `expo-auth-session`,
+tokeny w `expo-secure-store`, dedykowany klient publiczny, powrót deep linkiem.
+
+Osobną decyzją były granice bezpieczeństwa. Jeden z produktów dostał dedykowaną instancję Keycloaka
+i izolowaną sieć Dockera, żeby backend jednego systemu nie widział kontenerów drugiego. Współdzielony
+IdP jest oszczędnością do chwili, w której staje się wspólnym promieniem rażenia.
+
+## Rezultat
+
+Powstały własne SPI, nie konfiguracja, a to samo podejście zostało powtórzone w drugim, niezależnym
+systemie, z odrębnymi realmami i providerami w repozytorium. To rozstrzyga, że nie był to jednorazowy
+eksperyment. Warstwa kliencka jest publiczna jako pakiet npm na licencji MIT. Repozytoria:
+[github.com/dithiothreitol](https://github.com/dithiothreitol).
+
+Ograniczenie warto nazwać wprost: własne SPI wiąże się z wersją Keycloaka. Każdy upgrade jest testem
+kompatybilności, nie podmianą obrazu. Ostatni, do 26.7, potwierdził, że to koszt cykliczny, a nie
+jednorazowy.
+
+## Wnioski
+
+Kiedy pojawia się nowy sposób uwierzytelniania, podpis, passkey, cokolwiek następne, pytaniem nie
+jest, czy da się go obsłużyć, ale gdzie ma mieszkać tożsamość. Postawienie drugiego serwisu obok IdP
+jest szybsze o tygodnie i płaci się za to przy pierwszym audycie albo pierwszym odbieraniu dostępu.
+
+Drugi wniosek dotyczy wyboru platformy tożsamości. Jej rozszerzalność jest kryterium, którego prawie
+nikt nie testuje przed zakupem, bo sprawdza się dopiero wtedy, gdy trzeba dodać czynnik, którego
+dostawca nie przewidział.

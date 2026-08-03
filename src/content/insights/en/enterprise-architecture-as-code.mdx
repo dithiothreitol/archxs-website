@@ -1,0 +1,116 @@
+---
+title: "Architecture governance needs proof, not meetings"
+description: "Enterprise architecture documentation is out of date on the day it is published; the remedy is a model living in a git repository and validation that runs as a CI gate."
+takeaways:
+  - "Architecture documentation goes stale on the day it is published, because it is a copy of the state rather than its source."
+  - "Governance with no mechanism able to refuse is a record of preferences: only validation that returns exit code 1 turns a principle into a gate."
+  - "A waiver with no expiry date is not a waiver but a quiet amendment to the standard."
+  - "Once an architect works with agents, deterministic validation stops being a convenience and becomes a precondition, because content is now produced faster than anyone can read it."
+date: "2026-04-22"
+topic: "Architecture"
+readingMinutes: 6
+---
+
+Enterprise architecture documentation is out of date on the day it is published, because it is a copy of
+the state rather than its source. Governance with no mechanism capable of refusing comes down to meetings
+and goodwill. The only way we know out of both problems at once is dull: the architecture model lives in
+a git repository, and its rules are executable and run in CI.
+
+## Why documentation drifts from reality
+
+The cause is not team discipline. A document describing an architecture is produced by reading the state
+of the systems and recording it in a different format, and from the moment of recording, two copies of
+the truth change independently. A diagram has no way of learning that a service was decommissioned
+yesterday. A slide cannot object when a new component connects to a database it should have no access to.
+The drift is built into the construction, and no update procedure removes it, because the procedure
+competes with project deadlines and always loses.
+
+The same holds for governance. An Architecture Review Board without an artefact that can be checked by
+machine rules on the basis of whatever was presented at the meeting. The conclusions go into minutes. The
+minutes have no contact whatsoever with the pipeline in which the system is built. A year later the
+organisation holds a collection of sound decisions nobody can tell were carried out, and not out of bad
+faith, but for want of a place where non-execution would be visible.
+
+## A model in the repository instead of a document
+
+The open toolchain we built rests on a single assumption: the model is code, so it is subject to the same
+rigours as code. We keep it in git, in a textual DSL that has pull requests, history, blame and review.
+The core is deterministic throughout, a three-layer validator, a compiler to ArchiMate 3.2 Open Exchange
+XML validated against the Open Group XSD, and an SVG view generator. It comprises 19 skills spanning the
+define → document → govern → maintain cycle, including the part drawing tools are silent about: what
+happens to a model once it stops being new.
+
+Choosing ArchiMate 3.2 and validation against the official schema is not a declaration of attachment to
+standards. It has a concrete effect: the model can be exported into another tool, and it can be checked
+without our tool. A format whose correctness is confirmed only by the editor that produced it is a format
+with no way out, and enterprise architecture outlives several generations of tooling.
+
+Documentation is generated from the model in the shape of clause 6 of ISO/IEC/IEEE 42010: a stakeholder
+register together with their concerns, an application portfolio with TIME quadrants, a capability map,
+change triage. The order matters here. The document is not an artefact to be maintained but a printout of
+the model's state at a given commit. Out-of-date documentation stops being possible, because there is
+nothing left to go stale, there is only a model that either passes validation or does not.
+
+## Governance that returns an exit code
+
+The most important property of this tooling is banal: `validate` exits with code 1 when the model breaks
+the rules. That is enough to run it as a step in CI, and that in turn changes the character of an
+architectural principle. A principle that lives on reminders is a preference. A principle that can stop a
+merge is a gate.
+
+We built the decision register and the compliance records on the same mechanism. ADRs sit in the
+repository next to the model, so a decision and its consequence share one location and one history. A
+compliance record is not a yes/no field but a verdict on a six-point scale, because in architectural
+practice compliant and non-compliant are not enough: things turn out to be partially compliant, compliant
+with a waiver, unassessed, out of date. A scale that distinguishes those is the only one on which a
+health report says anything useful.
+
+We keep the model in two zones, `staging` and `approved`, with gated promotion between them. The reason
+is practical. Without that separation every proposed change has to pretend it is already approved, so
+either governance blocks exploration or exploration dilutes governance. Two zones allow variants to be
+modelled freely while still leaving one state that may be cited in decisions.
+
+## Standards with a lifecycle, waivers with an expiry date
+
+A standards base with an enforced lifecycle solves a problem most organisations have never named:
+standards do not end. A rule is written, applies, stops making sense, and formally still applies, so
+teams learn to work around it, and lose respect for the rules that do make sense along the way. A
+standard without a status and a review date does more harm over time than no standard at all.
+
+Waivers we treat more carefully still: each one has an expiry date and cannot be recorded without it. It
+is a single line in the data schema and one of the most consequential decisions in the whole tool. An
+open-ended waiver is not a waiver, it is a quiet amendment to the standard, made without a conversation
+about its cost. An expiry date forces that conversation at a point when it is still cheap, and gives
+architectural debt a deadline rather than only an owner.
+
+## The architect who works with agents
+
+Up to this point everything above could be justified as hygiene. Working with AI agents turns it into a
+necessity, for a reason that is not obvious.
+
+A language model is very good at forming a judgement about architecture: it will name a risk, propose a
+decomposition, point out a relationship that is missing. It is unreliable in verifiable claims, it will
+cite an ArchiMate relationship that does not exist in the metamodel, or attribute to a source a sentence
+the source does not contain. The second error is the more dangerous, because it sounds plausible and gets
+quoted onwards. Hence the rule in this tool: the model supplies judgement, the tooling supplies evidence.
+Every claim about ArchiMate semantics or about the content of a source passes through an oracle that
+checks it in code against vendored primary sources, with the quotation located in the document. We keep a
+fact register and measure its coverage, so what is visible is not only what has been confirmed but also
+what nobody has confirmed.
+
+The economics of review change as well. An agent can produce a coherent, well-formatted model larger than
+an architect can read in the same time. In manual work the slow pace of authoring was a hidden quality
+control; that mechanism has gone. Deterministic validation therefore stops being a convenience and
+becomes the only place where human attention scales with volume, not by reading everything, but by
+reading what the gate rejected.
+
+The costs of this approach are real and worth naming. A model in a DSL requires the architect to work in
+engineering tooling, which in some organisations moves the competence boundary. Rules written as code
+have to be maintained, and a rule that is too rigid generates waivers faster than anyone closes them. The
+initial effort is higher than for a workshop with diagrams, and the first visible result arrives later.
+The approach pays off where architectural decisions carry audit consequences, or where many teams work in
+parallel, not everywhere.
+
+The test, though, is simple and independent of tooling: check what happens in your organisation to a
+merge that breaks an architectural principle. If the answer is that somebody will catch it at review,
+there is no principle. There is an opinion with good attendance at meetings.

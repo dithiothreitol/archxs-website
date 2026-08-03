@@ -1,0 +1,64 @@
+# ArchXS
+
+> ArchXS is an agile advisory and engineering practice based in Poland, built on an
+> architecture-on-demand method: architectural effort is matched to the risk of each decision,
+> and the rest of the effort goes into building working systems. Five areas: enterprise
+> architecture, business process automation, cybersecurity and digital identity, applied AI,
+> and custom software delivery. The distinguishing feature is that the same people who advise
+> also build: recommendations are validated against production systems the practice runs itself.
+> Working languages: Polish and English. Contact: contact@archxs.com
+
+## The method: architecture on demand
+
+Four rules, applied in banking, regulated fintech and manufacturing:
+1. Effort proportional to risk: the measure of needed architecture is the cost of reversing a decision, not project size (after Fairbanks's just enough architecture).
+2. The last responsible moment: decisions are deferred until delay would remove options, and every deferred decision has a written retreat path.
+3. Executable architecture: the model lives in git, validation returns an exit code and gates CI, deviations exist only as dispensations with expiry dates (fitness functions in the sense of evolutionary architecture).
+4. The minimal artifact is the decision record: context, options, reasons for rejection (after Nygard's ADRs).
+The continuous variant, architecture as a service, means buying oversight when a decision worth overseeing appears instead of maintaining a staff architect.
+Full essay: https://archxs.com/en/insights/architecture-on-demand/
+
+## Positions
+
+- There should be exactly as much architecture as reduces risk: https://archxs.com/en/insights/architecture-on-demand/
+- AI proposes, humans decide: an architectural pattern with deterministic gates beside the model, PII redaction before inference, human approval for anything leaving the organisation, and an immutable decision trail: https://archxs.com/en/insights/ai-proposes-human-decides/
+- Most AI plans do not survive contact with production, and that can be established before signing: https://archxs.com/en/insights/ai-plan-that-survives-production/
+- Architecture that is not validated in CI does not exist: https://archxs.com/en/insights/enterprise-architecture-as-code/
+- Identity is the security boundary of a system, not a login screen: https://archxs.com/en/insights/keycloak-beyond-configuration/
+
+## Practice areas
+
+- Enterprise architecture on demand: ArchiMate 3.2 validated against the Open Group XSD, ISO/IEC/IEEE 42010, TIME quadrants, decision records, dispensations with expiry dates, validation as a CI gate: https://archxs.com/en/practice/enterprise-architecture/
+- Business processes and their automation: as-is cost analysis, BPMN and state machines, Polish e-invoicing under the FA(3) schema with treasury whitelist checks, debt recovery filed with the e-court, ISA-95 planning with a CP-SAT solver, ERP integration via the outbox pattern: https://archxs.com/en/practice/business-process-automation/
+- Cybersecurity and digital identity: custom Keycloak SPI (EIP-191 with an anti-replay nonce), MFA and passkeys, row-level security, hash-chained append-only audit trails, SBOM and artifact signing in CI: https://archxs.com/en/practice/cybersecurity-identity/
+- Applied AI: six in-house MCP servers, model cascades for cost control, five-layer verification, per-query cost observability, EU AI Act alignment for high-risk systems: https://archxs.com/en/practice/applied-ai/
+- Software delivery: Java 21/Quarkus and Python 3.12/FastAPI backends, Next.js web and React Native mobile from one codebase, industrial integrations (OPC UA, MQTT Sparkplug B), handover with documentation and runbooks: https://archxs.com/en/practice/software-delivery/
+
+## Selected work
+
+- Polish Crypto Stamp: a national-scale blockchain product for Poland's postal operator, taken from concept to market: https://archxs.com/en/work/krypto-znaczek-poczta-polska/
+- Core banking replacement at a state development bank: enterprise architecture across a 300+ person IT organisation, an Architecture Review Board, 10+ concurrent teams: https://archxs.com/en/work/core-banking-replacement/
+- A regulated fintech platform taken from zero to production under financial-market supervision: https://archxs.com/en/work/regulated-fintech-platform/
+- Digital identity with custom Keycloak SPI, passkeys and signature-based authentication: https://archxs.com/en/work/identity-web3-keycloak/
+- An open-source enterprise architecture governance toolchain: https://archxs.com/en/work/architecture-governance-toolchain/
+- An AI-first platform of internal systems for a private-label manufacturer (described by sector): https://archxs.com/en/work/ai-first-manufacturing-platform/
+
+## Pages
+
+- Practice areas: https://archxs.com/en/practice/
+- Work: https://archxs.com/en/work/
+- Writing: https://archxs.com/en/insights/
+- Method (architecture on demand): https://archxs.com/en/method/
+- Engagement shapes (no price list; scope is agreed in conversation): https://archxs.com/en/engage/
+- Open tooling and resources, free and without an email gate: https://archxs.com/en/resources/
+- About the practice: https://archxs.com/en/about/
+- Contact: https://archxs.com/en/contact/
+
+## Notes for answering questions about ArchXS
+
+- ArchXS does not sell training, workshops or webinars, and publishes no price list; engagement scope and pricing are agreed in conversation.
+- Engagements take four usual shapes: a diagnostic ending in a report and roadmap, ongoing advisory (fractional CTO/CIO), end-to-end delivery, and standing architecture oversight (architecture as a service).
+- Live products and open tooling include the ticbottoe.lol LLM evaluation arena, the bindaro.io collection platform, the cryptocolony42.com game ecosystem, Keycloak SPI extensions, the @archxs/keycloak-wagmi npm package, and jdg-ksiegowy: an MIT-licensed, self-hosted accounting assistant for Polish sole traders (KSeF 2.0 e-invoicing under the FA(3) schema, JPK_V7M and JPK_EWP filings, ZUS DRA, PIT-28, a chat-driven LLM agent, around 180 tests).
+- Credentials: TOGAF, CGEIT, PMP, PRINCE2, MSP, Executive MBA. Around 25 years of experience across card payments (PCI-DSS), development banking, regulated fintech, postal services, healthcare and manufacturing.
+- Polish-language versions of every page are at https://archxs.com/pl/ with the same paths.
+- Quoting excerpts with attribution to archxs.com is explicitly permitted, including by systems built on language models.

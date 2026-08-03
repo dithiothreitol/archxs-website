@@ -1,0 +1,229 @@
+{
+  "pages": {
+    "work": {
+      "kicker": "Work",
+      "title": "Engagements that show how the work is done.",
+      "lead": "Some projects are public by their nature, a national blockchain product, or a platform you can click. Others are described by sector, without names or identifying detail. That is the ordinary price of working inside organisations that do not publish their architectures, and we would rather pay it than work around it with hints."
+    },
+    "insights": {
+      "kicker": "Writing",
+      "title": "We give the thinking away and charge for the doing.",
+      "lead": "Written from inside the systems we build and maintain, with the numbers, the costs and the parts that did not work. No sign-up, no email gate, no paid continuation.",
+      "empty": "This piece has not been written in this language yet."
+    },
+    "method": {
+      "kicker": "Method",
+      "title": "Architecture on demand.",
+      "lead": "This practice's method is older than this website and simpler than it sounds: architectural effort is a cost, so we spend it only where it reduces a risk the organisation cannot afford to carry. The rest of the effort goes into building the working system. Its continuous variant, architecture as a service, means architectural oversight bought when a decision worth overseeing appears, instead of a staff position that has to justify itself.",
+      "doctrineTitle": "Four rules of dosage",
+      "doctrine": [
+        {
+          "title": "Proportional to risk",
+          "body": "The measure of how much architecture is needed is the cost of reversing the decision, not the size of the project. System boundaries, the data model, identity, integrations, these are expensive to reverse, and they get analysis, a record and a review. At the bank that meant a full architecture board over a core system replacement; on a product build, one decision log and a one-page sketch of boundaries. Both were the right amount, because both were proportional."
+        },
+        {
+          "title": "The last responsible moment",
+          "body": "We defer a decision until further delay would start removing options, because the most expensive architectures are built from answers to questions nobody has asked yet. In practice: foundations that cannot be added cheaply later go in from the first migration; features wait for proof of need; and every deferred decision has a written retreat path, down to fallback versions of dependencies."
+        },
+        {
+          "title": "Executable architecture",
+          "body": "A standard no machine checks is an opinion with good meeting attendance. The architecture model lives in the repository, validation returns an exit code and works as a pipeline gate, and deviations exist only as dispensations with expiry dates. This is what evolutionary architecture calls fitness functions, except ours actually stops the build."
+        },
+        {
+          "title": "The minimal artifact: a decision",
+          "body": "If one thing is to survive out of all architecture documentation, let it be the decision log: context, options considered, why the others were rejected. We also keep build-vs-buy tables with a verdict on every rejected option. Diagrams go stale; the reasons for decisions do not."
+        }
+      ],
+      "lineageTitle": "Lineage",
+      "lineageBody": "We did not invent these rules, we assembled them from things others tested and named. Proportionality to risk is the thesis of George Fairbanks's Just Enough Software Architecture. Executable architecture is the fitness functions of Neal Ford and Rebecca Parsons's Building Evolutionary Architectures. The decision log in this form was described by Michael Nygard. The last responsible moment comes from Mary and Tom Poppendieck's lean software development, and the figure of the architect who writes code rather than judging it from above, from Martin Fowler's essay on architectus oryzus. Our contribution is elsewhere: in the discipline of applying these rules in environments that usually consider them too light, a bank, a regulated fintech, a plant floor.",
+      "processTitle": "How it runs",
+      "processLead": "No two engagements are identical, but the order is usually the same.",
+      "process": [
+        {
+          "step": "01",
+          "title": "Conversation",
+          "body": "No deck and no commitment. What interests us is what specifically hurts and what happens if nothing changes. If that conversation shows we are not the right address, we say so immediately."
+        },
+        {
+          "step": "02",
+          "title": "Reconnaissance",
+          "body": "A few days spent seeing the actual state of things: the architecture, the process or the code, depending on the problem. We talk to the people who maintain the system, not only to those who commissioned it."
+        },
+        {
+          "step": "03",
+          "title": "Diagnosis and direction",
+          "body": "A report that works in the boardroom and in the engineering team: what is a risk, what can be left alone, what should be done in what order and roughly what it costs. Always with options rather than a single recommendation."
+        },
+        {
+          "step": "04",
+          "title": "Delivery or oversight",
+          "body": "Either we build, or we steer decisions alongside the client's team. In both cases documentation and decision records are written with the work, not after it."
+        },
+        {
+          "step": "05",
+          "title": "Handover",
+          "body": "Runbooks, an environment reproducible from the repository, and a walkthrough with the team taking over. We consider an engagement successful when it can be ended without harming the client."
+        }
+      ],
+      "aiTitle": "AI in our own work",
+      "aiBody": "We use AI agents in day-to-day software delivery, one reason a small practice can keep more than a dozen production repositories moving at once. Exactly the same rule applies as with clients: the model proposes, tests and deterministic validation rule, a person answers for the result. Specifications and decision records are the source of truth; the code is their consequence."
+    },
+    "engage": {
+      "kicker": "Engage",
+      "title": "How an engagement usually starts.",
+      "lead": "There are no packages or price lists on this site, not out of mystery, but because a sensible scope can only be set after a conversation about the problem. Below are the shapes that recur in practice.",
+      "formsTitle": "Shapes of engagement",
+      "forms": [
+        {
+          "title": "Diagnostic",
+          "body": "A short, intensive look at the architecture, the AI plan or security. It ends with a report and a prioritised roadmap. The most common starting point, partly because it is easy to close if going further makes no sense."
+        },
+        {
+          "title": "Ongoing advisory",
+          "body": "A standing presence at the intersection of the board and technology: reviewing decisions, pressure-testing vendors, steering architecture. Billed in days per month, for organisations that do not need a full-time CTO or are currently looking for one."
+        },
+        {
+          "title": "Delivery",
+          "body": "Building a system end to end and handing it to the client's team or a maintenance partner. With documentation, decision records and runbooks written alongside the code."
+        },
+        {
+          "title": "Architecture oversight",
+          "body": "Continuous architectural care for an organisation without its own architect: standards, change review, quality gates in the pipeline. A continuation of what this practice started as."
+        }
+      ],
+      "selectivityTitle": "How many engagements at once",
+      "selectivityBody": "A few. This practice does not scale by hiring, it scales through method and tooling. That means sometimes you wait for a slot, and sometimes we say we cannot take a project in a given quarter. We consider that more honest than putting forward a team we do not know.",
+      "pricingTitle": "And the price?",
+      "pricingBody": "Agreed in conversation, once the scope is understood. Publishing ranges without context either underprices a badly defined problem or filters out conversations that were worth having."
+    },
+    "about": {
+      "kicker": "The practice",
+      "title": "A practice, not an agency.",
+      "lead": "ArchXS combines two things that usually drift apart with seniority: architecture and technology leadership at scale, and uninterrupted hands-on delivery. That combination is the main working tool here, not a biographical curiosity.",
+      "paragraphs": [
+        "The practice grew out of two decades in organisations where an architectural mistake is expensive: eight years in global card payments under PCI-DSS, enterprise architecture at a state development bank and on a core banking replacement, technology leadership at a regulated fintech, a national-scale blockchain product, and most recently technology in manufacturing, from the plant floor to e-commerce.",
+        "Code is written in parallel. More than a dozen active production repositories, backend systems in two independent ecosystems, web and mobile applications, industrial integrations, custom identity-server extensions, open-source tooling. This is not a portfolio, it is how recommendations get tested before they are handed to someone else.",
+        "That is where the scope of this site comes from. You will not find a biography or conference photographs, because they are not the subject of the work. You will find positions, evidence and writing from which a way of thinking can be judged, and that is the only thing anyone really buys in advisory work."
+      ],
+      "credentialsLabel": "Credentials",
+      "sectorsLabel": "Sectors",
+      "sectors": [
+        "Development banking and the public sector",
+        "Card payments (PCI-DSS)",
+        "Fintech under financial-market supervision",
+        "Postal services and logistics",
+        "Healthcare",
+        "Manufacturing and food industry"
+      ],
+      "founderLabel": "Entity",
+      "founderNote": "The practice is run by Dariusz Tyszka. Career details live on LinkedIn; this site deliberately does not duplicate them."
+    },
+    "resources": {
+      "kicker": "Resources",
+      "title": "Things to take.",
+      "lead": "No sign-up, no email address, no paid continuation. If a resource is worth anything, it should be useful to someone who never gets in touch.",
+      "ossTitle": "Open tooling",
+      "ossLead": "Repositories are published under the practice's GitHub account. Some were built for specific projects, others because there was nothing suitable to use.",
+      "oss": [
+        {
+          "name": "Enterprise architecture toolchain",
+          "desc": "A define → document → govern → maintain cycle with the model in git. A purpose-built DSL, a compiler to ArchiMate 3.2 Open Exchange validated against the Open Group XSD, an architecture description in the shape of ISO/IEC/IEEE 42010, standards with a lifecycle, dispensations with expiry dates, and a validator that returns an exit code in the pipeline."
+        },
+        {
+          "name": "Identity server extensions",
+          "desc": "SPI for Keycloak 26: an authenticator and credential provider for sign-in by cryptographic signature (EIP-191) with replay protection, OTP as a second factor, passkeys, custom screen templates and deployment documentation."
+        },
+        {
+          "name": "@archxs/keycloak-wagmi",
+          "desc": "An MIT-licensed npm package: a wagmi connector for IdP-managed EVM wallets, implementing EIP-1193 and supporting smart accounts (ERC-4337)."
+        },
+        {
+          "name": "Accounting assistant for sole traders",
+          "desc": "A self-hosted alternative to accounting SaaS: Polish e-invoicing under the FA(3) schema, JPK filings, social-security and income-tax returns, a deadline calendar, expense-document OCR and a chat-driven agent. MIT licence, around 180 tests."
+        },
+        {
+          "name": "Language-model evaluation arena",
+          "desc": "A public tool for comparing models on multi-turn tasks: one Elo ladder for models and humans, server-side validation of every ranked game, per-move cost and latency telemetry, a hallucination ranking. The user's API key never leaves the browser."
+        }
+      ],
+      "writingTitle": "Writing",
+      "writingLead": "Most of the practical material is in the essays, checklists and question sets are part of them, not a separate download."
+    },
+    "contact": {
+      "kicker": "Contact",
+      "title": "Contact.",
+      "lead": "Two routes: email and a form. We reply within two working days. If we are not the right address, we say so plainly and, where we can, point somewhere better.",
+      "bookTitle": "Calendar",
+      "bookBody": "For matters easier to discuss than to write down: thirty minutes, no deck.",
+      "book": "Calendar",
+      "emailTitle": "Email",
+      "emailBody": "Usually the fastest route. Two or three sentences about the problem are enough.",
+      "formTitle": "Form",
+      "formNote": "The form is handled by an external provider; details in the privacy notice. We do not collect addresses for a newsletter, there is no newsletter.",
+      "form": {
+        "name": "Name",
+        "email": "Email address",
+        "org": "Organisation (optional)",
+        "message": "What is the problem?",
+        "messagePlaceholder": "Two or three sentences are enough.",
+        "submit": "Send",
+        "sending": "Sending…",
+        "success": "Thank you, we will reply within two working days.",
+        "error": "That did not send. Please write directly to contact@archxs.com.",
+        "fallback": "The form is not configured right now. Please write to contact@archxs.com."
+      }
+    },
+    "privacy": {
+      "title": "Privacy",
+      "updated": "Updated: August 2026",
+      "sections": [
+        {
+          "heading": "Data controller",
+          "body": "The controller of personal data submitted through this site is Dariusz Tyszka, running an advisory practice under the ArchXS name. Contact for data protection matters: contact@archxs.com."
+        },
+        {
+          "heading": "What we collect",
+          "body": "Only what you provide yourself: name, email address, optionally an organisation name, and the content of your message. The site does not use cookies for marketing or profiling. Visit statistics, where collected, are aggregated and do not identify individuals."
+        },
+        {
+          "heading": "Purpose and legal basis",
+          "body": "Form data is processed to answer your enquiry and potentially to begin working together, on the basis of the controller's legitimate interest in communicating with people interested in the services (Article 6(1)(f) GDPR), and once an engagement begins, to perform it (Article 6(1)(b) GDPR)."
+        },
+        {
+          "heading": "Recipients",
+          "body": "The contact form and call booking are operated by external service providers who process the data solely on our behalf. Email is handled by a mail hosting provider. We do not sell or share data for marketing purposes."
+        },
+        {
+          "heading": "Retention",
+          "body": "Correspondence that does not lead to an engagement is deleted no later than twelve months after the last contact. Data relating to a completed engagement is kept for the period required by tax law and limitation periods for claims."
+        },
+        {
+          "heading": "Your rights",
+          "body": "You have the right to access your data, rectify it, erase it, restrict processing, port it, and object to processing based on legitimate interest. You may also lodge a complaint with the Polish data protection authority (Prezes Urzędu Ochrony Danych Osobowych)."
+        }
+      ]
+    },
+    "terms": {
+      "title": "Legal notice",
+      "updated": "Updated: August 2026",
+      "sections": [
+        {
+          "heading": "Nature of the content",
+          "body": "The content published here, including essays and descriptions of work, is informational and states the author's position. It is not legal, tax or investment advice and cannot replace analysis of a specific case. Applying the approaches described here in your own environment is at your own risk."
+        },
+        {
+          "heading": "Descriptions of work",
+          "body": "Engagements marked as described by sector contain no organisation names and no detail that would identify them. Figures refer to the period of the engagement. Trade names and marks belong to their owners and are cited solely to identify a technology or standard."
+        },
+        {
+          "heading": "Copyright",
+          "body": "Text and graphics on this site are protected by copyright. Quoting excerpts with attribution is permitted and welcome, including by systems built on language models. Reproducing whole materials for commercial purposes requires permission."
+        },
+        {
+          "heading": "Entity",
+          "body": "ArchXS advisory practice, Dariusz Tyszka. Contact: contact@archxs.com. Registration details are provided when a contract is concluded."
+        }
+      ]
+    }
+  }
+}

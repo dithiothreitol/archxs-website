@@ -1,0 +1,117 @@
+---
+title: "What KSeF rollout plans do not show"
+description: "Integrating KSeF 2.0 is decided not by the FA(3) schema but by deduplication, idempotency and accepting that an invoice is a legal event rather than a file."
+takeaways:
+  - "A document retrieved from KSeF carries a number and a date issued outside our system, which makes the accounting application its recipient rather than its owner."
+  - "Deduplication and idempotency are not throughput optimisations: without them the same document lands in the ledger twice, and no correction note undoes that."
+  - "An XML parser reading documents from a source we do not control is an attack surface, so XXE is disabled at library level rather than in a security policy."
+  - "Coding an invoice with a model produces a proposal for approval, because tax liability cannot be transferred to something that will not bear it."
+date: "2026-07-08"
+topic: "Compliance"
+readingMinutes: 6
+---
+
+A KSeF rollout stops being an integration project the moment an invoice turns out to be not a file but
+a legal event, with a number and a date assigned outside your system. The FA(3) schema is the easy part.
+The hard part is what follows retrieval: establishing whether the document has been seen before, whether
+it may be posted to the ledger, and who answers for the consequences of that decision.
+
+## An invoice is an event, not a file
+
+Rollout plans describe KSeF as an exchange channel: produce XML, send it, receive it. The description is
+accurate and nearly useless, because it omits what changes in the data model. A document confirmed by the
+central system exists in legal circulation regardless of the state of our application. There is no draft
+version, no rollback, no fixing it at month-end close. The accounting system stops being the owner of the
+invoice and becomes its recipient, obliged to prove what it did with it and when.
+
+Three things change at once. Retrieval is no longer one scheduled job, because the stream is per tax
+identification number, each entity has its own state, its own progress marker and its own scope of
+authorisation. In our implementation multi-entity separation rests on Row-Level Security in PostgreSQL
+and ABAC rules per NIP, not on a filter in an application query. The document model stops being an
+internal matter, because its shape is imposed by an XSD we do not negotiate. And the audit trail stops
+being a diagnostic log: we keep it as an append-only SHA-256 hash chain with a database trigger that
+blocks UPDATE and DELETE, because in a dispute with a tax authority what matters is not what the system
+displays today but what it could not have altered.
+
+## Why deduplication is a requirement, not an optimisation
+
+In an ordinary integration, deduplication sits in the backlog as a refinement: less work, less noise.
+With structured invoices the relationship is inverted, it is a precondition for a correct ledger.
+Retrieval from the central system is a network operation, so it will repeat: after a timeout, after a
+process restart, after an operator retries by hand, after someone widens the date range. If the same
+invoice enters twice, the result is not a duplicated row in a table but a duplicated cost in the
+settlement and a return that cannot be defended.
+
+So we treat retrieval as idempotent by design rather than by operator caution. Document identity comes
+from the KSeF number, not from a filename and not from a number-plus-counterparty pair. Reprocessing the
+same document is a legitimate, expected operation with no side effect. Import is transactional: the
+document either exists in the ledger in full or does not exist at all, because a partial state here is
+worse than no state. The same rule governs JPK_V7M(3) generation, a return regenerated from the same
+data has to be byte-identical, otherwise what we have is not a generator but another source of
+discrepancy.
+
+Idempotency is also the only mechanism that makes retrying against the ministry gateway safe. A REST
+channel with AES and RSA encryption behaves like any other remote channel: sometimes it responds slowly,
+sometimes not at all, and the absence of a response does not mean the operation did not happen. A system
+built without that assumption resolves the ambiguity manually, in production, on a Friday afternoon.
+
+## What the compliance gate does, and why the parser belongs to it
+
+Between receiving a document and posting it we placed a gate that nothing passes unchecked. It performs
+XSD validation against the FA(3) schema, a mod-11 checksum test on the tax identification number, a
+lookup of the counterparty against the tax administration whitelist, detection of split-payment cases,
+and deduplication. Each check exists because its absence has a specific price: a deduction challenged
+over a bank account missing from the register, a payment made without the split-payment mechanism where
+it was mandatory, an amended return caused by a document counted twice.
+
+The XML parser is part of the same gate, not a layer beneath it. The document arrives from a source we do
+not control, and XML is a format with history: external entities, entity expansion, references to local
+resources. A parser left at its defaults can, given a suitably prepared file, read a file from the server
+disk or issue a network request from inside the parse. We therefore use a parser hardened against XXE at
+library level (defusedxml) rather than a line in a security policy stating that untrusted files are not
+processed. The same logic applies to attachments: antivirus scanning is fail-closed, so an unscanned file
+is a rejected file rather than a conditionally accepted one, and MIME types sit on an allowlist rather
+than a blocklist.
+
+It is worth being clear about who these controls are aimed at. None of them protects against an attacker
+targeting the organisation. They protect against routine: a document entered in a hurry, a retry after an
+outage, an upload from a machine nobody has inspected.
+
+## Where the model's role ends
+
+Assigning accounts and cost dimensions is the most obvious candidate for automation and the worst place
+for full automation. In the document workflow we operate, the model proposes the account, the cost
+dimension and the project allocation, but the output is a proposal a person approves. Not out of
+caution; out of allocation of responsibility. The consequence of a wrong posting is fiscal, and it falls
+on the taxpayer rather than on a model vendor. An automaton that posts on its own does not remove that
+liability, it only removes the moment when somebody knowingly accepted it.
+
+The rest of the construction follows from the same principle. Personal data is redacted before anything
+goes to a model, because an accounting document contains more than amounts. OCR routing escalates from a
+cheaper model to a frontier one only when read confidence is low, because cost per document is a project
+parameter rather than a curiosity. And everything the model proposed and a person approved stays in the
+same audit chain as the invoices themselves.
+
+## What cannot be bought in
+
+A connector can be bought in weeks. That is a real saving and there is no reason to dismiss it:
+transport, authorisation, schema handling, retries. Three things, however, are not for sale, and they are
+the ones that decide whether a rollout succeeds.
+
+The first is mapping your own document model onto FA(3) semantics. The schema is rigid; a company's
+reality is not, discounts, prepayments, multi-line corrections, foreign-currency sales, services billed
+in cycles. Each of these has one correct representation in the schema and several incorrect ones that
+still pass validation.
+
+The second is master data quality. The compliance gate does not repair a counterparty register; it
+exposes one. Rollouts come apart not on the integration but on a few hundred records with a malformed
+tax number, a duplicated counterparty and a bank account absent from the register.
+
+The third is an organisational decision: who approves, within what time, and what happens when they do
+not. A workflow system cannot be configured without an answer to that, and the answer is not technical.
+Teams that treat KSeF as an integration task reach the question last, once the schedule has already been
+spent on formats.
+
+The testable measure of readiness is not a successful first submission. It is the answer to what the
+system does when the same invoice arrives a second time, and whether you can show who decided it was
+allowed into the ledger.

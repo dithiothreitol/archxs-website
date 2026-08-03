@@ -1,0 +1,103 @@
+---
+title: "An AI plan that survives production"
+description: "Six questions a board can use to test its own AI rollout plan, or a vendor's proposal, before signing anything. A real plan has answers to all of them."
+takeaways:
+  - "A pilot always looks cheap, because unit cost only becomes visible at real volume, work it out before you decide."
+  - "The important question is not how good the model is, but who bears the consequence when it is wrong."
+  - "A plan that leaves the process untouched and merely adds an assistant beside it usually leaves the outcome untouched as well."
+  - "A model vendor will reprice or retire a version within the year, so a plan with no exit path is a plan for one season."
+date: "2026-06-24"
+topic: "Applied AI"
+readingMinutes: 6
+---
+
+A real AI rollout plan differs from a wishful one not in the quality of the technology but in whether it
+answers six questions: what one operation costs at target volume, who answers for a model error, where the
+quality gate stands, what data leaves the organisation, how you will measure the effect, and what happens
+when the vendor changes the terms. A plan that is silent on any of these is not a plan; it is a pilot budget.
+
+The questions work as well against your own team as against an outside proposal. In both cases answering
+them takes less time than the rollout and costs incomparably less.
+
+## What does one operation cost at target volume?
+
+A pilot is always cheap, because it processes a few dozen cases. The cost surfaces once you multiply it by
+a real month, and at that point it can move the business case by an order of magnitude.
+
+In one of our systems, reproducing a single analytical artefact, turning 2,827 photographs into 26,864
+product observations, cost roughly 16 million tokens. That is a figure you need **before** deciding to run
+such a process on a schedule, not after the first invoice. Knowing it changes the architecture: a cascade of
+models pays off, with a cheap model classifying and filtering while an expensive one only synthesises the
+result; a semantic cache of queries over vectors pays off, because in real traffic questions repeat.
+
+The control question is plain: what is the cost per document, per case, per customer, and who in the
+organisation looks at that figure every month. If nobody does, the cost grows unnoticed until somebody
+demands that the whole thing be switched off.
+
+## Who bears the consequence when the model is wrong?
+
+This is a question about accountability, not accuracy. A model with 95% accuracy sounds excellent until you
+ask what happens in the other five cases in a hundred, and who will notice them.
+
+The answer that a human will verify is not enough unless it comes with a design for that verification.
+Verification that takes as much work as doing the task from scratch is a fiction, after two weeks people
+start clicking approve. Sensible verification is cheaper than the task: the model shows where each value came
+from, marks the uncertain places, and escalates cases below the threshold itself instead of handing
+everything back in the same format.
+
+In a system checking label conformance against industry requirements we built five layers: confidence
+scoring, an independent second reading of the figures with a cross-comparison, thresholds computed
+deterministically in code, automatic escalation to a person, and a fixed test set of manually verified
+examples. Four of those five layers are not the model, and that is the substance of the matter.
+
+## Where does the quality gate stand, and is it deterministic?
+
+If the only check on a model's output is another model, the whole construction rests on the same kind of
+uncertainty. A gate that is meant to guarantee something has to be code: schema validation, a numeric rule,
+a test on a known set, a checksum.
+
+Reversing the roles is good practice. In the production planning we built, the decision-maker is an
+optimisation solver, deterministic, repeatable, explainable, and the language model acts as a copilot: it
+translates what the user is asking and explains the result. The opposite arrangement, where the model takes
+the decision and the solver only checks it, looks much the same on a diagram and behaves entirely
+differently under load.
+
+## What data leaves the organisation, and what is stripped from it?
+
+This is asked at the architecture stage, because later the answer can turn out to be unimplementable. You
+need to know which fields reach the model vendor, what is redacted before sending, where the data is
+physically processed, and whether the queries are used for training.
+
+In document workflow systems, personal data is redacted before the content goes to the model, not after the
+response comes back. The difference is fundamental: in the first case the data never leaves the organisation;
+in the second it left and came back. Where special category data or trade secrets are involved, a locally
+hosted model enters the calculation as well, more expensive to maintain, cheaper in risk.
+
+## How will you measure that something improved?
+
+The measure has to exist before the rollout, because afterwards everybody remembers the starting state as
+slightly better than it was.
+
+A useful measure is complete, meaning it includes the work that remains with the person. In supplier quote
+validation, processing a price list previously took 8–12 hours of manual work; after the rollout it takes a
+few machine minutes **plus 15–30 minutes of review**. The second figure matters as much as the first,
+without it you get an indicator that looks spectacular and corresponds to nothing in reality.
+
+## What happens when the vendor changes the terms?
+
+Over the past year models have been retired, renamed and repriced in both directions. A plan that assumes one
+vendor and one model version has a horizon of one season.
+
+The protection is simple and cheap if applied from the start: an intermediate layer instead of direct calls
+in application code, prompts and response schemas kept as artefacts in the repository, a test set that lets
+you compare a new model against the old one in a single evening. Then changing vendor is an operational
+decision rather than a project.
+
+## One question at the end
+
+There is a seventh, and it is the most uncomfortable: does this plan change the process, or only add an
+assistant beside the existing process? Rollouts of the second kind are easier to carry out and almost always
+disappoint, because the saving appears somewhere that was not the bottleneck.
+
+The best results we have seen came where automation removed a step rather than speeding it up. That requires
+agreement to change the process, and that is a board decision, not a technical one.

@@ -1,0 +1,24 @@
+/node_modules
+/.next/
+/out/
+/build
+*.tsbuildinfo
+next-env.d.ts
+
+.env
+.env*.local
+
+.DS_Store
+*.pem
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Gemini image pipeline: PNG masters stay local, only .webp is committed.
+# Exception: the OG card is composed deterministically by sharp, not generated,
+# and must be committed because crawlers fetch it as a PNG.
+/public/img/**/*.png
+!/public/img/og/*.png
+/scripts/.gen-logs/
+/scripts/.gen-prompts/

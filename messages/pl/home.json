@@ -1,0 +1,188 @@
+{
+  "home": {
+    "hero": {
+      "kicker": "Praktyka doradczo-inżynierska",
+      "title": "Dokładnie tyle architektury, ile trzeba.",
+      "lead": "ArchXS pracuje metodą architektury na żądanie: nakład architektoniczny ograniczamy do decyzji, których nie da się tanio odwrócić, a odzyskany czas oddajemy budowie działającego systemu. Tą metodą doradzaliśmy przy wymianie systemu centralnego banku rozwoju. Nią utrzymujemy dziś platformę, na której działa około dziesięciu systemów produkcyjnych, od planowania produkcji po obieg dokumentów.",
+      "figureCaption": "Warstwy systemu: infrastruktura, procesy, decyzje",
+      "proof": [
+        {
+          "value": "300+ osób IT",
+          "label": "skala, w której prowadziliśmy praktykę architektury korporacyjnej i architekturę wymiany systemu centralnego banku"
+        },
+        {
+          "value": "237 migracji",
+          "label": "schematu w jednym długo żyjącym systemie, ewolucja zamiast wielkiego projektu, każda zmiana ponumerowana i odtwarzalna"
+        },
+        {
+          "value": "TOGAF · CGEIT · MBA",
+          "label": "oraz PMP, PRINCE2, MSP, traktowane jak biblioteka, z której bierze się tyle, ile potrzeba, nie jak liturgia"
+        }
+      ]
+    },
+    "positions": {
+      "label": "Stanowiska",
+      "title": "Pięć przekonań. Każde ma osobny tekst, który je broni.",
+      "linkLabel": "Uzasadnienie",
+      "items": [
+        {
+          "claim": "Architektury powinno być dokładnie tyle, ile redukuje ryzyko.",
+          "body": "Etatowa praktyka architektoniczna ma skłonność do wytwarzania artefaktów na własne usprawiedliwienie. Wysiłek kierujemy tam, gdzie decyzja jest droga w odwróceniu, granice systemów, model danych, tożsamość, a resztę oddajemy kodowi i rejestrowi decyzji. Ta metoda ma rodowód i ma też twarde granice; piszemy o jednym i drugim.",
+          "href": "/insights/architecture-on-demand"
+        },
+        {
+          "claim": "Większość planów AI nie przetrwa kontaktu z produkcją.",
+          "body": "I da się to sprawdzić przed podpisaniem umowy. Wystarczy kilka pytań, na które realny plan ma odpowiedzi, a życzeniowy milczy: kto jest właścicielem kosztu tokenów przy docelowym wolumenie, gdzie stoi bramka jakości i kto ponosi konsekwencję błędu modelu.",
+          "href": "/insights/ai-plan-that-survives-production"
+        },
+        {
+          "claim": "AI proponuje, człowiek decyduje.",
+          "body": "Nie jako ostrożnościowy frazes, ale jako wzorzec architektoniczny: deterministyczne bramki obok modelu, redakcja danych osobowych przed wysłaniem czegokolwiek na zewnątrz, ślad decyzji, którego nie można nadpisać. Stosujemy go w każdym systemie, który budujemy, i znamy jego koszt.",
+          "href": "/insights/ai-proposes-human-decides"
+        },
+        {
+          "claim": "Architektura, której nie ma w CI, nie istnieje.",
+          "body": "Model architektury trzymamy w repozytorium, a walidator zwraca kod błędu, zmiana łamiąca standard zatrzymuje się w pipeline, nie na przeglądzie sześć tygodni później. Odstępstwa istnieją, ale jako dyspensy z datą wygaśnięcia, nie jako milcząca zgoda.",
+          "href": "/insights/enterprise-architecture-as-code"
+        },
+        {
+          "claim": "Tożsamość to nie ekran logowania.",
+          "body": "To granica bezpieczeństwa całego systemu. Czasem prowadzi to do napisania własnego rozszerzenia serwera tożsamości, u nas skończyło się na obsłudze podpisu kryptograficznego z jednorazowym nonce przeciw powtórzeniom, i wychodzi taniej niż utrata jednego punktu prawdy o użytkowniku.",
+          "href": "/insights/keycloak-beyond-configuration"
+        }
+      ]
+    },
+    "practiceIntro": {
+      "label": "Obszary praktyki",
+      "title": "Pięć rodzajów problemów, przy których byliśmy wystarczająco długo, żeby znać ich zwyczajowe miejsca pęknięć.",
+      "lead": "Nie prowadzimy katalogu usług. Każdy obszar opisujemy tak samo: jak na niego patrzymy, co konkretnie zbudowaliśmy i co z tego wynika, z nazwami standardów i liczbami, bo ogólniki nie niosą odpowiedzialności.",
+      "evidenceLabel": "Dowód"
+    },
+    "method": {
+      "label": "Metoda",
+      "title": "Zasady kosztują na starcie i zwracają się przy pierwszej zmianie zespołu.",
+      "link": "Jak pracujemy",
+      "items": [
+        {
+          "title": "Tyle architektury, ile redukuje ryzyko",
+          "body": "Decyzje drogie w odwróceniu dostają analizę, zapis i przegląd. Pozostałe podejmuje zespół w kodzie i odnotowuje w rejestrze. Granicę wyznacza ryzyko, nie szablon metodyki, w banku oznaczało to pełny komitet architektury, w budowie produktu jeden rejestr decyzji."
+        },
+        {
+          "title": "Decyzje zapisane, nie zapamiętane",
+          "body": "Każda istotna decyzja dostaje wpis: kontekst, rozważane opcje, powód odrzucenia pozostałych. Prowadzimy też tabele build-vs-buy z werdyktem dla każdej odrzuconej opcji, po roku to jedyny sposób, żeby zrozumieć system bez archeologii."
+        },
+        {
+          "title": "Dowód zamiast deklaracji",
+          "body": "Zgodność, której nikt nie sprawdza automatycznie, jest opinią. Walidacja wraca do pipeline i zwraca kod błędu; audyt zapisuje się w strukturze, której trigger bazodanowy nie pozwala nadpisać. Wtedy zgodność przestaje zależeć od czyjejś pamięci."
+        },
+        {
+          "title": "AI proponuje, człowiek decyduje",
+          "body": "Model sugeruje, deterministyczny kod orzeka, człowiek zatwierdza wszystko, co wychodzi poza organizację. Wolniej i mniej efektownie w demie, za to daje się pokazać audytorowi razem z uzasadnieniem każdej sugestii."
+        }
+      ]
+    },
+    "work": {
+      "label": "Realizacje",
+      "title": "Sześć realizacji, w których widać sposób pracy.",
+      "lead": "Część jest publiczna z natury projektu. Część opisujemy sektorowo, bez nazw, to normalna cena za pracę w organizacjach, które nie publikują swoich architektur.",
+      "link": "Wszystkie realizacje"
+    },
+    "proof": {
+      "label": "Dowody",
+      "title": "Rzeczy, które istnieją.",
+      "lead": "Zamiast ściany logotypów: kod, który można przeczytać, i produkty, które można kliknąć.",
+      "ossLabel": "Otwarte narzędzia",
+      "productsLabel": "Produkty w sieci",
+      "credLabel": "Certyfikacje",
+      "ossLink": "Repozytoria",
+      "oss": [
+        {
+          "name": "Toolchain architektury korporacyjnej",
+          "desc": "Model w git kompilowany do ArchiMate 3.2 Open Exchange walidowanego wobec XSD Open Group; standardy z cyklem życia, dyspensy z datą wygaśnięcia, walidacja jako bramka CI."
+        },
+        {
+          "name": "Rozszerzenia serwera tożsamości",
+          "desc": "Własne SPI dla Keycloak 26: uwierzytelnianie podpisem kryptograficznym (EIP-191) z jednorazowym nonce, OTP, passkeys."
+        },
+        {
+          "name": "@archxs/keycloak-wagmi",
+          "desc": "Pakiet npm (MIT): connector portfeli EVM zarządzanych przez IdP, EIP-1193 i konta inteligentne ERC-4337."
+        },
+        {
+          "name": "Asystent księgowy dla JDG",
+          "desc": "Self-hosted alternatywa dla SaaS: KSeF 2.0 ze schemą FA(3), JPK, ZUS DRA, agent LLM, około 180 testów."
+        }
+      ],
+      "products": [
+        {
+          "name": "ticbottoe.lol",
+          "desc": "Arena, w której modele językowe i ludzie grają na jednym rankingu Elo. Każda gra rankingowa jest odtwarzana i walidowana serwerowo; klucz API użytkownika nie opuszcza przeglądarki.",
+          "href": "https://ticbottoe.lol"
+        },
+        {
+          "name": "bindaro.io",
+          "desc": "Platforma kolekcji cyfrowych: web i mobile, siedem języków, wiele łańcuchów, agent analityczny.",
+          "href": "https://bindaro.io"
+        },
+        {
+          "name": "cryptocolony42.com",
+          "desc": "Ekosystem gry on-chain Colony Wars i kolekcji Henomorphs: web i mobile, ponad 440 kontraktów Solidity we wzorcu Diamond, konta inteligentne ERC-4337.",
+          "href": "https://cryptocolony42.com"
+        }
+      ]
+    },
+    "insights": {
+      "label": "Teksty",
+      "title": "Teksty pisane od środka.",
+      "lead": "Z liczbami, kosztami i tym, co się nie udało. Bez zapisów i bez ciągu dalszego za opłatą.",
+      "link": "Wszystkie teksty"
+    },
+    "faq": {
+      "label": "Pytania",
+      "title": "Pytania, które zwykle padają jako pierwsze.",
+      "items": [
+        {
+          "q": "Czym dokładnie zajmuje się ArchXS?",
+          "a": "Doradztwem architektonicznym i wytwarzaniem oprogramowania w pięciu obszarach: architektura korporacyjna, procesy biznesowe i ich automatyzacja, cyberbezpieczeństwo i tożsamość cyfrowa, applied AI oraz wytwarzanie systemów. W praktyce oznacza to trzy rodzaje pracy: ocenić stan i zaproponować kierunek, prowadzić decyzje technologiczne przez dłuższy czas albo zbudować system i przekazać go zespołowi klienta."
+        },
+        {
+          "q": "Czym jest architektura na żądanie?",
+          "a": "To model pracy, w którym organizacja nie utrzymuje stałego nakładu architektonicznego, tylko dobiera go do ryzyka konkretnej decyzji. Decyzje drogie w odwróceniu, granice systemów, model danych, tożsamość, integracje, dostają analizę, zapis i przegląd; pozostałe podejmuje zespół i odnotowuje w rejestrze decyzji. Zgodność ze standardami sprawdza pipeline, nie komitet. Wariant ciągły tego modelu, architecture as a service, polega na tym, że organizacja bez etatowego architekta kupuje nadzór wtedy, gdy pojawia się decyzja warta nadzoru."
+        },
+        {
+          "q": "Jak wygląda początek współpracy?",
+          "a": "Rozmową o problemie, bez zobowiązań i bez prezentacji. Z rozmowy zwykle wynika jedna z czterech form: krótka diagnoza kończąca się raportem i roadmapą, doradztwo ciągłe na poziomie zarządczo-technicznym, wytworzenie systemu end-to-end albo stały nadzór architektoniczny. Zakres i warunki ustalamy w rozmowie, nie z cennika."
+        },
+        {
+          "q": "Czy doradztwo obejmuje też wykonanie?",
+          "a": "Tak, i to jest sedno tej praktyki. Rekomendacje powstają u kogoś, kto następnie musi je wdrożyć, co skutecznie eliminuje pomysły dobre na slajdzie i niewykonalne w produkcji. Można też korzystać wyłącznie z warstwy doradczej i zostawić wykonanie własnemu zespołowi lub innemu dostawcy."
+        },
+        {
+          "q": "Czy prowadzicie szkolenia albo warsztaty?",
+          "a": "Nie. Nie prowadzimy szkoleń, warsztatów ani webinarów i nie planujemy tego zmieniać. Wiedza, którą warto przekazać, trafia do tekstów na tej stronie i do otwartych narzędzi, bez opłaty i bez zapisów. Płaci się za rozwiązanie problemu, nie za obecność na sali."
+        },
+        {
+          "q": "Czy pracujecie z organizacjami w reżimie regulacyjnym?",
+          "a": "To większość naszego doświadczenia: bankowość państwowa, fintech pod nadzorem KNF, płatności kartowe w reżimie PCI-DSS, ochrona zdrowia, sektor publiczny, produkcja żywności. Praktycznie oznacza to znajomość RODO i DPIA, eIDAS, EU AI Act, KSeF i JPK, ISA-95 oraz norm branżowych, na poziomie wdrożenia, nie hasła w ofercie."
+        },
+        {
+          "q": "Jak wykorzystujecie AI w projektach klientów?",
+          "a": "Jako narzędzie, które proponuje, nigdy jako instancję decyzyjną. Model sugeruje, deterministyczny kod orzeka, człowiek zatwierdza każdą akcję wychodzącą poza organizację. Dane osobowe są redagowane przed wysłaniem do modelu, koszt zapytań jest mierzony per zapytanie, a decyzje mają ślad audytowy. Ta sama zasada obowiązuje w AI, którego sami używamy do wytwarzania kodu."
+        },
+        {
+          "q": "Kiedy ArchXS nie jest właściwym adresem?",
+          "a": "Gdy potrzebny jest duży zespół wykonawczy na już, ręce do istniejącego backlogu albo dostawca wybierany w przetargu po najniższej cenie. Nie prowadzimy body leasingu i nie skalujemy się rekrutacją. Jeśli po rozmowie okaże się, że to nie nasz przypadek, powiemy to wprost i w miarę możliwości wskażemy kierunek."
+        },
+        {
+          "q": "W jakich językach i na jakich rynkach pracujecie?",
+          "a": "Po polsku i po angielsku, zdalnie, z bazą w Polsce. Klienci to głównie polski mid-market i organizacje sektora publicznego, ale realizowaliśmy też projekty z partnerami w całej Unii. Dokumentacja może być prowadzona dwujęzycznie, w praktyce dokumentacja po polsku, kod i komentarze po angielsku."
+        }
+      ]
+    },
+    "contact": {
+      "label": "Kontakt",
+      "title": "contact@archxs.com",
+      "body": "Odpowiadamy w ciągu dwóch dni roboczych. Formularz kontaktowy jest na stronie kontaktu, dla tych, którzy go potrzebują."
+    }
+  }
+}

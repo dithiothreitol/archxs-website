@@ -1,0 +1,91 @@
+---
+title: "Dziesięć systemów wewnętrznych bez dziesięciu osobnych stosów"
+summary: "Jak zbudować kilkanaście systemów wewnętrznych dla zakładu produkcyjnego i jego sprzedaży, nie doprowadzając do sytuacji, w której utrzymanie kosztuje więcej niż budowa."
+sector: "Produkcja karmy dla zwierząt, private label B2B"
+period: "2026"
+disclosure: "anonymised"
+metrics:
+  - label: "Systemy na wspólnej infrastrukturze"
+    value: "Około 10, na jednym VPS"
+  - label: "Walidacja cennika dostawcy"
+    value: "8–12 h pracy ręcznej do ~5 min plus 15–30 min przeglądu"
+  - label: "Audyt półkowy"
+    value: "2 827 zdjęć do 26 864 obserwacji produktowych"
+  - label: "Automatyzacja marketingu"
+    value: "19 workflow"
+capabilities:
+  - "Architektura korporacyjna"
+  - "Procesy biznesowe"
+  - "Applied AI"
+  - "Wytwarzanie oprogramowania"
+stack:
+  - "ISA-95 (APS/MOM)"
+  - "OPC UA"
+  - "MQTT / Sparkplug B"
+  - "TimescaleDB"
+  - "PostgreSQL"
+  - "Keycloak"
+  - "Redis"
+  - "KSeF"
+order: 6
+---
+
+## Kontekst
+
+Producent karmy dla zwierząt w modelu private label, z partnerami B2B w kilku krajach Europy, prowadził
+zakład i sprzedaż na zestawie arkuszy, poczty i wiedzy w głowach kilku osób. Zapotrzebowanie nie
+dotyczyło jednego systemu, lecz kilkunastu: planowania i monitoringu produkcji, obiegu dokumentów,
+zgodności receptur, sprzedaży, magazynu, rekrutacji.
+
+## Problem
+
+Naturalną reakcją jest kupić kilkanaście produktów albo zbudować kilkanaście aplikacji. Oba warianty
+rozbijają się o to samo. Każda aplikacja chce własnego uwierzytelniania, własnej bazy, własnego
+wdrożenia, własnego kanału powiadomień. Przy dziesięciu systemach i jednym zespole utrzymanie zaczyna
+kosztować więcej niż budowa, a integracja staje się osobnym produktem, którego nikt nie zamawiał.
+
+Druga trudność jest merytoryczna. Część tych procesów jest regulowana albo obliczeniowo trudna:
+receptury muszą być zgodne z FEDIAF i przepisami UE, faktury z wymogami KSeF, plan produkcji musi
+respektować rzeczywiste ograniczenia linii. To dziedziny, w których wynik „prawdopodobnie poprawny" nie
+ma żadnej wartości.
+
+## Podejście
+
+Pierwszą decyzją, przed jakąkolwiek funkcjonalnością, była warstwa współdzielona: jeden Keycloak z jednym
+realmem, jeden klaster PostgreSQL z bazą per aplikacja, jeden Redis z przydziałem numerów baz, jeden
+reverse proxy, jeden gateway WhatsApp routujący ruch do pięciu aplikacji, jeden gateway LLM z pełną
+obserwowalnością kosztu. Każdy nowy system dostaje te elementy jako dane wejściowe, a nie buduje je od
+nowa. Granice bounded contextów są uzasadniane ADR-ami, bo bez tego „reuse" po kilku miesiącach zamienia
+się w jeden monolit noszący dziesięć nazw.
+
+Warstwa produkcyjna jest zbudowana zgodnie z ISA-95 (APS/MOM), z akwizycją danych przez OPC UA
+i MQTT/Sparkplug B oraz szeregami czasowymi w TimescaleDB. Zgodność z modelem ISA-95 nie jest tu
+ozdobą, to jedyny znany nam sposób, żeby słowa „zasób", „operacja" i „zlecenie" znaczyły to samo
+w rozmowie z automatykiem, w interfejsie i w schemacie bazy.
+
+W warstwie AI obowiązuje jedna zasada: AI proponuje, człowiek decyduje. Modele czytają dokumenty,
+klasyfikują, streszczają i przygotowują decyzję. Zatwierdzenie zostaje po stronie człowieka wszędzie, gdzie
+skutek jest zewnętrzny albo regulowany. Koszt tej zasady jest jawny: nie da się obiecać pełnej
+automatyzacji, a przy każdym procesie trzeba utrzymać kolejkę do przeglądu. Zysk również: żaden system nie
+wytwarza zobowiązania, którego nikt nie zatwierdził, i każdy da się obronić przed audytem.
+
+## Rezultat
+
+Na wspólnej infrastrukturze pracuje około dziesięciu systemów wewnętrznych, planowanie i monitoring
+produkcji, obieg dokumentów z KSeF, zgodność receptur w R&D, automatyzacja sprzedaży i marketingu
+(19 workflow), e-commerce, ATS. Magazyn jest w budowie. Całość utrzymuje się na jednym VPS.
+
+Dwie zmiany operacyjne można podać liczbami. Walidacja cennika dostawcy, wcześniej 8–12 godzin pracy
+ręcznej, to dziś około 5 minut przetwarzania i 15–30 minut przeglądu przez człowieka. Audyt półkowy
+przetworzył 2 827 zdjęć w 26 864 obserwacje produktowe.
+
+## Wnioski
+
+Kilkanaście systemów wewnętrznych to nie kilkanaście projektów, tylko jedna platforma i kilkanaście
+funkcji. Decyzja, która o tym rozstrzyga, podejmowana jest przed pierwszą linią kodu funkcjonalnego
+i praktycznie nie daje się odwrócić później bez przepisania wszystkich wdrożeń.
+
+Drugi wniosek dotyczy zasięgu AI w środowisku produkcyjnym i regulowanym. Granica użyteczności nie leży
+tam, gdzie kończy się dokładność modelu, ale tam, gdzie zaczyna się odpowiedzialność za skutek. Systemy,
+które mają tę granicę narysowaną jawnie, wchodzą do codziennego użycia. Te, które jej nie mają, zostają
+w pilotażu.

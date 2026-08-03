@@ -1,0 +1,85 @@
+{
+  "meta": {
+    "site": {
+      "title": "ArchXS: exactly as much architecture as needed",
+      "description": "A boutique advisory and engineering practice built on architecture on demand: architectural effort proportional to risk, the rest of the effort in a working system. Enterprise architecture, processes, security, applied AI, software delivery.",
+      "keywords": "architecture on demand, architecture as a service, just enough architecture, enterprise architecture, IT advisory, architecture review, applied AI, AI adoption, business process automation, cybersecurity architecture, digital identity, Keycloak SPI, IT governance, fractional CTO, ISO 42010, ArchiMate"
+    },
+    "practice": {
+      "title": "Practice areas",
+      "description": "The five areas we work in: enterprise architecture, business processes, cybersecurity and identity, applied AI, and software delivery."
+    },
+    "work": {
+      "title": "Work",
+      "description": "Selected work: a national-scale blockchain product, a core banking replacement, a regulated fintech platform, digital identity, architecture governance."
+    },
+    "insights": {
+      "title": "Writing",
+      "description": "Essays on enterprise architecture, putting AI into production, compliance and digital identity, written from inside the systems, not above them."
+    },
+    "method": {
+      "title": "Architecture on demand: the method",
+      "description": "The ArchXS method: architectural effort proportional to risk, the last responsible moment, executable architecture in CI, a decision log as the minimal artifact. With its lineage: Fairbanks, fitness functions, Nygard's ADRs."
+    },
+    "engage": {
+      "title": "Working together",
+      "description": "How an engagement with ArchXS usually starts: a conversation about the problem, then a diagnostic, ongoing advisory, delivery or architecture oversight."
+    },
+    "resources": {
+      "title": "Resources",
+      "description": "Open tooling and materials: an enterprise architecture toolchain, Keycloak extensions, an accounting assistant for sole traders, an LLM evaluation arena."
+    },
+    "about": {
+      "title": "The practice",
+      "description": "ArchXS is a boutique advisory and engineering practice combining large-scale enterprise architecture with uninterrupted hands-on delivery."
+    },
+    "contact": {
+      "title": "Contact",
+      "description": "Email and a contact form. We reply within two working days; if we are not the right address, we say so plainly."
+    },
+    "privacy": {
+      "title": "Privacy",
+      "description": "How we process personal data submitted through the contact form, and what this site collects."
+    },
+    "terms": {
+      "title": "Legal notice",
+      "description": "Terms of use for archxs.com, the scope of the information published here, and details of the entity behind the practice."
+    }
+  },
+  "nav": {
+    "wordmarkSuffix": "practice",
+    "practice": "Practice",
+    "work": "Work",
+    "insights": "Writing",
+    "method": "Method",
+    "about": "Practice",
+    "engage": "Engage",
+    "resources": "Resources",
+    "talk": "Contact",
+    "menu": "Menu",
+    "toggleTheme": "Toggle theme"
+  },
+  "footer": {
+    "blurb": "A boutique advisory and engineering practice. Exactly as much architecture as needed. Working code settles the rest.",
+    "navigate": "Navigate",
+    "contact": "Contact",
+    "privacy": "Privacy",
+    "terms": "Legal",
+    "legalName": "Dariusz Tyszka"
+  },
+  "common": {
+    "readMore": "Read",
+    "backTo": "Back to",
+    "all": "All",
+    "sector": "Sector",
+    "period": "Period",
+    "capabilities": "Areas",
+    "stack": "Technology and standards",
+    "anonymisedNote": "Described by sector, no organisation name and no identifying detail.",
+    "takeaways": "Key takeaways",
+    "published": "Published",
+    "updated": "Updated",
+    "minutes": "min read",
+    "figure": "Fig."
+  }
+}

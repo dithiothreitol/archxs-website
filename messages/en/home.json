@@ -1,0 +1,188 @@
+{
+  "home": {
+    "hero": {
+      "kicker": "Advisory and engineering practice",
+      "title": "Exactly as much architecture as needed.",
+      "lead": "ArchXS works by an architecture-on-demand method: architectural effort is limited to the decisions that cannot be cheaply reversed, and the time recovered goes into building the working system. This is how we advised on a bank's core system replacement. It is also how we now run a platform of around ten production systems, from production planning to document flow.",
+      "figureCaption": "System layers: infrastructure, processes, decisions",
+      "proof": [
+        {
+          "value": "300+ IT staff",
+          "label": "the scale at which we led an enterprise architecture practice and the architecture of a core banking replacement"
+        },
+        {
+          "value": "237 migrations",
+          "label": "of one long-lived system's schema, evolution instead of a grand redesign, every change numbered and reproducible"
+        },
+        {
+          "value": "TOGAF · CGEIT · MBA",
+          "label": "plus PMP, PRINCE2, MSP, treated as a library to draw from as needed, not as liturgy"
+        }
+      ]
+    },
+    "positions": {
+      "label": "Positions",
+      "title": "Five convictions. Each defended in its own essay.",
+      "linkLabel": "The argument",
+      "items": [
+        {
+          "claim": "There should be exactly as much architecture as reduces risk.",
+          "body": "A full-time architecture practice tends to produce artifacts that justify its own existence. We spend the effort where a decision is expensive to reverse, system boundaries, the data model, identity, and leave the rest to code and a decision log. The method has a pedigree, and it has hard limits; we write about both.",
+          "href": "/insights/architecture-on-demand"
+        },
+        {
+          "claim": "Most AI plans will not survive contact with production.",
+          "body": "And that can be established before anything is signed. It takes a handful of questions a real plan can answer and a wishful one cannot: who owns the token cost at production volume, where the quality gate sits, and who carries the consequence when the model is wrong.",
+          "href": "/insights/ai-plan-that-survives-production"
+        },
+        {
+          "claim": "AI proposes, humans decide.",
+          "body": "Not as a cautious platitude but as an architectural pattern: deterministic gates alongside the model, personal data redacted before anything leaves the organisation, a decision trail that cannot be overwritten. We apply it in every system we build, and we know what it costs.",
+          "href": "/insights/ai-proposes-human-decides"
+        },
+        {
+          "claim": "Architecture that is not in CI does not exist.",
+          "body": "The architecture model lives in the repository and the validator returns an exit code, a change that breaks a standard stops in the pipeline, not in a review six weeks later. Deviations exist, but as dispensations with expiry dates, never as silent consent.",
+          "href": "/insights/enterprise-architecture-as-code"
+        },
+        {
+          "claim": "Identity is not a login screen.",
+          "body": "It is the security boundary of the whole system. Sometimes that leads to writing your own identity-server extension, in our case, signature-based authentication with a single-use nonce against replay, and it still costs less than losing a single source of truth about the user.",
+          "href": "/insights/keycloak-beyond-configuration"
+        }
+      ]
+    },
+    "practiceIntro": {
+      "label": "Practice areas",
+      "title": "Five kinds of problem we have stayed with long enough to know their usual breaking points.",
+      "lead": "There is no service catalogue here. Each area is described the same way: how we look at it, what we have actually built, and what follows, with named standards and numbers, because generalities carry no accountability.",
+      "evidenceLabel": "Evidence"
+    },
+    "method": {
+      "label": "Method",
+      "title": "The principles cost more upfront and pay for themselves the first time the team changes.",
+      "link": "How we work",
+      "items": [
+        {
+          "title": "As much architecture as reduces risk",
+          "body": "Decisions that are expensive to reverse get analysis, a record and a review. The rest are made by the team in code and noted in the log. Risk draws the line, not a methodology template, at the bank that meant a full architecture board; on a product build, one decision log."
+        },
+        {
+          "title": "Decisions written down, not remembered",
+          "body": "Every significant decision gets an entry: context, options considered, why the others were rejected. We also keep build-vs-buy tables with a verdict for each rejected option, a year later, that is the only way to understand a system without archaeology."
+        },
+        {
+          "title": "Proof instead of assertion",
+          "body": "Conformance nobody checks automatically is an opinion. Validation belongs in the pipeline and returns an exit code; the audit trail is written to a structure a database trigger will not let anyone overwrite. Then conformance stops depending on memory."
+        },
+        {
+          "title": "AI proposes, humans decide",
+          "body": "The model suggests, deterministic code rules, a person approves anything that leaves the organisation. Slower and less impressive in a demo, but it can be shown to an auditor together with the rationale for every suggestion."
+        }
+      ]
+    },
+    "work": {
+      "label": "Work",
+      "title": "Six engagements that show how the work is done.",
+      "lead": "Some are public by the nature of the project. Others are described by sector, without names, the ordinary price of working inside organisations that do not publish their architectures.",
+      "link": "All work"
+    },
+    "proof": {
+      "label": "Evidence",
+      "title": "Things that exist.",
+      "lead": "Instead of a wall of client logos: code you can read and products you can click.",
+      "ossLabel": "Open tooling",
+      "productsLabel": "Live products",
+      "credLabel": "Credentials",
+      "ossLink": "Repositories",
+      "oss": [
+        {
+          "name": "Enterprise architecture toolchain",
+          "desc": "A model in git compiled to ArchiMate 3.2 Open Exchange validated against the Open Group XSD; standards with a lifecycle, dispensations with expiry dates, validation as a CI gate."
+        },
+        {
+          "name": "Identity server extensions",
+          "desc": "Custom SPI for Keycloak 26: authentication by cryptographic signature (EIP-191) with a single-use nonce, OTP, passkeys."
+        },
+        {
+          "name": "@archxs/keycloak-wagmi",
+          "desc": "npm package (MIT): a connector for IdP-managed EVM wallets, EIP-1193 and ERC-4337 smart accounts."
+        },
+        {
+          "name": "Accounting assistant for sole traders",
+          "desc": "A self-hosted alternative to SaaS: Polish e-invoicing under the FA(3) schema, tax filings, an LLM agent, around 180 tests."
+        }
+      ],
+      "products": [
+        {
+          "name": "ticbottoe.lol",
+          "desc": "An arena where language models and humans play on one Elo ladder. Every ranked game is replayed and validated server-side; the user's API key never leaves the browser.",
+          "href": "https://ticbottoe.lol"
+        },
+        {
+          "name": "bindaro.io",
+          "desc": "A digital collection platform: web and mobile, seven languages, multiple chains, an analytical agent.",
+          "href": "https://bindaro.io"
+        },
+        {
+          "name": "cryptocolony42.com",
+          "desc": "The Colony Wars on-chain game and Henomorphs collection ecosystem: web and mobile, over 440 Solidity contracts on the Diamond pattern, ERC-4337 smart accounts.",
+          "href": "https://cryptocolony42.com"
+        }
+      ]
+    },
+    "insights": {
+      "label": "Writing",
+      "title": "Written from the inside.",
+      "lead": "With the numbers, the costs and the parts that did not work. No sign-up and no paid continuation.",
+      "link": "All writing"
+    },
+    "faq": {
+      "label": "Questions",
+      "title": "Questions that usually come first.",
+      "items": [
+        {
+          "q": "What exactly does ArchXS do?",
+          "a": "Architecture advisory and software delivery across five areas: enterprise architecture, business processes and their automation, cybersecurity and digital identity, applied AI, and building systems. In practice that means three kinds of work: assess the current state and propose a direction, steer technology decisions over a longer period, or build a system and hand it to the client's team."
+        },
+        {
+          "q": "What is architecture on demand?",
+          "a": "A working model in which an organisation does not maintain a fixed architectural overhead but matches the effort to the risk of each decision. Decisions that are expensive to reverse, system boundaries, the data model, identity, integrations, get analysis, a record and a review; the rest are made by the team and noted in a decision log. Conformance to standards is checked by the pipeline, not by a committee. Its continuous variant, architecture as a service, means an organisation without a staff architect buys oversight when a decision worth overseeing appears."
+        },
+        {
+          "q": "How does an engagement start?",
+          "a": "With a conversation about the problem, no commitment and no pitch deck. That conversation usually leads to one of four shapes: a short diagnostic ending in a report and a roadmap, ongoing advisory at the intersection of management and engineering, end-to-end delivery, or standing architecture oversight. Scope and terms are agreed in conversation, not taken from a price list."
+        },
+        {
+          "q": "Does the advisory include delivery?",
+          "a": "Yes, and that is the point of this practice. Recommendations come from someone who then has to implement them, which is an effective filter for ideas that look good on a slide and fail in production. You can also use the advisory layer alone and leave delivery to your own team or another supplier."
+        },
+        {
+          "q": "Do you run training or workshops?",
+          "a": "No. We do not run training, workshops or webinars, and we do not plan to. Knowledge worth passing on goes into the writing on this site and into open tooling, no fee and no sign-up. You pay for a problem being solved, not for time in a room."
+        },
+        {
+          "q": "Do you work with regulated organisations?",
+          "a": "That is most of our experience: state banking, fintech under financial-market supervision, card payments under PCI-DSS, healthcare, the public sector, food manufacturing. Concretely it means working knowledge of GDPR and DPIAs, eIDAS, the EU AI Act, Polish e-invoicing and tax reporting, ISA-95 and industry standards, at implementation depth, not as a bullet in a proposal."
+        },
+        {
+          "q": "How do you use AI in client projects?",
+          "a": "As something that proposes, never as the deciding authority. The model suggests, deterministic code rules, and a person approves every action that leaves the organisation. Personal data is redacted before it reaches a model, query cost is measured per request, and decisions leave an audit trail. The same rule applies to the AI we use to write code ourselves."
+        },
+        {
+          "q": "When is ArchXS the wrong address?",
+          "a": "When you need a large delivery team immediately, extra hands against an existing backlog, or a supplier chosen on lowest price in a tender. We do not do body leasing and we do not scale by hiring. If a conversation shows this is not our case, we will say so and point you in a direction where we can."
+        },
+        {
+          "q": "Which languages and markets do you work in?",
+          "a": "Polish and English, remotely, based in Poland. Clients are mainly the Polish mid-market and public-sector organisations, though we have delivered projects with partners across the EU. Documentation can be bilingual, in practice documentation in Polish, code and comments in English."
+        }
+      ]
+    },
+    "contact": {
+      "label": "Contact",
+      "title": "contact@archxs.com",
+      "body": "We reply within two working days. A contact form is on the contact page, for those who need it."
+    }
+  }
+}

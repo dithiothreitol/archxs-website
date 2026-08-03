@@ -1,0 +1,95 @@
+---
+title: "Znaczek pocztowy na blockchainie dla klienta bez portfela"
+summary: "Jak wydać emisję filatelistyczną z odpowiednikiem na blockchainie, nie tracąc statusu regulowanego znaczka i nie wymagając od kupującego wiedzy o kryptowalutach."
+sector: "Operator pocztowy, skala krajowa"
+period: "2023–2024"
+disclosure: "public"
+metrics:
+  - label: "Skala organizacji"
+    value: "80 000+ pracowników"
+  - label: "Zasięg produktu"
+    value: "Ogólnokrajowy"
+  - label: "Zakres prowadzenia"
+    value: "Od koncepcji do wejścia na rynek"
+capabilities:
+  - "Architektura korporacyjna"
+  - "Procesy biznesowe"
+  - "Wytwarzanie oprogramowania"
+stack:
+  - "Blockchain"
+  - "NFT"
+  - "Smart kontrakty"
+  - "Integracja płatności"
+  - "Kanał sprzedaży masowej"
+  - "Wymogi prawne i filatelistyczne"
+order: 1
+---
+
+## Kontekst
+
+Poczta Polska jest narodowym operatorem pocztowym i organizacją, w której pracuje ponad 80 000 osób.
+Znaczek pocztowy nie jest w niej pamiątką ani gadżetem: to instrument o statusie regulowanym, z własnym
+kalendarzem emisji, nakładem i rygorem filatelistycznym. Polski Znaczek Krypto powstał jako emisja,
+której odpowiednik cyfrowy żyje na blockchainie. Prowadziliśmy ten projekt od koncepcji do wejścia na
+rynek, odpowiadając za całość: biznes, technologię, obszar prawny i partnerów zewnętrznych.
+
+## Problem
+
+Spotkały się trzy zestawy wymagań, które normalnie nie występują razem. Filatelistyka narzuca dyscyplinę
+emisji, co jest w nakładzie, jak jest numerowane, co jest, a co nie jest znaczkiem. Prawo określa, czym
+jest znak opłaty pocztowej i co operator może z nim zrobić. Technologia blockchain narzuca swoje: zapis
+jest nieodwracalny, a błąd w emisji nie da się wycofać erratą.
+
+Oczywiste rozwiązanie, potraktować emisję jak zbiórkę NFT: wypuścić kolekcję, wystawić ją na rynku
+wtórnym, kazać kupującemu podłączyć portfel, nie działało z jednego powodu. Zakłada odbiorcę, który już
+ma portfel, rozumie klucze prywatne i akceptuje nieodwracalność. Rzeczywisty odbiorca stał przy okienku
+w placówce pocztowej albo kupował w sklepie filatelistycznym i nie miał żadnego z tych trzech. Każda
+architektura, która wymagała od niego zmiany nawyku zakupowego, była w praktyce architekturą bez rynku.
+
+## Podejście
+
+Kolejność decyzji odwróciliśmy względem typowego projektu blockchainowego. Najpierw ustalaliśmy, co
+produkt musi spełnić prawnie i filatelistycznie, a dopiero z tych ograniczeń wyprowadzaliśmy wybory
+technologiczne. Przyjęliśmy trzy zasady.
+
+Pierwsza: część fizyczna pozostaje pełnoprawnym znaczkiem, a token jest jej odpowiednikiem, nie
+zamiennikiem. To wykluczyło warianty, w których wartość pocztowa przenosi się na łańcuch.
+
+Druga: zakup musi działać w kanale, który klient już zna, z płatnością w formie, której już używa.
+Portfel kryptowalutowy nie mógł być warunkiem wstępnym transakcji, musiał być czymś, do czego klient
+dochodzi po zakupie, jeśli chce.
+
+Trzecia: cechy emisji zapisujemy tam, gdzie są weryfikowalne, czyli w smart kontrakcie. Cyfrowy
+odpowiednik ma być poddany tej samej dyscyplinie nakładu i numeracji co papierowy, inaczej nie jest
+odpowiednikiem, tylko obrazkiem.
+
+Konsekwencją tych zasad była praca, której w harmonogramach projektów technologicznych zwykle nie ma:
+materiały wyjaśniające dla obsługi klienta i dla placówek. Pierwsze pytanie, na które produkt musiał
+odpowiedzieć, nie brzmiało „na jakim łańcuchu", a „co powiedzieć osobie przy okienku, która pyta, co
+właściwie kupuje". Traktowaliśmy to jako strumień prac, nie jako dodatek na końcu.
+
+Świadomie przyjęliśmy dwa koszty. Nie budowaliśmy własnego rynku wtórnego, więc operator nie składa
+żadnej obietnicy dotyczącej płynności ani ceny. Oraz: wygoda zakupu bez portfela oznacza, że część
+odbiorców zetknie się z realnym posiadaniem klucza później, a nie w momencie zakupu. To kompromis na
+rzecz zasięgu, a nie przeoczenie.
+
+## Rezultat
+
+Produkt trafił na rynek jako publiczna emisja narodowego operatora pocztowego, dostępna w skali całego
+kraju, ze stroną produktową pod adresem nft.poczta-polska.pl. Dedykowany serwis emisji zakończył już
+życie razem z kampanią, co jest zwykłym losem stron kampanijnych; z publicznych śladów zostały relacje
+prasowe z premiery.
+
+Poza samym wydaniem powstał precedens organizacyjny: instytucja o stuletniej praktyce emisyjnej ma
+przetartą ścieżkę uzgodnienia produktu cyfrowego między obszarem filatelistycznym, prawnym,
+handlowym i technologicznym.
+
+## Wnioski
+
+W organizacji regulowanej technologia jest najtańszą częścią problemu. Kosztowne jest uzgodnienie, czym
+produkt jest w kategoriach, którymi ta organizacja już się posługuje, bo dopiero wtedy da się go
+sprzedać, obsłużyć i obronić przed audytem.
+
+Drugi wniosek dotyczy nowych technologii w kanale masowym: to nie użytkownik dostosowuje się do
+architektury. Jeśli produkt wymaga od kupującego nowej kompetencji przed transakcją, projekt
+w rzeczywistości nie sprzedaje produktu, tylko tę kompetencję.

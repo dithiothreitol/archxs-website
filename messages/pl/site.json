@@ -1,0 +1,85 @@
+{
+  "meta": {
+    "site": {
+      "title": "ArchXS: dokładnie tyle architektury, ile trzeba",
+      "description": "Zwinna praktyka doradczo-inżynierska pracująca metodą architektury na żądanie: nakład architektoniczny proporcjonalny do ryzyka, reszta wysiłku w działający system. Architektura korporacyjna, procesy, bezpieczeństwo, applied AI, wytwarzanie oprogramowania.",
+      "keywords": "architektura na żądanie, architecture on demand, architecture as a service, architektura korporacyjna, doradztwo IT, enterprise architecture, applied AI, wdrożenie AI w firmie, automatyzacja procesów biznesowych, cyberbezpieczeństwo, tożsamość cyfrowa, Keycloak, KSeF, ISA-95, governance IT, fractional CTO, przegląd architektury"
+    },
+    "practice": {
+      "title": "Obszary praktyki",
+      "description": "Pięć obszarów, w których pracujemy: architektura korporacyjna, procesy biznesowe, cyberbezpieczeństwo i tożsamość, applied AI, wytwarzanie oprogramowania."
+    },
+    "work": {
+      "title": "Realizacje",
+      "description": "Wybrane realizacje: produkt blockchain w skali krajowej, wymiana systemu core banking, platforma fintech pod nadzorem KNF, tożsamość cyfrowa, governance architektury."
+    },
+    "insights": {
+      "title": "Teksty",
+      "description": "Eseje o architekturze korporacyjnej, wdrażaniu AI w produkcji, compliance i tożsamości cyfrowej, pisane z pozycji osoby, która te systemy buduje."
+    },
+    "method": {
+      "title": "Architektura na żądanie: metoda",
+      "description": "Metoda ArchXS: nakład architektoniczny proporcjonalny do ryzyka, ostatni odpowiedzialny moment, architektura wykonywalna w CI, rejestr decyzji jako minimalny artefakt. Z rodowodem: Fairbanks, fitness functions, ADR Nygarda."
+    },
+    "engage": {
+      "title": "Współpraca",
+      "description": "Jak zwykle zaczyna się współpraca z ArchXS: rozmowa o problemie, potem diagnoza, doradztwo ciągłe, wytworzenie systemu albo nadzór architektoniczny."
+    },
+    "resources": {
+      "title": "Materiały",
+      "description": "Otwarte narzędzia i materiały: toolchain architektury korporacyjnej, rozszerzenia Keycloak, asystent księgowy dla JDG, arena ewaluacji modeli językowych."
+    },
+    "about": {
+      "title": "O praktyce",
+      "description": "ArchXS to zwinna praktyka doradczo-inżynierska łącząca architekturę korporacyjną w dużej skali z nieprzerwaną praktyką wykonawczą."
+    },
+    "contact": {
+      "title": "Kontakt",
+      "description": "Poczta i formularz kontaktowy. Odpowiadamy w ciągu dwóch dni roboczych; jeśli nie jesteśmy właściwym adresem, mówimy to wprost."
+    },
+    "privacy": {
+      "title": "Prywatność",
+      "description": "Jak przetwarzamy dane osobowe przekazane przez formularz kontaktowy oraz jakie dane zbiera ta strona."
+    },
+    "terms": {
+      "title": "Zastrzeżenia prawne",
+      "description": "Warunki korzystania ze strony archxs.com, zakres treści informacyjnych oraz dane podmiotu prowadzącego praktykę."
+    }
+  },
+  "nav": {
+    "wordmarkSuffix": "praktyka",
+    "practice": "Praktyka",
+    "work": "Realizacje",
+    "insights": "Teksty",
+    "method": "Metoda",
+    "about": "O praktyce",
+    "engage": "Współpraca",
+    "resources": "Materiały",
+    "talk": "Kontakt",
+    "menu": "Menu",
+    "toggleTheme": "Przełącz motyw"
+  },
+  "footer": {
+    "blurb": "Zwinna praktyka doradczo-inżynierska. Dokładnie tyle architektury, ile trzeba. Resztę rozstrzyga działający kod.",
+    "navigate": "Nawigacja",
+    "contact": "Kontakt",
+    "privacy": "Prywatność",
+    "terms": "Zastrzeżenia",
+    "legalName": "Dariusz Tyszka"
+  },
+  "common": {
+    "readMore": "Czytaj",
+    "backTo": "Wróć do",
+    "all": "Wszystkie",
+    "sector": "Sektor",
+    "period": "Okres",
+    "capabilities": "Obszary",
+    "stack": "Technologie i standardy",
+    "anonymisedNote": "Realizacja opisana sektorowo, bez nazwy organizacji i rozpoznawalnych szczegółów.",
+    "takeaways": "Do zabrania",
+    "published": "Opublikowano",
+    "updated": "Aktualizacja",
+    "minutes": "min czytania",
+    "figure": "Rys."
+  }
+}

@@ -1,0 +1,76 @@
+---
+title: "Keycloak poza konfiguracją: kiedy potrzebujesz własnego SPI"
+description: "Serwer tożsamości pokrywa konfiguracją 90% przypadków. O pozostałych 10% decyduje pytanie, czy wolno rozproszyć tożsamość po aplikacjach, i zwykle nie wolno."
+takeaways:
+  - "Granica przebiega nie tam, gdzie kończą się możliwości konfiguracji, tylko tam, gdzie zaczyna się rozpraszanie tożsamości po aplikacjach."
+  - "Własny authenticator i credential provider to kilkaset linii kodu; utrata jednego punktu prawdy o użytkowniku kosztuje znacznie więcej."
+  - "Nowy sposób logowania musi wnieść własną ochronę przed powtórzeniem żądania, protokół jej za was nie załatwi."
+  - "Rozszerzenie serwera tożsamości zachowuje MFA, federację i audyt; usługa obok niego zaczyna je odtwarzać od zera."
+date: "2026-06-03"
+topic: "Tożsamość"
+readingMinutes: 6
+---
+
+Konfiguracja serwera tożsamości wystarcza w większości wdrożeń i należy z tego korzystać tak długo, jak się da.
+Moment, w którym trzeba napisać własne rozszerzenie SPI, poznaje się nie po tym, że skończyły się opcje w panelu
+administracyjnym, lecz po tym, że alternatywą staje się przeniesienie fragmentu logiki tożsamości do aplikacji.
+To zwykle najdroższa decyzja architektoniczna w całym projekcie, choć w danym tygodniu wygląda na najtańszą.
+
+## Skąd bierze się pokusa zrobienia tego obok
+
+Scenariusz powtarza się w tej samej formie. Pojawia się wymaganie, którego serwer tożsamości nie obsługuje
+wprost: logowanie podpisem kryptograficznym, nietypowy drugi czynnik, powiązanie konta z zewnętrznym rejestrem,
+własna reguła weryfikacji. W kalendarzu jest sprint, a w Keycloaku nie ma pola do zaznaczenia.
+
+Powstaje wtedy mała usługa obok: przyjmuje podpis, sprawdza go, wystawia własny token. Działa w tydzień. Problem
+w tym, że od tej chwili organizacja ma dwa źródła prawdy o tym, kim jest użytkownik, a wszystko, co serwer
+tożsamości dawał za darmo, trzeba zbudować drugi raz. Wygaszanie sesji. Wymuszenie drugiego składnika. Reset
+poświadczeń. Blokada konta. Rejestr zdarzeń dla audytora. Federacja z katalogiem korporacyjnym. Mapowanie ról.
+Każda z tych rzeczy z osobna jest wykonalna; razem stanowią produkt, którego nikt nie planował utrzymywać.
+
+## Co realnie oznacza własne SPI
+
+Znacznie mniej, niż sugeruje nazwa. Napisaliśmy dla Keycloaka 26 rozszerzenia obsługujące logowanie podpisem
+kryptograficznym w standardzie EIP-191 i sprowadza się to do kilku dobrze określonych elementów: authenticatora,
+który prowadzi przepływ uwierzytelnienia, credential providera, który wie, jak przechowywać i weryfikować dany
+rodzaj poświadczenia, modelu danych dla tego poświadczenia oraz kilku szablonów ekranów.
+
+Przepływ jest krótki: serwer generuje jednorazowy komunikat do podpisania, użytkownik podpisuje go kluczem
+prywatnym, serwer odtwarza adres z podpisu i porównuje go z tym, który jest powiązany z kontem. Kluczowy detal
+tkwi w pierwszym kroku, komunikat musi być jednorazowy i mieć ograniczony czas życia. Bez tego przechwycony
+podpis daje się użyć ponownie i cały mechanizm staje się gorszy od hasła. To jest ta część, której żadna
+biblioteka nie zrobi za projektanta, bo wymaga decyzji o czasie ważności, o miejscu przechowywania i o tym, co
+się dzieje przy równoległych próbach logowania.
+
+Co istotne, przy takim rozwiązaniu wszystko pozostałe zostaje na miejscu. Drugi składnik, OTP albo passkey,
+działa dalej, bo jest osobnym krokiem w tym samym przepływie. Role, mapowanie atrybutów, rejestr zdarzeń,
+polityki sesji: bez zmian. Aplikacja nadal widzi zwykły token OIDC i nie musi wiedzieć, że użytkownik zalogował
+się w nietypowy sposób. To jest cała korzyść: nowy sposób uwierzytelnienia zostaje wchłonięty przez system
+tożsamości, zamiast wyrastać obok niego.
+
+## Trzy rzeczy, które łatwo zrobić źle
+
+**Poświadczenie bez modelu.** Kuszące jest doklejenie identyfikatora do atrybutów użytkownika. Poświadczenie ma
+jednak własny cykl życia: bywa dodane, odwołane, zastąpione, może istnieć w kilku egzemplarzach. Atrybut tego
+nie wyraża i po roku nikt nie umie odpowiedzieć, kiedy klucz został powiązany z kontem ani przez kogo.
+
+**Klient publiczny bez PKCE.** W aplikacji mobilnej nie da się bezpiecznie przechowywać sekretu klienta, więc
+jedyną poprawną konstrukcją jest Authorization Code z PKCE i magazyn kluczy systemu operacyjnego. To nie jest
+zalecenie stylistyczne, tylko warunek, przy którym przechwycenie odpowiedzi przeglądarki nie wystarcza do
+przejęcia sesji.
+
+**Jedna instancja dla wszystkiego.** Współdzielenie serwera tożsamości między systemami o różnych profilach
+ryzyka bywa oszczędnością pozorną. W jednym z naszych produktów granicą bezpieczeństwa jest osobna instancja
+i odizolowana sieć, po to, żeby backend jednego systemu nie widział zasobów drugiego nawet w razie pomyłki
+w konfiguracji. Koszt: jeden dodatkowy kontener i trochę dyscypliny. Alternatywny koszt: incydent, w którym
+zasięg naruszenia obejmuje oba systemy.
+
+## Kiedy nie pisać SPI
+
+Kiedy wymaganie da się spełnić mapowaniem atrybutów, przepływem uwierzytelnienia złożonym z gotowych kroków
+albo istniejącym dostawcą federacji. Kiedy zespół nie ma nikogo, kto zbuduje i wdroży rozszerzenie na serwerze
+w kolejnych wersjach, bo rozszerzenie trzeba utrzymywać przy każdej większej aktualizacji. Kiedy problem jest
+w istocie procesowy: brak procedury odzyskiwania konta rzadko udaje się naprawić kodem.
+
+Reguła, którą stosujemy, jest jednozdaniowa: rozszerzenie piszemy wtedy, gdy alternatywą jest rozproszenie
+decyzji o tożsamości po aplikacjach. Wszystko inne to konfiguracja, i lepiej, żeby nią pozostało.

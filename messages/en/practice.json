@@ -1,0 +1,95 @@
+{
+  "practice": {
+    "title": "Five areas we work in.",
+    "lead": "Not a service catalogue, five kinds of problem we have stayed with long enough to know their usual breaking points. Each area is described the same way: how we look at it, what we have actually built, and what follows for an organisation. With named standards and numbers, because generalities carry no accountability.",
+    "sections": {
+      "reframe": "How we look at it",
+      "evidence": "What we have built",
+      "consequence": "What follows",
+      "artifacts": "What you are left holding"
+    },
+    "items": {
+      "enterprise-architecture": {
+        "short": "Enterprise architecture",
+        "title": "Enterprise architecture on demand",
+        "lead": "Architectural effort is a cost, and like any cost it needs a justification. The justification is risk: decisions that are expensive to reverse get analysis, a record and a review; the rest get a decision log and nothing more. That discipline of dosage has been this practice's method from the start.",
+        "teaser": "Architectural effort proportional to risk, the model in a repository, validation that returns an exit code, instead of documents that protect nobody from anything.",
+        "evidenceLine": "EA practice at a bank with 300+ IT staff and a core banking replacement · own toolchain: ArchiMate 3.2 validated against the Open Group XSD, dispensations with expiry dates",
+        "reframe": "Most organisations do not suffer from a lack of architecture. They suffer from a lack of evidence that the architecture is followed, and from an excess of artifacts produced because the methodology lists them, not because they protect anything. So we dose the effort: a full architecture board where ten teams are changing a bank's core system, a single decision log where a three-person team is building a product. The criterion never changes, the cost of reversing the decision. Code settles the rest, because in code a deviation from a standard is visible, and in a slide deck it is not.",
+        "evidence": "We led the enterprise architecture practice at a state development bank: an IT organisation of over 300 people, chairing the Architecture Review Board through which every significant technology decision passed, and the architecture of a core banking replacement coordinated across more than ten concurrent teams. The other pole of the same method is our open toolchain, which keeps the define, document, govern, maintain cycle in a git repository: a purpose-built DSL compiled to ArchiMate 3.2 Open Exchange and validated against the Open Group XSD, an architecture description generated in the shape of ISO/IEC/IEEE 42010, an application portfolio on TIME quadrants, standards with a lifecycle, dispensations with expiry dates, and a two-zone staging and approved model with gated promotion. The validate command returns an exit code, so it works as a CI gate. A separate mechanism, the oracle, checks every claim a language model makes about ArchiMate semantics against vendored primary sources, locating the quotation; that is an engineering answer to hallucination, not a statement of caution.",
+        "consequence": "Governance stops depending on memory and meeting attendance: a change that breaks a standard is stopped in the pipeline rather than in a review six weeks later. The organisation also gains a rarer ability, to say: we are knowingly deviating here, until the end of the quarter, and to hold a record of it that expires by itself. And where risk does not justify the effort, the architecture is simply never produced, so nobody has to maintain it afterwards.",
+        "artifacts": [
+          "An architecture description in the shape of ISO/IEC/IEEE 42010, with a register of stakeholders and concerns, only where the scale justifies it",
+          "An ArchiMate 3.2 model maintained in the repository, with views generated automatically",
+          "An application portfolio scored on TIME quadrants, and a capability map",
+          "A register of architectural decisions and a register of dispensations with expiry dates",
+          "Architecture validation wired in as a pipeline gate"
+        ]
+      },
+      "business-process-automation": {
+        "short": "Business processes",
+        "title": "Business processes and their automation",
+        "lead": "Automating a process nobody measured encodes its faults in software. We start by counting where the process actually loses time and money, and only then decide what to automate, and what to simply remove.",
+        "teaser": "Measured losses in the as-is process first, then automation with a state machine and an auditable trail. The other order encodes the faults in code.",
+        "evidenceLine": "Polish e-invoicing under FA(3) with whitelist checks and a JPK_V7M(3) generator · debt recovery filed with the e-court over SOAP · ISA-95 planning with a CP-SAT solver",
+        "reframe": "A business process rarely happens where it is documented. The real flow lives in inboxes, spreadsheets and manual bridges between systems, and that is where we measure the cost. In one of our analyses the starting point was counting four manual re-keyings of data between systems, plus the order lines lost because they arrived as free text in a message. Only a list like that settles what to automate first, and exposes the steps that are cheaper to delete than to accelerate.",
+        "evidence": "We build systems where the process is executable, not described. Document flow: a BPMN engine with an approval matrix that enforces segregation of duties, SLA timers and escalations. Invoices: full integration with Poland's national e-invoicing system under the FA(3) schema, retrieval per tax ID, a parser hardened against XXE attacks, XSD validation, tax-ID checksum control, treasury whitelist checks, split-payment handling, deduplication, plus a JPK_V7M(3) return generator. Debt recovery as a legal process: from reminder, through an interest note with a versioned central-bank rate and the statutory 40, 70 or 100 euro recovery compensation, to a claim filed with the electronic order-for-payment court over its SOAP interface. Production planning to ISA-95 across four levels, S&OP through RCCP and MPS down to detailed scheduling, with a rolling horizon, plan-freezing zones, and a CP-SAT constraint solver as the decision-maker. ERP integrations go exclusively through an idempotent outbox, because a duplicated accounting event is not a technical glitch but an error in the books.",
+        "consequence": "Changing the process stops being an IT project and becomes a change to a flow you can see in the data. Every transition leaves a trail, so the process can be accounted for and shown to an auditor. The usual side effect of measurement is a shorter process: once the cost of each step is visible, steps get deleted instead of automated.",
+        "artifacts": [
+          "An as-is analysis with the cost of manual bridges and data-loss points quantified",
+          "A to-be process model with explicit decision gates and control points",
+          "An implemented flow with a state machine, SLAs and an auditable transition trail",
+          "ERP and external integrations on the outbox pattern, with idempotency guaranteed"
+        ]
+      },
+      "cybersecurity-identity": {
+        "short": "Cybersecurity & identity",
+        "title": "Cybersecurity and digital identity",
+        "lead": "Security rarely fails for lack of tools, more often for lack of boundaries nobody drew. We design identity and access control as part of the system architecture, not as a layer added at the end.",
+        "teaser": "Trust boundaries drawn deliberately: isolation enforced in the database, an audit trail that cannot be overwritten, and a server that takes nothing on trust.",
+        "evidenceLine": "Custom Keycloak 26 SPI: EIP-191 with an anti-replay nonce, passkeys · row-level security and a hash-chained audit trail · SBOM and artifact signing in CI",
+        "reframe": "Whether you have authentication matters less than where the trust boundary runs and what happens when the client is untrusted. The systems we design assume everything on the user's side can be forged, so the server replays and validates operations with its own engine instead of taking results on trust. The same logic covers the model provider: personal data is redacted before it leaves the organisation. And it covers us: a control the database or the pipeline does not enforce is merely a good intention.",
+        "evidence": "We wrote our own SPI extensions for Keycloak 26, an authenticator and credential provider for sign-in by cryptographic signature under EIP-191, with a single-use, time-limited nonce against replay attacks, OTP as a second factor and passkeys on webauthn4j; a second, independent system runs its own SPI, so this is a working method, not a one-off. In mobile apps: Authorization Code with PKCE S256 and the platform key store. In multi-tenant systems the database enforces isolation, row-level security plus attribute-based control per tenant, and the audit trail is a SHA-256 hash chain in an append-only table with a trigger that blocks updates and deletes; that pattern runs in three of our systems. Every upload passes a fail-closed antivirus scan and a MIME whitelist. In CI: dependency scanning, static analysis, a CycloneDX SBOM and artifact signing. In a public game arena the server replays every ranked game with its own engine and rejects illegal moves and impossible times, and the fact that the user's API key never leaves the browser is enforced by a test. Boundaries are sometimes physical too: one product runs a dedicated identity-server instance on an isolated network, so two systems cannot see each other's resources even after a configuration mistake.",
+        "consequence": "Access control returns from being scattered through application code to places that can be audited: the identity provider, the database, the pipeline. Changing a security policy becomes a configuration change, not a sweep through a dozen repositories. And when the auditor asks for the trail, it exists, and it could not have been fixed up after the fact.",
+        "artifacts": [
+          "An identity and authorisation model with trust boundaries drawn explicitly",
+          "An identity provider deployment with MFA, federation and, where warranted, a custom SPI extension",
+          "Tenant isolation enforced in the database rather than in application code",
+          "An immutable audit trail and supply-chain controls in the pipeline: dependency scanning, SBOM, artifact signing"
+        ]
+      },
+      "applied-ai": {
+        "short": "Applied AI",
+        "title": "AI and automation that survive an audit",
+        "lead": "A language model is an excellent generator of proposals and a poor place to make decisions. We build systems where AI proposes, deterministic code rules, and a person approves anything that leaves the organisation.",
+        "teaser": "The model proposes, deterministic code rules, a person approves what goes out, with a known unit cost and a trail behind every decision.",
+        "evidenceLine": "Six in-house MCP servers and a WhatsApp gateway for five applications · five verification layers · 2,827 photos from 7 markets → 26,864 observations",
+        "reframe": "Most failed AI deployments are not caused by a weak model but by three unanswered questions: who carries the consequence of an error, where the quality gate sits, and what it costs at production volume. We start there, because those answers determine the architecture, not the choice of model provider, which will change its pricing or retire a version within the year anyway. We also know from our own invoices that a pilot always looks cheap: regenerating one of our analytical artifacts costs about sixteen million tokens, and we knew that number before deciding to run it on a schedule, not after the bill.",
+        "evidence": "We built a company AI hub with six in-house MCP servers, CRM, mail and calendar, ERP, document search, per-user memory, and a WhatsApp gateway that joins one number to five applications: HMAC signature verification, deduplication in Redis, routing by command and session. The cost of every query is visible in the observability layer via OpenTelemetry; a cheap model classifies and filters, an expensive one only synthesises, and repeated questions are caught by a semantic cache on embeddings. In a system verifying label compliance against FEDIAF requirements and EU law, five reliability layers operate, confidence scoring, an independent second reading of the numbers with cross-comparison, thresholds computed deterministically in code, escalation to a human, a fixed test set, and four of the five are not the model. A shelf-exposure audit turned 2,827 photographs from seven markets and 54 retail chains into 26,864 product observations, 86 percent with a price read. Supplier price-list validation cut 8–12 hours of manual work to a few machine minutes plus 15–30 minutes of review, we report both numbers, because they are only true together. In production planning the decision-maker is a constraint solver, not a model. In a recruitment system there are no automatic rejections: every score carries a rationale and a source quotation, and the whole design targets the EU AI Act's requirements for high-risk systems, with a DPIA and defined retention.",
+        "consequence": "What emerges is a system you can show an auditor and a regulator: the rationale for every suggestion on record, personal data redacted before it reaches a model, and a known unit cost. It costs more at the design stage and demos less impressively, but it does not have to be rewritten when the solution leaves the pilot.",
+        "artifacts": [
+          "An assessment of the AI use-case portfolio with unit cost and error risk quantified",
+          "An architecture with deterministic gates beside the model and explicit human approval points",
+          "An implementation with per-query cost measurement and an audit trail of decisions",
+          "Rules for redacting personal data before the model, and an exit plan from the provider"
+        ]
+      },
+      "software-delivery": {
+        "short": "Software delivery",
+        "title": "Building systems, and handing them over",
+        "lead": "We build production systems, backend, web and mobile, with documentation and decision records written alongside the code. From day one we assume someone else will maintain them.",
+        "teaser": "Systems built on the assumption that someone else will maintain them: a decision log with the rejected options, an environment reproducible from the repository, tests that actually exclude something.",
+        "evidenceLine": "Two backend ecosystems (Java 21/Quarkus, Python 3.12/FastAPI) · OPC UA and MQTT Sparkplug B on the plant floor · golden tests and property-based tests",
+        "reframe": "The cost of a system shows up not at first deployment but at the first change of team. So documentation, decision records and runbooks are part of the product, not a task for the end, and we choose an open stack that can be maintained without any vendor's permission for the system to keep existing. Architecture is dosed here the same way as everywhere: foundations that cannot be added cheaply later, a warehouse identifier on every aggregate, an outbox from the first migration, go in immediately; everything else waits for proof that it is needed.",
+        "evidence": "We run more than a dozen production repositories in parallel across two independent ecosystems: Java 21 with Quarkus, Panache, GraphQL, Flyway, and Python 3.12 with FastAPI. Web and mobile applications come from one codebase in a monorepo; around ten systems share one platform with a single identity provider, one PostgreSQL cluster, one reverse proxy and one observability layer. We also go down to the industrial layer: OPC UA to IEC 62541 with our own bridge to the event bus, MQTT with Sparkplug B, telemetry in TimescaleDB. One number shows how the data model evolves: 237 numbered schema migrations in the longest-lived system. Quality is held by tests that actually exclude something: property-based tests for the planning solver, golden tests of the geometry engine with an explicit, deliberate regeneration mode, accessibility tests in the browser and end-to-end tests on physical mobile devices. On a single production system we work in a dozen parallel working copies of branches, the discipline that lets a small practice keep its pace without stepping on its own changes.",
+        "consequence": "The client is left with a system that can be taken over: decisions and rejected alternatives in writing, an environment reproducible from the repository, no licences that change the billing model mid-year. An engagement you cannot walk away from without harming the client is, in our view, badly designed, so we design ours to be endable.",
+        "artifacts": [
+          "A working system with a reproducible runtime environment",
+          "A register of architectural decisions, including the alternatives that were rejected",
+          "Operational documentation and runbooks written for the maintenance team",
+          "A pipeline with tests and quality gates, handed over with the code"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,95 @@
+---
+title: "A postage stamp on a blockchain, for a buyer with no wallet"
+summary: "How to issue a philatelic release with an on-chain counterpart without losing the regulated status of a postage stamp, and without requiring the buyer to understand crypto."
+sector: "National postal operator"
+period: "2023–2024"
+disclosure: "public"
+metrics:
+  - label: "Organisation size"
+    value: "80,000+ employees"
+  - label: "Product reach"
+    value: "Nationwide"
+  - label: "Engagement scope"
+    value: "Concept to market launch"
+capabilities:
+  - "Enterprise architecture"
+  - "Business processes"
+  - "Software delivery"
+stack:
+  - "Blockchain"
+  - "NFT"
+  - "Smart contracts"
+  - "Payment integration"
+  - "Mass-market sales channel"
+  - "Legal and philatelic requirements"
+order: 1
+---
+
+## Context
+
+Poczta Polska is the national postal operator and an organisation of more than 80,000 people. Inside it,
+a postage stamp is not a souvenir: it is a regulated instrument with its own issuing calendar, print run
+and philatelic discipline. The Polish Crypto Stamp was released as an issue whose digital counterpart
+lives on a blockchain. We led the work from concept to market launch, accountable for the whole of it,
+commercial, technical, legal, and the external partners.
+
+## Problem
+
+Three sets of requirements met that normally never appear together. Philately imposes issuing discipline:
+what is inside the print run, how it is numbered, what is and is not a stamp. Law defines what a postal
+value indicator is and what the operator may do with it. Blockchain imposes its own constraint, the
+record is irreversible, and a mistake in an issue cannot be withdrawn by an erratum.
+
+The obvious route was to treat the release as an NFT drop: mint a collection, list it on a secondary
+market, ask the buyer to connect a wallet. It failed on a single assumption. It presumes a buyer who
+already holds a wallet, understands private keys and accepts irreversibility. The actual buyer was
+standing at a post office counter or ordering from a philatelic shop, and had none of the three. Any
+architecture that required a change of purchasing habit was, in practice, an architecture without
+a market.
+
+## Approach
+
+We inverted the usual order of decisions for a blockchain project. First we established what the product
+had to satisfy legally and philatelically, and only then derived the technical choices from those
+constraints. Three principles followed.
+
+First, the physical item remains a full postage stamp, and the token is its counterpart rather than its
+replacement. That ruled out every variant in which postal value migrates onto the chain.
+
+Second, purchase had to work through a channel the customer already used, paying in a form they already
+used. A crypto wallet could not be a precondition of the transaction; it had to be something a buyer
+arrives at afterwards, if they want to.
+
+Third, the properties of the issue belong where they can be verified, in the smart contract. The digital
+counterpart is subject to the same discipline of print run and numbering as the paper one, otherwise it is
+not a counterpart but a picture.
+
+These principles produced a work stream that technical project plans usually omit: explanatory material
+for customer service and for branch staff. The first question the product had to answer was not which
+chain to use, but what a person at the counter should be told about what they are actually buying. We
+treated that as part of the delivery, not as a follow-up.
+
+We accepted two costs deliberately. We did not build a secondary market, so the operator makes no promise
+about liquidity or price. And buying without a wallet means that part of the audience meets real key
+custody later rather than at the point of sale. That is a trade made for reach, not an oversight.
+
+## Outcome
+
+The product reached the market as a public issue by the national postal operator, available across the
+country, with its product site at nft.poczta-polska.pl. The dedicated issue site has since been retired
+along with the campaign, the ordinary fate of campaign pages; of the public traces, the press coverage
+of the launch remains.
+
+Beyond the release itself, an organisational precedent exists: an institution with a century of issuing
+practice now has a tested path for agreeing a digital product across its philatelic, legal, commercial
+and technology functions.
+
+## What it taught us
+
+In a regulated organisation, the technology is the cheap part of the problem. The expensive part is
+agreeing what the product is in the categories that organisation already uses, because only then can it
+be sold, supported and defended in an audit.
+
+The second lesson concerns new technology in a mass-market channel: the user does not adapt to the
+architecture. If a product demands a new competence from the buyer before the transaction, the project is
+not really selling the product, it is selling the competence.

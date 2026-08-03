@@ -1,0 +1,119 @@
+---
+title: "Architecture on demand"
+description: "Architectural effort is a cost and needs a justification. The justification is risk: the measure of how much architecture is needed is the cost of reversing a decision, not the size of the project."
+takeaways:
+  - "The measure of how much architecture is needed is the cost of reversing the decision, not the size of the project or a methodology's artifact catalogue."
+  - "Decisions are deferred to the last responsible moment, but every deferred decision has a written retreat path."
+  - "A standard no machine checks is an opinion. Architecture validation belongs in the pipeline and should be able to stop the build."
+  - "Architecture on demand has limits: a regulatory programme or a multi-team transformation needs a standing practice, not an on-call one."
+date: "2026-07-15"
+topic: "Architecture"
+readingMinutes: 7
+---
+
+Architecture on demand is a working model in which an organisation does not maintain a fixed
+architectural overhead but matches the effort to the risk of each decision. Decisions that are
+expensive to reverse get analysis, a record and a review. The rest are made by the team and noted
+in a decision log. Conformance to standards is checked by the pipeline, not by a committee.
+Architecture understood this way is a service available when it is needed, not a staff position
+that has to justify itself.
+
+We have worked by this method since the practice began, and we have applied it in environments
+that usually consider it too light: a state bank, a regulated fintech, a manufacturing company.
+This essay describes where it comes from, what it looks like in practice, and where it stops working.
+
+## Where architectural excess comes from
+
+A full-scale architecture practice has a built-in tendency to excess, and it does not come from bad
+faith. Framework methodologies, TOGAF first among them, define catalogues of artifacts, and a
+salaried architecture team has a natural need to show output. The result is documents that protect
+nothing: models out of date on publication day, traceability matrices nobody reads, standards with
+no enforcement mechanism. We hold certificates in these methodologies ourselves and treat them as a
+library to draw from as needed. The problem is not TOGAF; it is reading it as a list of obligations
+instead of a menu.
+
+The cost of excess is double. The first part is obvious: people's time. The second is worse: the
+organisation learns that architecture means bureaucracy, and starts routing around it. Real
+architectural decisions then happen in code, unrecorded and unreviewed, while the official model
+describes a system that does not exist.
+
+## The criterion: the cost of reversing a decision
+
+George Fairbanks called this approach just enough architecture: architectural effort is justified
+only where it reduces a risk the organisation cannot afford to carry. Martin Fowler put the same
+thing more briefly, defining architecture as the decisions that are hard to change later. Both
+definitions yield a practical test: before we spend a week analysing something, we ask what it
+would cost to reverse that decision in a year.
+
+System boundaries, the data model, how identity is handled, the integration pattern: these are
+expensive to reverse, and they get the full ritual. The choice of a date-formatting library is not
+such a decision and should not pass through a committee. It sounds banal, yet most architecture
+processes we have seen do not distinguish the two and put both decisions through the same form.
+
+In practice it looks like this. Designing a warehouse system, we analysed the options in a
+build-vs-buy table with a verdict against every rejected entry, and the first database migration
+carried the foundations that cannot be added cheaply later: a warehouse identifier on every
+aggregate, location as its own entity, the outbox pattern for integrations. The rest of the system
+waits for proof of need. The opposite example, at scale: our longest-lived system has 237 numbered
+schema migrations. It did not grow from a grand data model designed up front; it grew from a
+discipline in which every change is small, recorded and reproducible. That is architecture too,
+only executable.
+
+## The last responsible moment
+
+The second rule we owe to Mary and Tom Poppendieck's lean software development: a decision is
+deferred until further delay would start removing options. The most expensive architectures we have
+seen were built from answers to questions nobody had asked yet: an abstraction layer over a database
+that was never replaced, configurability nobody ever configured, microservices in a system run by
+three people.
+
+Deferral is not drift, though. Every deferred decision here has a written retreat path: since we
+are postponing the choice, we note what would force it and which way we would retreat, down to
+fallback versions of dependencies. The difference between deferral and neglect is that deferral
+is written down.
+
+## Architecture that checks itself
+
+The third rule is the least comfortable and the most effective: a standard no machine checks is an
+opinion with good meeting attendance. Neal Ford and Rebecca Parsons's evolutionary architecture
+calls the control mechanism fitness functions. In our hands it took the shape of an open toolchain
+in which the architecture model lives in a git repository: a purpose-built description language
+compiled to ArchiMate 3.2 Open Exchange and validated against the Open Group schemas, an
+architecture description generated in the shape of ISO/IEC/IEEE 42010, an application portfolio,
+standards with a lifecycle. The validate command returns an exit code, so it works as a CI gate:
+a change that breaks a standard stops in the pipeline before anyone can defend it in a meeting.
+
+The most important part of this mechanism is social, not technical: deviations are legal. A team
+may depart from a standard, but the departure exists as a dispensation with an expiry date, after
+which validation starts complaining again. That turns permanent exceptions into decisions with a
+deadline, and relieves the architect of the gatekeeper role that must be argued with.
+
+Of the decision record, described by Michael Nygard as the architecture decision record, we keep
+the minimum: context, options considered, why the others were rejected. Diagrams go stale. The
+reasons for decisions do not.
+
+## Architecture as a service
+
+The continuous variant of this method we call architecture as a service. An organisation that does
+not have and does not need a staff architect maintains architecture the way it maintains legal
+counsel: oversight is available, the standards and gates run by themselves, and a person appears
+when a decision worth a person appears. In practice that means reviewing changes with architectural
+consequences, maintaining the decision and dispensation registers, and being present for the
+decisions that are expensive to reverse. The cost is a fraction of a salary, and the quality of
+decisions is often higher than with a staff position, because the oversight does not have to
+justify its existence by producing artifacts.
+
+## Where the method stops working
+
+Honesty requires naming the limits. Architecture on demand does not mean architecture never; it
+means a dose proportional to risk. There are situations where the proportional dose is a full-time
+practice. We led the architecture of a core system replacement at a bank where more than ten teams
+were concurrently changing the foundation everything else stands on. A standing architecture board
+operated there, with a chair, a weekly rhythm and a mandate to stop projects, and that was the right
+dose, because the cost of a wrong decision was measured in years and hundreds of millions. The same
+goes for a programme under a regulator's supervision: some artifacts simply must exist, regardless
+of our opinion of their usefulness.
+
+The rule stays the same in both worlds. We do not ask what the methodology prescribes. We ask what
+happens if this decision turns out to be wrong, and what the retreat will cost. Architecture exists
+so that the answer is never: we do not know.
