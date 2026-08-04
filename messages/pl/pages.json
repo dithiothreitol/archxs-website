@@ -71,7 +71,7 @@
     "engage": {
       "kicker": "Współpraca",
       "title": "Jak zwykle zaczyna się współpraca.",
-      "lead": "Nie mamy pakietów ani cennika na stronie, nie z tajemniczości, tylko dlatego, że sensowny zakres da się ustalić dopiero po rozmowie o problemie. Poniżej opisujemy formy, które w praktyce się powtarzają.",
+      "lead": "Nie mamy pakietów ani cennika na stronie, nie z tajemniczości, tylko dlatego, że sensowny zakres da się ustalić dopiero po rozmowie o problemie. Formy współpracy wynikają wprost z metody: architektura na żądanie to nakład dobrany do jednej decyzji, architektura jako usługa to ta sama dyscyplina utrzymywana w czasie. Obie opisujemy niżej, obok diagnozy i wytworzenia systemu.",
       "formsTitle": "Formy zaangażowania",
       "forms": [
         {
@@ -79,16 +79,20 @@
           "body": "Krótkie, intensywne spojrzenie na architekturę, plan AI albo bezpieczeństwo. Kończy się raportem i roadmapą z priorytetami. Najczęstszy początek, także dlatego, że jest łatwy do zamknięcia, jeśli dalsza współpraca nie ma sensu."
         },
         {
+          "title": "Architektura na żądanie",
+          "body": "Nakład architektoniczny na jedną decyzję, wtedy, gdy ta decyzja się pojawia: granice systemów przed dużym projektem, model danych przed pierwszą migracją, wybór platformy przed podpisaniem umowy z dostawcą. Analiza opcji z werdyktem przy każdej odrzuconej, zapis decyzji, ścieżka odwrotu. Bez retainera i bez zobowiązania na kwartał; organizacja wraca, kiedy pojawia się następna decyzja warta nadzoru."
+        },
+        {
+          "title": "Architektura jako usługa",
+          "body": "Wariant ciągły tej samej metody, dla organizacji bez etatowego architekta: standardy z cyklem życia, przegląd zmian o skutkach architektonicznych, rejestr decyzji i dyspens, bramki jakości w pipeline, obecność przy decyzjach drogich w odwróceniu. Rozliczane dniami w miesiącu; nadzór nie musi uzasadniać swojego istnienia produkcją artefaktów, bo nie jest etatem. Od tej formy ta praktyka się zaczęła."
+        },
+        {
           "title": "Doradztwo ciągłe",
-          "body": "Stała obecność na styku zarządu i technologii: przegląd decyzji, weryfikacja dostawców, prowadzenie architektury. Rozliczane dniami w miesiącu, dla organizacji, które nie potrzebują etatowego CTO albo właśnie go szukają."
+          "body": "Stała obecność na styku zarządu i technologii, szersza niż sama architektura: przegląd decyzji, weryfikacja dostawców, strategia technologiczna. Dla organizacji, które nie potrzebują etatowego CTO albo właśnie go szukają."
         },
         {
           "title": "Wytworzenie systemu",
           "body": "Budowa systemu end-to-end i przekazanie go zespołowi klienta albo dostawcy utrzymania. Z dokumentacją, rejestrem decyzji i runbookami powstającymi razem z kodem."
-        },
-        {
-          "title": "Nadzór architektoniczny",
-          "body": "Ciągła opieka architektoniczna dla organizacji, która nie ma własnego architekta: standardy, przegląd zmian, bramki jakości w pipeline. Kontynuacja tego, od czego ta praktyka się zaczęła."
         }
       ],
       "selectivityTitle": "Ile zaangażowań naraz",
@@ -99,7 +103,7 @@
     "about": {
       "kicker": "O praktyce",
       "title": "Praktyka, nie agencja.",
-      "lead": "ArchXS łączy dwie rzeczy, które zwykle rozchodzą się wraz ze stażem: architekturę i zarządzanie technologią w dużej skali oraz nieprzerwaną praktykę wykonawczą. To połączenie jest tu głównym narzędziem pracy, nie ciekawostką biograficzną.",
+      "lead": "ArchXS istnieje wokół jednej metody: architektury na żądanie. Nakład architektoniczny jest dobierany do ryzyka konkretnej decyzji, a w wariancie ciągłym, jako architektura w formie usługi, zastępuje etat architekta tam, gdzie etat by się nie obronił. Warunkiem tej metody jest połączenie, które zwykle rozchodzi się wraz ze stażem: architektura w dużej skali i nieprzerwana praktyka wykonawcza.",
       "paragraphs": [
         "Praktyka wyrosła z dwóch dekad pracy w organizacjach, w których błąd architektoniczny jest kosztowny: osiem lat w globalnych płatnościach kartowych pod reżimem PCI-DSS, architektura korporacyjna w państwowym banku rozwoju i przy wymianie systemu centralnego, technologia w regulowanym fintechu, produkt blockchain w skali ogólnokrajowej, wreszcie technologia w firmie produkcyjnej, od hali po e-commerce.",
         "Równolegle powstaje kod. Kilkanaście czynnych repozytoriów produkcyjnych, systemy backendowe w dwóch niezależnych ekosystemach, aplikacje web i mobilne, integracje przemysłowe, własne rozszerzenia serwera tożsamości, narzędzia open source. To nie jest portfolio, to sposób weryfikowania własnych rekomendacji, zanim trafią do kogoś innego.",

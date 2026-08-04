@@ -71,7 +71,7 @@
     "engage": {
       "kicker": "Engage",
       "title": "How an engagement usually starts.",
-      "lead": "There are no packages or price lists on this site, not out of mystery, but because a sensible scope can only be set after a conversation about the problem. Below are the shapes that recur in practice.",
+      "lead": "There are no packages or price lists on this site, not out of mystery, but because a sensible scope can only be set after a conversation about the problem. The shapes of engagement follow directly from the method: architecture on demand is effort sized to a single decision, architecture as a service is the same discipline sustained over time. Both are described below, alongside diagnostics and delivery.",
       "formsTitle": "Shapes of engagement",
       "forms": [
         {
@@ -79,16 +79,20 @@
           "body": "A short, intensive look at the architecture, the AI plan or security. It ends with a report and a prioritised roadmap. The most common starting point, partly because it is easy to close if going further makes no sense."
         },
         {
+          "title": "Architecture on demand",
+          "body": "Architectural effort applied to one decision, at the moment it appears: system boundaries before a major project, the data model before the first migration, a platform choice before a vendor contract is signed. Options analysed with a verdict against each rejected one, the decision recorded, a retreat path written down. No retainer and no quarterly commitment; the organisation comes back when the next decision worth overseeing appears."
+        },
+        {
+          "title": "Architecture as a service",
+          "body": "The continuous variant of the same method, for organisations without a staff architect: standards with a lifecycle, review of changes with architectural consequences, decision and dispensation registers, quality gates in the pipeline, presence at the decisions that are expensive to reverse. Billed in days per month; the oversight does not have to justify its existence by producing artifacts, because it is not a salaried post. This is the shape the practice started as."
+        },
+        {
           "title": "Ongoing advisory",
-          "body": "A standing presence at the intersection of the board and technology: reviewing decisions, pressure-testing vendors, steering architecture. Billed in days per month, for organisations that do not need a full-time CTO or are currently looking for one."
+          "body": "A standing presence at the intersection of the board and technology, broader than architecture alone: reviewing decisions, pressure-testing vendors, technology strategy. For organisations that do not need a full-time CTO or are currently looking for one."
         },
         {
           "title": "Delivery",
           "body": "Building a system end to end and handing it to the client's team or a maintenance partner. With documentation, decision records and runbooks written alongside the code."
-        },
-        {
-          "title": "Architecture oversight",
-          "body": "Continuous architectural care for an organisation without its own architect: standards, change review, quality gates in the pipeline. A continuation of what this practice started as."
         }
       ],
       "selectivityTitle": "How many engagements at once",
@@ -99,7 +103,7 @@
     "about": {
       "kicker": "The practice",
       "title": "A practice, not an agency.",
-      "lead": "ArchXS combines two things that usually drift apart with seniority: architecture and technology leadership at scale, and uninterrupted hands-on delivery. That combination is the main working tool here, not a biographical curiosity.",
+      "lead": "ArchXS exists around one method: architecture on demand. Architectural effort is sized to the risk of a specific decision, and in its continuous variant, architecture as a service, it replaces a staff architect where a staff position would not hold its own. The method's precondition is a combination that usually drifts apart with seniority: architecture at scale and uninterrupted hands-on delivery.",
       "paragraphs": [
         "The practice grew out of two decades in organisations where an architectural mistake is expensive: eight years in global card payments under PCI-DSS, enterprise architecture at a state development bank and on a core banking replacement, technology leadership at a regulated fintech, a national-scale blockchain product, and most recently technology in manufacturing, from the plant floor to e-commerce.",
         "Code is written in parallel. More than a dozen active production repositories, backend systems in two independent ecosystems, web and mobile applications, industrial integrations, custom identity-server extensions, open-source tooling. This is not a portfolio, it is how recommendations get tested before they are handed to someone else.",

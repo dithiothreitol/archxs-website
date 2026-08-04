@@ -23,7 +23,7 @@
     },
     "engage": {
       "title": "Współpraca",
-      "description": "Jak zwykle zaczyna się współpraca z ArchXS: rozmowa o problemie, potem diagnoza, doradztwo ciągłe, wytworzenie systemu albo nadzór architektoniczny."
+      "description": "Formy współpracy z ArchXS: diagnoza, architektura na żądanie (nakład na jedną decyzję), architektura jako usługa (ciągły nadzór bez etatu architekta), doradztwo ciągłe, wytworzenie systemu."
     },
     "resources": {
       "title": "Materiały",
@@ -47,7 +47,7 @@
     }
   },
   "nav": {
-    "wordmarkSuffix": "praktyka",
+    "wordmarkSuffix": "architektura na żądanie",
     "practice": "Praktyka",
     "work": "Realizacje",
     "insights": "Teksty",

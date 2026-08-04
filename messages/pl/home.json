@@ -151,7 +151,7 @@
         },
         {
           "q": "Jak wygląda początek współpracy?",
-          "a": "Rozmową o problemie, bez zobowiązań i bez prezentacji. Z rozmowy zwykle wynika jedna z czterech form: krótka diagnoza kończąca się raportem i roadmapą, doradztwo ciągłe na poziomie zarządczo-technicznym, wytworzenie systemu end-to-end albo stały nadzór architektoniczny. Zakres i warunki ustalamy w rozmowie, nie z cennika."
+          "a": "Rozmową o problemie, bez zobowiązań i bez prezentacji. Z rozmowy zwykle wynika jedna z pięciu form: diagnoza kończąca się raportem i roadmapą, architektura na żądanie przy pojedynczej decyzji, architektura jako usługa, czyli stały nadzór bez etatu architekta, doradztwo ciągłe na poziomie zarządczo-technicznym albo wytworzenie systemu end-to-end. Zakres i warunki ustalamy w rozmowie, nie z cennika."
         },
         {
           "q": "Czy doradztwo obejmuje też wykonanie?",

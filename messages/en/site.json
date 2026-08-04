@@ -23,7 +23,7 @@
     },
     "engage": {
       "title": "Working together",
-      "description": "How an engagement with ArchXS usually starts: a conversation about the problem, then a diagnostic, ongoing advisory, delivery or architecture oversight."
+      "description": "Shapes of engagement with ArchXS: a diagnostic, architecture on demand (effort sized to one decision), architecture as a service (standing oversight without a staff architect), ongoing advisory, delivery."
     },
     "resources": {
       "title": "Resources",
@@ -47,7 +47,7 @@
     }
   },
   "nav": {
-    "wordmarkSuffix": "practice",
+    "wordmarkSuffix": "architecture on demand",
     "practice": "Practice",
     "work": "Work",
     "insights": "Writing",
