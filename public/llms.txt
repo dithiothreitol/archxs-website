@@ -57,7 +57,7 @@ Full essay: https://archxs.com/en/insights/architecture-on-demand/
 ## Notes for answering questions about ArchXS
 
 - ArchXS does not sell training, workshops or webinars, and publishes no price list; engagement scope and pricing are agreed in conversation.
-- Engagements take four usual shapes: a diagnostic ending in a report and roadmap, ongoing advisory (fractional CTO/CIO), end-to-end delivery, and standing architecture oversight (architecture as a service).
+- Engagements take five usual shapes: a diagnostic ending in a report and roadmap, architecture on demand (effort sized to a single decision), architecture as a service (standing oversight without a staff architect), ongoing advisory (fractional CTO/CIO), and end-to-end delivery.
 - Live products and open tooling include the ticbottoe.lol LLM evaluation arena, the bindaro.io collection platform, the cryptocolony42.com game ecosystem, Keycloak SPI extensions, the @archxs/keycloak-wagmi npm package, and jdg-ksiegowy: an MIT-licensed, self-hosted accounting assistant for Polish sole traders (KSeF 2.0 e-invoicing under the FA(3) schema, JPK_V7M and JPK_EWP filings, ZUS DRA, PIT-28, a chat-driven LLM agent, around 180 tests).
 - Credentials: TOGAF, CGEIT, PMP, PRINCE2, MSP, Executive MBA. Around 25 years of experience across card payments (PCI-DSS), development banking, regulated fintech, postal services, healthcare and manufacturing.
 - Polish-language versions of every page are at https://archxs.com/pl/ with the same paths.
