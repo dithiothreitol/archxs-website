@@ -1,0 +1,101 @@
+---
+title: "A game economy on a public chain that can still be redesigned after launch"
+summary: "How to put the rules of an NFT ecosystem into smart contracts and keep the right to change them, without asking holders to migrate to a new collection every time the design moves."
+sector: "Own products, Web3 gaming"
+period: "2024–2026"
+disclosure: "public"
+metrics:
+  - label: "Founding collection"
+    value: "2,300 NFTs, four variants"
+  - label: "Upgrade unit"
+    value: "21 facets behind one diamond"
+  - label: "Token model"
+    value: "Two tokens, fixed and elastic"
+capabilities:
+  - "Enterprise architecture"
+  - "Business processes"
+  - "Software delivery"
+stack:
+  - "Polygon (EVM, chain 137)"
+  - "Solidity"
+  - "EIP-2535 Diamond"
+  - "ERC-6220 / ERC-7401 / ERC-5773"
+  - "ERC-721, ERC-1155, ERC-20"
+  - "Staking, liquid staking"
+  - "Event indexer, Redis"
+  - "React, React Native"
+  - "Docusaurus"
+order: 7
+---
+
+## Context
+
+Henomorphs is our own product: a collection of NFTs on Polygon with a game economy attached, and
+CryptoColony42 is the front through which a player meets it. Under both sits HMS Protocol, the contract
+layer that holds the collections, the augment system, energy, evolution and the wars that colonies fight
+over territory. The founding collection, Genesis, is 2,300 tokens in four variants; later ones, Matrix,
+the augment packs and the colony cards, extend it rather than replace it.
+
+## Problem
+
+A game is a design that gets corrected, usually within weeks of players touching it. A public chain is a
+promise that the rules do not change behind anyone's back. Those two are in direct opposition, and most
+NFT projects resolve them by picking a side. Either the contract is immutable and the economy is frozen
+at whatever the team believed on launch day, or the logic sits on a server and the chain holds a picture
+plus a receipt, in which case the on-chain part is decoration.
+
+There was a second problem underneath. An ecosystem that keeps releasing collections accumulates a
+choice: does the new drop bring its own contract, its own storage and its own bugs, or does it enter
+something that already exists? The first route is faster each time and eventually produces a portfolio
+where nothing composes with anything, tokens cannot be equipped across collections, and every integrator
+has to special-case five contracts.
+
+## Approach
+
+We built the collections on the Diamond pattern, EIP-2535: one proxy that routes calls by function
+selector into facets, all of them sharing one storage layout. That gives a unit of change smaller than a
+contract. Battle mechanics live in one facet, alliances in another, energy and evolution in two more; a
+correction to combat maths ships as a facet replacement rather than as a migration that asks holders to
+move to a new address. Twenty-one facets sit behind the diamond in the current protocol generation.
+
+Composability was taken from standards rather than invented. Tokens are equippable, nestable and
+multi-asset per ERC-6220, ERC-7401 and ERC-5773, which is what lets an augment be a token that goes
+inside another token, and what lets a wallet or a marketplace we have never spoken to render the result
+correctly.
+
+The economy was split into two tokens because one token cannot serve both purposes. Gameplay rewards
+have to be elastic, or emission dies; governance and access have to be scarce, or every reward payout
+dilutes the people holding for the long term. So YLW is the utility token that the game emits and burns,
+ZICO is fixed supply and buys governance, colony creation and premium access. Staking exists on top,
+including a receipt token for staked positions so a holder can exit liquidity without unstaking.
+
+Off-chain we kept the split honest: an indexer listens to events and fills a cache, the API reads that
+cache, and the applications, web and React Native, read the API. Nothing that decides an outcome lives
+there. If the API disappears, the state is still on Polygon and still verifiable; what disappears is
+convenience.
+
+Documentation was treated as part of the protocol, not as marketing. Contract addresses, facet
+inventory, token economics and the composability model are published as a docs site, because an
+ecosystem meant to be integrated with has to be legible to someone who did not build it.
+
+## Outcome
+
+The contracts are deployed and verified on Polygon mainnet, the collections trade on the usual secondary
+venues, and the ecosystem now has several collections that share one protocol rather than one contract
+each. The upgrade path has been exercised in practice, which is the only test that counts for a diamond.
+
+Two costs were accepted knowingly. Upgradeability means holders trust an admin key, and pretending
+otherwise would be dishonest; the mitigation is that the boundary is documented rather than hidden.
+And shared storage across facets is unforgiving, a careless struct change corrupts state for every
+facet at once, so storage layout has to be reviewed with more discipline than ordinary contract code.
+
+## What it taught us
+
+The interesting question in an on-chain product is not what to put on the chain but what must never
+need changing. Everything that will need changing belongs behind an upgrade boundary you designed on
+purpose; everything else can be immutable and should be. Deciding that late means deciding it during an
+incident.
+
+The second lesson is that standards are cheaper than they look. ERC-6220 and its neighbours cost more to
+implement than a bespoke equipment system, and they pay for themselves the first time an external
+marketplace displays a composed token correctly without anyone integrating anything.

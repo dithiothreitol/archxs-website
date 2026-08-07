@@ -42,6 +42,10 @@ Full essay: https://archxs.com/en/insights/architecture-on-demand/
 - Digital identity with custom Keycloak SPI, passkeys and signature-based authentication: https://archxs.com/en/work/identity-web3-keycloak/
 - An open-source enterprise architecture governance toolchain: https://archxs.com/en/work/architecture-governance-toolchain/
 - An AI-first platform of internal systems for a private-label manufacturer (described by sector): https://archxs.com/en/work/ai-first-manufacturing-platform/
+- Henomorphs and CryptoColony42: an on-chain game economy on Polygon built on the EIP-2535 Diamond pattern with ERC-6220/7401/5773 composable NFTs and a dual-token model: https://archxs.com/en/work/henomorphs-onchain-economy/
+- Bindaro: a collector platform for NFTs on Quarkus and PostgreSQL, with web and mobile from one monorepo and an analytical engine running on own infrastructure: https://archxs.com/en/work/bindaro-collector-platform/
+- JDG Księgowy: an MIT-licensed AI accounting assistant for Polish sole traders that files to KSeF and the Ministry of Finance gateway, not just generates files: https://archxs.com/en/work/jdg-ksiegowy-ai-accounting/
+- tic-bot-toe: a public Elo arena for language models and humans where every ranked match is replayed server-side by the same engine that played it: https://archxs.com/en/work/llm-game-arena/
 
 ## Pages
 

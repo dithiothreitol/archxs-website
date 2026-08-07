@@ -1,0 +1,100 @@
+---
+title: "Agent księgowy, który wysyła dokumenty, a nie opowiada o ich wysyłaniu"
+summary: "Jak zbudować asystenta AI dla jednoosobowej działalności, w którym wynikiem jest poprawny JPK, faktura przyjęta przez KSeF i UPO, a nie wiarygodnie brzmiąca odpowiedź."
+sector: "Produkty własne, open source"
+period: "2026"
+disclosure: "public"
+metrics:
+  - label: "Zakres regulacyjny"
+    value: "KSeF FA(3), JPK_V7M, JPK_EWP, ZUS DRA, PIT-28"
+  - label: "Dowody"
+    value: "180 testów, e2e na sandboxie MF"
+  - label: "Miejsce danych"
+    value: "Self-hosted, opcja modelu lokalnego"
+capabilities:
+  - "Applied AI"
+  - "Procesy biznesowe"
+  - "Wytwarzanie oprogramowania"
+stack:
+  - "Python 3.12"
+  - "KSeF 2.0, XML FA(3)"
+  - "JPK_V7M v3, JPK_EWP v4"
+  - "Bramka MF (AES + RSA)"
+  - "ZUS KEDU v5.05"
+  - "Pixtral 12B, Claude Haiku"
+  - "Ollama, SQLite"
+  - "Licencja MIT"
+order: 9
+---
+
+## Kontekst
+
+JDG Księgowy to otwarty asystent księgowy dla polskiej jednoosobowej działalności, napisany pod cykl
+miesięczny, który naprawdę istnieje: wystaw faktury, wyślij je do KSeF, zaksięguj koszty, policz ryczałt,
+ZUS i VAT, wygeneruj JPK i wyślij go, a raz w roku złóż PIT-28. Działa u siebie i potrafi działać na
+modelu lokalnym.
+
+## Problem
+
+Oprogramowanie księgowe dla najmniejszych firm to rynek rozwiązany, i rozwiązany przez SaaS, który jest
+właścicielem danych, pobiera opłatę miesięczną i każe użytkownikowi obsługiwać formularz. Luka nigdy nie
+leżała w funkcjach. Leżała w tym, że ta praca ma kształt rozmowy, „wystaw fakturę Acme za kwiecień", a
+skutek transakcyjny: dokument, który albo spełnia schemat opublikowany przez Ministerstwo Finansów, albo
+zostaje odrzucony.
+
+Dokładnie tam asystenci AI są najsłabsi. Model językowy świetnie tworzy fakturę, która czyta się
+poprawnie, i całkiem sprawnie tworzy taką, która nie przechodzi walidacji XSD, ma zły namespace
+aktualnego schematu FA albo zawiera wiarygodnie wyglądającą, wymyśloną kwotę ZUS. W produkcie
+konwersacyjnym błędna odpowiedź jest uciążliwością. Tutaj ta sama błędna odpowiedź jest złożonym
+dokumentem.
+
+Jest drugie ograniczenie, które wyklucza łatwą architekturę. Dane to historia finansowa na poziomie
+faktur konkretnego podatnika, a wysyłka do KSeF wymaga poświadczeń uprawniających do składania dokumentów
+w jego imieniu. Każdy projekt, który wysyła to stronie trzeciej, trzeba obronić, a nie założyć.
+
+## Podejście
+
+Linia podziału biegnie między tym, co rozstrzyga model, a tym, co produkuje kod. Model czyta intencję, więc
+„wystaw fakturę Acme za kwiecień" rozwiązuje się do kontrahenta, okresu i kwoty. Wszystko dalej jest
+deterministyczne: XML FA(3) buduje builder związany ze schematem, JPK_V7M i JPK_EWP powstają wobec
+opublikowanych struktur, ZUS i ryczałt wychodzą z tabeli stawek na dany rok, a nie z promptu. Jeśli
+wartość da się sprawdzić schematem albo urzędową stawką, model jej nie tworzy.
+
+Wysyłkę potraktowaliśmy jako pełnoprawną zdolność, a nie jako przycisk eksportu. Wysłanie do KSeF to
+sesja online, wysyłka, oczekiwanie i pobranie UPO; złożenie przez bramkę Ministerstwa to implementacja
+jej hybrydowego szyfrowania AES plus RSA i odebranie potwierdzenia. Obie ścieżki przeszły test end to end
+na sandboxie, bo system, który generuje plik do ręcznego wgrania, zautomatyzował łatwiejszą połowę.
+
+Koszty obsłużyliśmy tam, gdzie papier faktycznie się zacina: faktury zakupowe przychodzą jako zdjęcia i
+PDF-y. OCR działa na modelu multimodalnym lokalnie, na CPU, z hostowanym małym modelem jako zapasem, a
+wynik zasila rejestr wydatków z procentem odliczenia VAT per pozycja, więc odliczenie częściowe, znajome
+pięćdziesiąt procent od auta używanego także prywatnie, trafia do właściwego pola JPK, a nie do notatki.
+
+Funkcjonalność jest zapakowana w skille, wydzielone zdolności z własnymi skryptami i testami, i to
+pozwala powiedzieć precyzyjnie, co zostało zweryfikowane. README niesie tabelę statusu sprawdzoną wobec
+kodu, z rozróżnieniem na to, co działa, co jest wyłącznie dokumentacją i czego brakuje, ze ścieżkami
+plików jako dowodem. Alerty o przeterminowanych płatnościach są w tej tabeli jako brakujące i takie tam
+zostają.
+
+## Rezultat
+
+Projekt jest publiczny na licencji MIT, ma około stu osiemdziesięciu testów, a wysyłka do KSeF, bramka
+ministerialna i generowanie faktur zostały zweryfikowane end to end na środowiskach testowych. Zastępuje
+rdzeń płatnej subskrypcji SaaS w przypadku, pod który powstał, przy czym dane zostają na maszynie
+użytkownika, a model może być lokalny.
+
+Granice warto nazwać. To beta, celuje w ryczałt, a nie w każdą formę opodatkowania, jaką JDG może wybrać,
+a powierzchnia regulacyjna się rusza: schematy KSeF, struktury JPK i stawki ZUS zmieniają się w cudzym
+kalendarzu, więc utrzymanie nie jest opcjonalne, a uczciwą miarą projektu jest to, jak szybko za tymi
+zmianami nadąża.
+
+## Wnioski
+
+Użyteczny wzorzec dla AI w procesie regulowanym jest wąski i nudny: model bierze intencję i
+niejednoznaczność, deterministyczny kod produkuje wszystko, co ktoś inny będzie walidował. W chwili, w
+której model tworzy wartość sprawdzaną przez schemat albo urząd, powstaje system pewnie mylący się w
+nieprzewidywalnych momentach.
+
+Drugi wniosek dotyczy uczciwego statusu. Tabela funkcji, która wymienia braki, ze ścieżkami możliwymi do
+sprawdzenia, jest dla potencjalnego użytkownika warta więcej niż dowolna ilość opisu, i jest to ta sama
+dyscyplina, która czyni dokument architektury wiarygodnym.
