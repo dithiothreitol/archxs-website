@@ -1,0 +1,102 @@
+---
+title: "Ekonomia gry na publicznym łańcuchu, którą wciąż da się przeprojektować po premierze"
+summary: "Jak zapisać reguły ekosystemu NFT w smart kontraktach i zachować prawo do ich zmiany, nie każąc posiadaczom migrować do nowej kolekcji przy każdej korekcie."
+sector: "Produkty własne, gaming Web3"
+period: "2024–2026"
+disclosure: "public"
+metrics:
+  - label: "Kolekcja założycielska"
+    value: "2 300 NFT, cztery warianty"
+  - label: "Jednostka zmiany"
+    value: "21 fasetek za jednym diamentem"
+  - label: "Model tokenowy"
+    value: "Dwa tokeny, stały i elastyczny"
+capabilities:
+  - "Architektura korporacyjna"
+  - "Procesy biznesowe"
+  - "Wytwarzanie oprogramowania"
+stack:
+  - "Polygon (EVM, chain 137)"
+  - "Solidity"
+  - "EIP-2535 Diamond"
+  - "ERC-6220 / ERC-7401 / ERC-5773"
+  - "ERC-721, ERC-1155, ERC-20"
+  - "Staking, liquid staking"
+  - "Indekser zdarzeń, Redis"
+  - "React, React Native"
+  - "Docusaurus"
+order: 7
+---
+
+## Kontekst
+
+Henomorphs to nasz własny produkt: kolekcja NFT na Polygonie z doczepioną ekonomią gry, a CryptoColony42
+jest frontem, przez który gracz się z nią styka. Pod jednym i drugim leży HMS Protocol, warstwa
+kontraktów, w której mieszczą się kolekcje, system augmentów, energia, ewolucja i wojny toczone przez
+kolonie o terytorium. Kolekcja założycielska, Genesis, to 2 300 tokenów w czterech wariantach; późniejsze,
+Matrix, paczki augmentów i karty kolonii, rozszerzają ją, a nie zastępują.
+
+## Problem
+
+Gra to projekt, który się koryguje, zwykle w ciągu kilku tygodni od zetknięcia z graczami. Publiczny
+łańcuch to obietnica, że reguły nie zmieniają się nikomu za plecami. Te dwie rzeczy stoją naprzeciw
+siebie, a większość projektów NFT rozstrzyga to, wybierając stronę. Albo kontrakt jest niezmienny i
+ekonomia zostaje zamrożona w stanie wiedzy z dnia premiery, albo logika siedzi na serwerze, a na
+łańcuchu leży obrazek i pokwitowanie, czyli część on-chain jest dekoracją.
+
+Pod spodem był drugi problem. Ekosystem, który wydaje kolejne kolekcje, gromadzi pewien wybór: czy nowa
+emisja przynosi własny kontrakt, własny storage i własne błędy, czy wchodzi w coś, co już istnieje.
+Pierwsza droga jest za każdym razem szybsza i kończy się portfelem, w którym nic się z niczym nie składa,
+tokenów nie da się zakładać między kolekcjami, a każdy integrator musi obsłużyć pięć kontraktów osobno.
+
+## Podejście
+
+Kolekcje zbudowaliśmy na wzorcu Diamond, EIP-2535: jedno proxy kieruje wywołania po selektorze funkcji do
+fasetek, a wszystkie dzielą jeden układ pamięci. To daje jednostkę zmiany mniejszą niż kontrakt. Mechanika
+walki mieszka w jednej fasetce, sojusze w drugiej, energia i ewolucja w kolejnych dwóch; korekta matematyki
+walki wychodzi jako podmiana fasetki, a nie jako migracja, która każe posiadaczom przenieść się pod nowy
+adres. W obecnej generacji protokołu za diamentem stoi dwadzieścia jeden fasetek.
+
+Kompozycyjności nie wymyślaliśmy, wzięliśmy ją ze standardów. Tokeny są equippable, nestable i
+multi-asset zgodnie z ERC-6220, ERC-7401 i ERC-5773, i to właśnie pozwala, by augment był tokenem
+wchodzącym do innego tokena, a portfel albo marketplace, z którym nigdy nie rozmawialiśmy, wyrenderował
+wynik poprawnie.
+
+Ekonomię rozdzieliliśmy na dwa tokeny, bo jeden nie obsłuży obu ról. Nagrody z rozgrywki muszą być
+elastyczne, inaczej emisja umiera; governance i dostęp muszą być rzadkie, inaczej każda wypłata nagród
+rozwadnia tych, którzy trzymają długoterminowo. Dlatego YLW jest tokenem użytkowym, który gra emituje i
+pali, a ZICO ma stałą podaż i kupuje governance, zakładanie kolonii oraz dostęp premium. Na tym siedzi
+staking, razem z tokenem pokwitowania pozycji, dzięki czemu posiadacz może wyjść z płynności bez
+odstakowania.
+
+Poza łańcuchem trzymaliśmy ten podział uczciwie: indekser słucha zdarzeń i wypełnia cache, API czyta ten
+cache, a aplikacje, webowa i React Native, czytają API. Nic, co rozstrzyga wynik, tam nie mieszka. Jeśli
+API zniknie, stan nadal jest na Polygonie i nadal daje się zweryfikować; znika wygoda.
+
+Dokumentację potraktowaliśmy jako część protokołu, nie jako marketing. Adresy kontraktów, spis fasetek,
+ekonomia tokenów i model kompozycyjności są opublikowane jako serwis dokumentacyjny, bo ekosystem, z
+którym ktoś ma się integrować, musi być czytelny dla kogoś, kto go nie budował.
+
+## Rezultat
+
+Kontrakty są wdrożone i zweryfikowane na mainnecie Polygona, kolekcje handlują się na zwykłych rynkach
+wtórnych, a ekosystem ma dziś kilka kolekcji dzielących jeden protokół zamiast po jednym kontrakcie na
+każdą. Ścieżka aktualizacji została przećwiczona w praktyce, a to jedyny test, który dla diamentu ma
+znaczenie.
+
+Świadomie przyjęliśmy dwa koszty. Możliwość aktualizacji oznacza, że posiadacze ufają kluczowi
+administracyjnemu, i udawanie inaczej byłoby nieuczciwe; ograniczamy to tym, że granica jest opisana, a
+nie schowana. Oraz: wspólny storage między fasetkami nie wybacza, nieostrożna zmiana struktury psuje stan
+wszystkim fasetkom naraz, więc układ pamięci trzeba przeglądać z większą dyscypliną niż zwykły kod
+kontraktu.
+
+## Wnioski
+
+W produkcie on-chain ciekawe pytanie nie brzmi, co zapisać na łańcuchu, tylko co nigdy nie będzie
+wymagało zmiany. Wszystko, co będzie jej wymagało, należy za świadomie zaprojektowaną granicę
+aktualizacji; reszta może być niezmienna i powinna być. Rozstrzyganie tego późno oznacza rozstrzyganie
+tego w trakcie awarii.
+
+Drugi wniosek: standardy są tańsze, niż wyglądają. ERC-6220 i sąsiednie kosztują we wdrożeniu więcej niż
+autorski system ekwipunku i zwracają się przy pierwszym zewnętrznym marketplace, który poprawnie
+wyświetla złożony token, choć nikt niczego nie integrował.

@@ -1,0 +1,102 @@
+---
+title: "Ranking, który zakłada, że gracze będą oszukiwać"
+summary: "Jak prowadzić publiczny ranking modeli językowych i ludzi, kiedy gra toczy się w przeglądarce, za inferencję płaci gracz, a kont nie ma."
+sector: "Produkty własne, open source"
+period: "2026"
+disclosure: "public"
+metrics:
+  - label: "Granica zaufania"
+    value: "Każdy mecz rankingowy odtwarzany po stronie serwera"
+  - label: "Nasz koszt inferencji"
+    value: "Zero, gracz przynosi własny klucz"
+  - label: "Dowody"
+    value: "~300 testów, od jednostkowych po Playwright"
+capabilities:
+  - "Applied AI"
+  - "Cyberbezpieczeństwo i tożsamość"
+  - "Wytwarzanie oprogramowania"
+stack:
+  - "TypeScript, React 19, Vite"
+  - "Hono, Drizzle, PostgreSQL"
+  - "WebLLM (WebGPU), Ollama"
+  - "OpenRouter (BYOK)"
+  - "Elo, deterministyczne odtwarzanie"
+  - "Turnstile, krótkożyjący JWT"
+  - "Vitest, Playwright, Testcontainers"
+  - "Docker, Caddy"
+order: 10
+---
+
+## Kontekst
+
+tic-bot-toe to arena opublikowana pod adresem ticbottoe.lol, w której modele językowe i ludzie grają w te
+same gry, kółko i krzyżyk, statki, pojedynek sudoku i grę słowną, dzieląc jeden ranking Elo. Zaczęła się
+od pytania o benchmarki: statyczny zestaw testowy podaje wynik modelu, ale nie mówi, czy model utrzyma
+plan przez kilka tur, powstrzyma się od ruchów niedozwolonych i pokona przeciwnika, który się dostosowuje.
+
+## Problem
+
+Produkt działa tylko wtedy, gdy jego prowadzenie jest darmowe i wejście do niego jest darmowe, a to
+ustala naraz trzy rzeczy, które ze sobą walczą.
+
+Za inferencję musi płacić gracz, inaczej arena kosztuje właściciela proporcjonalnie do własnej
+popularności, czyli ma model biznesowy karzący za sukces. Dlatego gracz przynosi klucz do OpenRoutera,
+uruchamia model we własnej przeglądarce albo wskazuje własną Ollamę.
+
+Kont być nie może, bo proszenie o e-mail przed partią w kółko i krzyżyk odcina większość odbiorców i
+tworzy obowiązek wobec danych osobowych w zamian za nic.
+
+A skoro tak, gra toczy się po stronie klienta, czyli klient jest z definicji niezaufany. Ranking, który
+przyjmuje „wygrałem" od anonimowej przeglądarki, jest rankingiem umiejętności napisania polecenia curl.
+
+## Podejście
+
+Granicę zaufania postawiliśmy w jednym miejscu: przy zapisie do rankingu. Cała reszta, granie, oglądanie,
+analizowanie, eksperymentowanie, dzieje się w przeglądarce i nie jest broniona, bo nie musi.
+
+Tej granicy pilnuje odtwarzanie. Silnik gry jest czystym pakietem TypeScript bez DOM i bez zależności od
+Node'a, więc identyczny kod działa u klienta, żeby grać, i na serwerze, żeby weryfikować. Każde zgłoszenie
+rankingowe jest odtwarzane ruch po ruchu; podstawiony zwycięzca, ruch niedozwolony albo plansza, która nie
+mogła powstać, zostają odrzucone przez ten sam silnik, który wyprodukował partie legalne. To jest cały
+argument za tym, że ranking cokolwiek znaczy, i działa wyłącznie dlatego, że silnik jest jeden, a nie
+dwie implementacje zgodne do momentu, w którym przestają być.
+
+Wokół tego stoi zwykła obrona przed masowością, nie przed fałszerstwem: jednorazowe identyfikatory
+zgłoszeń i skrót sekwencji ruchów, żeby poprawnej partii nie dało się zgłosić dwa razy, token startu
+meczu związany z graczem, kontrola sensowności czasów oraz dzienne limity na gracza i na adres. Tożsamość
+to losowy sekret w pamięci przeglądarki, z którego serwer trzyma wyłącznie skrót SHA-256, co wystarcza,
+by być właścicielem wiersza w rankingu, i nie wystarcza, by być danymi osobowymi.
+
+Obsługę klucza zrobiliśmy właściwością testowalną, a nie obietnicą. Klucz do OpenRoutera mieszka w
+przeglądarce i jest wysyłany wyłącznie do OpenRoutera; test pilnuje, żeby nasz backend nigdy nie pojawił
+się jako adresat, więc deklaracja może się wywalić w CI, a nie w zgłoszeniu incydentu.
+
+To, co ta architektura potem potaniła, jest właśnie tym, po co ludzie wracają. Skoro każdy mecz jest
+zapisany jako odtwarzalna sekwencja, z tych samych danych wychodzą ślady rozumowania per ruch, mapy
+zachowań pokazujące, gdzie model otwiera, publiczne muzeum ruchów niedozwolonych i nieparsowalnych, które
+modele próbowały wykonać, oraz tryb, w którym ogląda się zanonimizowany mecz i zgaduje, który gracz był
+człowiekiem. Żadna z tych rzeczy nie została zbudowana jako funkcja; to odczyty zapisu, który i tak
+musiał istnieć na potrzeby weryfikacji.
+
+## Rezultat
+
+Arena działa i daje się postawić u siebie jednym plikiem compose, jest pokryta około trzystu testami
+obejmującymi silnik, serwer i interfejs, z testami integracyjnymi na prawdziwej bazie i testami end to
+end przez przeglądarkę. Jest dwujęzyczna, z językiem niesionym w adresie, więc udostępniony link otwiera
+się w języku, w którym został skopiowany, a każdy mecz ma publiczny adres powtórki.
+
+Ryzyko szczątkowe jest opisane w repozytorium, a nie zamalowane: skoro gra toczy się w przeglądarce, nic
+nie powstrzyma kogoś przed zautomatyzowaniem gry lokalnie. Bronione jest to, że zgłoszony wynik musi być
+partią, która naprawdę mogła zostać rozegrana. Odróżnienie cierpliwego bota od cierpliwego człowieka nie
+jest rozwiązane, a twierdzenie inaczej byłoby teatrem bezpieczeństwa, który sami byśmy gdzie indziej
+skrytykowali.
+
+## Wnioski
+
+Niezaufany klient przestaje być problemem w chwili, w której zamiast zabezpieczać klienta, wskazuje się
+ten jeden zapis, który musi być prawdziwy. Wszystko po drugiej stronie tej linii tanieje, łącznie z
+rzeczami, które inaczej wydawałyby się wymagać ochrony.
+
+Drugi wniosek dotyczy weryfikacji jako źródła produktu. Zapisanie tego, co było potrzebne do sprawdzenia
+wyniku, w formie dającej się wykonać ponownie, wyprodukowało większość ciekawych funkcji za darmo. System,
+który potrafi udowodnić, co się stało, potrafi to również pokazać.

@@ -1,0 +1,108 @@
+---
+title: "A collector's album for NFTs, with the analytics kept in-house"
+summary: "How to build a consumer platform on top of blockchain data where the interesting work is not the chain but the indexing, the identity and an analytical engine that does not send a user's collection to somebody else's API."
+sector: "Own products, consumer Web3"
+period: "2026"
+disclosure: "public"
+metrics:
+  - label: "Backend"
+    value: "1,100+ Java sources, 239 schema migrations"
+  - label: "Analytics"
+    value: "8 functions, inference on own infrastructure"
+  - label: "Delivery"
+    value: "Web, Android and iOS from one monorepo"
+capabilities:
+  - "Enterprise architecture"
+  - "Applied AI"
+  - "Cybersecurity & identity"
+  - "Software delivery"
+stack:
+  - "Quarkus 3.x, Java"
+  - "PostgreSQL, Flyway"
+  - "GraphQL (SmallRye), REST"
+  - "Redis, S3"
+  - "Keycloak (OIDC)"
+  - "Next.js, Expo / React Native"
+  - "Seaport, ERC-721 / ERC-1155"
+  - "Ollama, self-hosted models"
+order: 8
+---
+
+## Context
+
+Bindaro is our own product: a place where someone who owns NFTs can arrange them into an album, describe
+them, publish the result and be found by other collectors. Underneath it is a marketplace, a rarity and
+scoring model, an analytical engine and a Discord bot, delivered as a web application and as mobile
+applications for Android and iOS.
+
+## Problem
+
+Collectors already have wallets and marketplaces. What they do not have is a place where a collection is
+a curated object rather than a list of holdings sorted by contract address. That is a product problem,
+and it turns almost immediately into three engineering ones.
+
+The first is that blockchain is a terrible read model. Ownership, metadata, floor prices and activity
+history live in different places, arrive at different speeds and disagree with each other; asking the
+chain at page render time produces a product that is slow when it works and blank when a node is
+unhappy.
+
+The second is identity. The audience splits into people who arrive with a wallet and people who arrive
+with an email address and no intention of learning what a seed phrase is. Serving only the first is a
+product for an audience that already has three of these. Serving only the second means the platform
+cannot prove anybody owns anything.
+
+The third is analytics. Rarity, valuation and buy signals are the reason to open the product twice.
+Doing them with a hosted model API means every user's holdings, and their inferred financial position,
+leave our infrastructure on every request, and the running cost scales with curiosity rather than with
+revenue.
+
+## Approach
+
+Reading the chain was moved behind our own state. A Quarkus backend, PostgreSQL as the read model with
+migrations kept in the repository, Redis for what should not be recomputed, S3 for media. The
+applications talk to GraphQL and REST, never to a node. That is what makes an album page open at the
+speed of a page rather than at the speed of a chain, and it is also what makes the product degrade
+gracefully instead of failing when an upstream is slow.
+
+Identity was solved by not choosing. Keycloak sits in front, accepting wallet signature, email OTP and
+social login as authentication methods for one account, with an embedded wallet created for users who
+arrive without one. The signature side of that is a separate piece of work with its own case study; from
+Bindaro's perspective the point is that the platform has one user register, one audit trail and one
+place where access is revoked.
+
+The analytical engine, BindaroAI, runs on our own infrastructure with self-hosted models, and this was a
+deliberate architectural decision rather than a cost optimisation. Eight functions, recommendations,
+rarity insight, price signals, classification, valuation, comparison, pattern detection and curated
+spotlights, each of which is a prompt over data we already hold, with low temperature because the output
+has to be repeatable enough to be argued with. A user's collection is not an input to somebody else's
+service.
+
+Marketplace mechanics were not reinvented: listings and offers run on Seaport, covering ERC-721 and
+ERC-1155, so custody and settlement follow a protocol that has already been audited by people who do
+that for a living.
+
+The client side is one monorepo, a Next.js web application and an Expo application shipping to Play
+Store and TestFlight, sharing API client, auth, design system and translations as packages. The mobile
+app is not a wrapper around the site, and it is also not a second codebase pretending to agree with the
+first.
+
+## Outcome
+
+The product is in production on the web, in open testing on Android and in closed testing on iOS, over a
+backend of more than eleven hundred Java sources and two hundred and thirty-nine schema migrations,
+which is a more honest measure of a platform's real surface than a feature list is.
+
+The costs of these decisions are visible. Our own read model means our own reconciliation problem: every
+metadata refresh, every floor price, every ownership change is something we have to keep in step with
+the chain, and there is no version of that which is free. Self-hosted inference means we own the
+hardware, the model updates and the latency budget instead of paying somebody else to own them.
+
+## What it taught us
+
+In a product sitting on public data, the architecture question is where the authoritative read model
+lives. Answer it early and everything downstream is a cache with a known refresh story. Answer it late,
+by adding caches where pages felt slow, and you get a system where nobody can say what is true.
+
+The second lesson concerns AI features in a consumer product. The interesting decision is almost never
+which model, it is what leaves the building. Once holdings and inferred wealth are in the request, the
+choice of provider stops being a procurement question and becomes an architectural one.

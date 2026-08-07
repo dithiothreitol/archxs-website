@@ -298,6 +298,94 @@ TECHNICAL: 16:9, axonometric, thin ink linework, one accent colour.
 ${ARCHXS_STYLE_GUIDE}`,
   },
 
+  {
+    id: "work-henomorphs",
+    outputPath: "img/work/henomorphs-onchain-economy.png",
+    width: 1600,
+    height: 900,
+    aspectRatio: "16:9",
+    prompt: `SCENE: An exploded axonometric drawing of a faceted polyhedral core
+mechanism: a many-sided central hub with flat interchangeable plates detaching
+outward along thin dashed guide lines, each plate a distinct machined module that
+clearly fits back into the same hub — one body, many replaceable faces. One plate
+is drawn part-way removed and outlined in drafting red-orange, as if being
+swapped. To the right, smaller and quieter, a balance beam on a pivot carries two
+weights of different geometry: one a solid fixed block, the other a stack of thin
+loose discs. Fine leader lines connect a few plates to empty annotation space.
+IMPORTANT: the plates must read as interchangeable parts of one shared body, not
+as separate objects.
+BACKGROUND: drafting paper, faint grid, wide empty margins.
+TECHNICAL: 16:9, exploded axonometric, dashed assembly guide lines, thin ink
+linework, one accent colour.
+${ARCHXS_STYLE_GUIDE}`,
+  },
+  {
+    id: "work-bindaro",
+    outputPath: "img/work/bindaro-collector-platform.png",
+    width: 1600,
+    height: 900,
+    aspectRatio: "16:9",
+    prompt: `SCENE: An axonometric drawing of a collector's plate album opened flat on
+a drafting table: a rigid case with a grid of shallow recessed slots, each slot
+holding a small thin square plate seen edge-on and in plan. One plate has been
+lifted out of its slot and rests on a small measuring stage beside the album,
+where a caliper and a graduated gauge are set against it — the plate being
+assessed. Its empty slot in the grid is outlined in drafting red-orange. Behind
+the album, drawn smaller, a compact intake mechanism feeds plates in from a
+distant line into an indexed card drawer, suggesting where the contents are
+catalogued before they reach the album.
+IMPORTANT: the album grid must read as ordered and curated, the intake mechanism
+as a supply line, not as decoration.
+BACKGROUND: drafting paper, faint grid, generous empty space.
+TECHNICAL: 16:9, axonometric, thin ink linework, one accent colour.
+${ARCHXS_STYLE_GUIDE}`,
+  },
+  {
+    id: "work-jdg-ksiegowy",
+    outputPath: "img/work/jdg-ksiegowy-ai-accounting.png",
+    width: 1600,
+    height: 900,
+    aspectRatio: "16:9",
+    prompt: `SCENE: An axonometric technical drawing of a document-handling machine.
+Loose sheets, drawn as flat blank plates in an untidy fanned stack, are drawn in
+at the left. They pass through a rigid template plate cut with one precise
+aperture — a gauge that only an exactly shaped sheet can pass — and the mismatched
+sheets are deflected into a small tray below. Beyond the gauge the sheets become
+uniform and stacked square, entering a sealed cylindrical chute that rises and
+exits the frame. A separate short chute returns from it, delivering one small
+embossed disc into a shallow tray, and that disc is the single drafting
+red-orange element in the drawing.
+IMPORTANT: the contrast must be legible — loose and irregular before the gauge,
+identical and squared after it.
+CRITICAL: the drawing carries no labels, no callouts and no lettering of any
+kind. Leader lines and arrows are permitted only if they end in empty paper.
+BACKGROUND: drafting paper, faint grid, empty margins.
+TECHNICAL: 16:9, axonometric, hatching on the cut faces of the template plate,
+thin ink linework, one accent colour.
+${ARCHXS_STYLE_GUIDE}`,
+  },
+  {
+    id: "work-llm-arena",
+    outputPath: "img/work/llm-game-arena.png",
+    width: 1600,
+    height: 900,
+    aspectRatio: "16:9",
+    prompt: `SCENE: An axonometric drawing of a verification bench. On the left, a
+small game board of squares sits on an open table where a sequence of identical
+tokens has been laid out in a track, loosely and openly — anyone can reach it. The
+track feeds into a rigid comparator mechanism at the centre: two identical
+matched movements drawn side by side, one above the other, running the same
+sequence of tokens in step, with a stop block between them. On the right, only
+the tokens that passed the comparator are stacked in a neat graduated column on a
+pedestal, like a measured scale. The stop block is drafting red-orange. A few
+rejected tokens lie fallen beneath the comparator.
+IMPORTANT: the two movements in the comparator must look mechanically identical;
+that duplication is the subject of the drawing.
+BACKGROUND: drafting paper, faint grid, generous empty space.
+TECHNICAL: 16:9, axonometric, thin ink linework, one accent colour.
+${ARCHXS_STYLE_GUIDE}`,
+  },
+
   // ── Method ──────────────────────────────────────────────────────────────
   {
     id: "method-loop",

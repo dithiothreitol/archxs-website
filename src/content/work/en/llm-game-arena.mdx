@@ -1,0 +1,101 @@
+---
+title: "A leaderboard that assumes the players will cheat"
+summary: "How to run a public ranking of language models and humans when the game is played in the browser, inference is paid for by the player, and nobody has an account."
+sector: "Own products, open source"
+period: "2026"
+disclosure: "public"
+metrics:
+  - label: "Trust boundary"
+    value: "Every ranked match replayed server-side"
+  - label: "Inference cost to us"
+    value: "Zero, players bring their own key"
+  - label: "Evidence"
+    value: "~300 tests, unit to Playwright"
+capabilities:
+  - "Applied AI"
+  - "Cybersecurity & identity"
+  - "Software delivery"
+stack:
+  - "TypeScript, React 19, Vite"
+  - "Hono, Drizzle, PostgreSQL"
+  - "WebLLM (WebGPU), Ollama"
+  - "OpenRouter (BYOK)"
+  - "Elo, deterministic replay"
+  - "Turnstile, short-lived JWT"
+  - "Vitest, Playwright, Testcontainers"
+  - "Docker, Caddy"
+order: 10
+---
+
+## Context
+
+tic-bot-toe is an arena, published at ticbottoe.lol, where language models and people play the same
+games, tic-tac-toe, battleship, sudoku duel and a word game, and share one Elo ranking. It began as a
+question about benchmarks: a static test set tells you a model's score, it does not tell you whether the
+model can hold a plan across turns, avoid illegal moves and beat an opponent who is adapting.
+
+## Problem
+
+The product only works if it is free to run and free to enter, which fixes three things at once and
+makes them fight.
+
+Inference has to be paid for by the player, otherwise the arena costs its owner money in proportion to
+how popular it is, which is a business model that punishes success. So the player brings an OpenRouter
+key, or runs a model in their own browser, or points at their own Ollama.
+
+There can be no accounts, because asking for an email before a game of tic-tac-toe removes most of the
+audience and creates a personal data obligation in exchange for nothing.
+
+And the game therefore runs client-side, which means the client is untrusted by construction. A ranking
+that accepts "I won" from an anonymous browser is a ranking of who can write a curl command.
+
+## Approach
+
+We drew the trust boundary in one place: the write to the leaderboard. Everything else, playing,
+watching, analysing, experimenting, happens in the browser and is not defended, because it does not need
+to be.
+
+That boundary is enforced by replay. The game engine is a pure TypeScript package with no DOM and no
+Node dependencies, so the identical code runs client-side to play and server-side to verify. Every
+ranked submission is replayed move by move; a faked winner, an illegal move or a board that could not
+have arisen is rejected by the same engine that produced the legal games. This is the whole argument for
+the ranking meaning anything, and it only works because there is one engine rather than two
+implementations that agree until they do not.
+
+Around it sits the ordinary defence against volume rather than against forgery: one-time submission
+identifiers and a move hash so a valid game cannot be replayed twice, a match-start token bound to the
+player, timing sanity checks, and daily caps per player and per address. Identity is a random secret in
+local storage of which the server keeps only a SHA-256 hash, which is enough to own a ranking row and
+not enough to be personal data.
+
+The key handling was made a testable property, not a promise. The OpenRouter key lives in the browser
+and is sent only to OpenRouter; a test enforces that our backend never appears as a destination, so the
+claim can fail in CI rather than in a disclosure.
+
+What that architecture then made cheap is the part people actually come back for. Because every match is
+stored as a replayable sequence, the same data yields per-move reasoning traces, behavioural heatmaps of
+where a model opens, a public museum of illegal and unparseable moves models attempted, and a mode where
+you watch an anonymised match and guess which player was human. None of those are features that were
+built; they are readings of a record that had to exist anyway for verification.
+
+## Outcome
+
+The arena is live and self-hostable with a single compose file, covered by roughly three hundred tests
+across the engine, the server and the interface, with integration tests against a real database and
+end-to-end tests through a browser. It is bilingual, with the language carried in the URL so a shared
+link opens in the language it was copied in, and every match has a public replay address.
+
+The residual risk is stated in the repository rather than papered over: because the game runs in the
+browser, nothing stops someone automating play locally. What is defended is that a submitted result must
+be a game that could really have been played. Distinguishing a patient bot from a patient human is not
+solved, and claiming otherwise would be the kind of security theatre we would criticise elsewhere.
+
+## What it taught us
+
+Untrusted clients are a solved problem the moment you stop trying to secure the client and start
+identifying the one write that has to be true. Everything on the other side of that line gets cheaper,
+including the parts you would otherwise have felt obliged to protect.
+
+The second lesson is about verification as a source of product. Storing what was needed to check a
+result, in a form that can be re-executed, produced most of the interesting features for free. A system
+that can prove what happened can also show it.

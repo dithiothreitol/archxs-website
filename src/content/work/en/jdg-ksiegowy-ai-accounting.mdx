@@ -1,0 +1,101 @@
+---
+title: "An accounting agent that files documents, not one that talks about filing them"
+summary: "How to build an AI assistant for a one-person business where the output is a valid JPK, an invoice accepted by KSeF and a submission receipt, rather than a plausible-sounding answer."
+sector: "Own products, open source"
+period: "2026"
+disclosure: "public"
+metrics:
+  - label: "Regulatory surface"
+    value: "KSeF FA(3), JPK_V7M, JPK_EWP, ZUS DRA, PIT-28"
+  - label: "Evidence"
+    value: "180 tests, e2e against MF sandbox"
+  - label: "Data location"
+    value: "Self-hosted, local model option"
+capabilities:
+  - "Applied AI"
+  - "Business processes"
+  - "Software delivery"
+stack:
+  - "Python 3.12"
+  - "KSeF 2.0, FA(3) XML"
+  - "JPK_V7M v3, JPK_EWP v4"
+  - "MF Gateway (AES + RSA)"
+  - "ZUS KEDU v5.05"
+  - "Pixtral 12B, Claude Haiku"
+  - "Ollama, SQLite"
+  - "MIT licence"
+order: 9
+---
+
+## Context
+
+JDG Księgowy is an open-source accounting assistant for a Polish sole proprietorship, written for the
+monthly cycle that actually exists: issue invoices, send them to KSeF, book costs, work out ryczałt, ZUS
+and VAT, produce a JPK and submit it, and once a year file PIT-28. It runs self-hosted, and it can run
+against a local model.
+
+## Problem
+
+Accounting software for the smallest businesses is a solved market, and it is solved by SaaS that owns
+the data, charges monthly and makes the user drive a form. The gap was never features. It was that the
+work is conversational in shape, "invoice Acme for April", and transactional in consequence, a document
+that either satisfies a schema published by the Ministry of Finance or is rejected.
+
+That gap is exactly where AI assistants are weakest. A language model is very good at producing an
+invoice that reads correctly and quite capable of producing one that fails XSD validation, gets the
+namespace wrong for the current FA schema, or invents a plausible ZUS figure. In a chat product a wrong
+answer is an annoyance. Here the same wrong answer is a filing.
+
+There is a second constraint that rules out the easy architecture. The data is invoice-level financial
+history for a named taxpayer, and KSeF submission requires credentials that authorise filing on their
+behalf. Any design that ships that to a third party has to be defended, not assumed.
+
+## Approach
+
+The dividing line runs between what the model decides and what the code produces. The model reads
+intent, so "wystaw fakturę Acme za kwiecień" resolves to a client, a period and an amount. Everything
+downstream is deterministic: the FA(3) XML is built by a schema-bound builder, JPK_V7M and JPK_EWP are
+generated against their published structures, ZUS and ryczałt come out of a rate table for the year, not
+out of a prompt. If a value can be checked against a schema or an official rate, the model does not get
+to author it.
+
+Submission is treated as a first-class capability rather than an export button. Sending to KSeF means an
+online session, the send, the wait and retrieval of the UPO; filing through the Ministry gateway means
+implementing its hybrid AES plus RSA encryption and collecting the receipt. Both paths were exercised
+end to end against the sandbox, because a system that generates a file the user still has to upload by
+hand has automated the easy half.
+
+Costs are handled where the paperwork actually gets stuck: purchase invoices arrive as photographs and
+PDFs. OCR runs on a multimodal model locally, on CPU, with a hosted small model as fallback, and the
+result feeds the expense register with a per-item VAT deduction percentage, so partial deduction, the
+familiar fifty percent on a car used privately as well, ends up in the right JPK field rather than in a
+note.
+
+Functionality is packaged as skills, discrete capabilities with their own scripts and tests, which is
+what makes it possible to say precisely what has been verified. The README carries a status table
+checked against the codebase, listing what is shipped, what is documentation only and what is missing
+outright, with file paths as evidence. Overdue-payment alerts are on that table as missing, and they
+stay listed as missing.
+
+## Outcome
+
+The project is public under MIT with around a hundred and eighty tests, with KSeF submission, the
+ministry gateway and invoice generation verified end to end against sandbox environments. It replaces
+the core of a paid SaaS subscription for the case it targets, while the data stays on the user's own
+machine and the model can be local.
+
+The limits are worth stating. It is beta, it targets ryczałt rather than every tax form a JDG can
+choose, and the regulatory surface moves: KSeF schemas, JPK structures and ZUS rates all change on
+someone else's calendar, so maintenance is not optional and the honest measure of the project is how
+fast it tracks those changes.
+
+## What it taught us
+
+The useful pattern for AI in a regulated process is narrow and boring: let the model handle intent and
+ambiguity, let deterministic code produce anything that will be validated by somebody else. The moment
+a model authors a value that a schema or a tax authority will check, you have built a system that is
+confidently wrong at unpredictable intervals.
+
+The second lesson is about honest status. A feature table that lists what is missing, with paths a
+reader can grep, is worth more to a potential user than any amount of description, and it is the same
+discipline that makes an architecture document trustworthy.
