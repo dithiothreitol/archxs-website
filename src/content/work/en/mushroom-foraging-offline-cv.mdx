@@ -1,6 +1,6 @@
 ---
-title: "An assistant whose wrong answer can poison somebody"
-summary: "How to build on-device computer vision for mushroom foraging where the model must run with no signal, must know when to say nothing, and must never let a confident number stand in for a decision the user has to make."
+title: "Computer vision that has to work where there is no signal"
+summary: "How to run detection and species identification entirely on a phone, offline in the forest, with a confidence figure that is calibrated rather than decorative and the lookalike species shown beside every result."
 sector: "Own products, mobile and computer vision"
 period: "2026–2027"
 disclosure: "public"
@@ -43,10 +43,11 @@ The forest has no signal. Not "poor connectivity", none: the moment the product 
 server to answer, it is useless exactly where it is used. So inference, the map, the species
 reference and the whole session record have to live on the phone.
 
-And the cost of a wrong answer is not a bad user experience. Confusing a parasol mushroom
-with a death cap kills people. That rules out the ordinary shape of a consumer AI feature,
-in which a model returns its best guess with a percentage next to it and the interface makes
-the percentage look like knowledge.
+The second constraint is that the accuracy bar is set by the domain rather than by taste.
+Several edible species have lookalikes that differ in details a single photograph may not
+even capture, and the difference matters. That rules out the ordinary shape of a consumer AI
+feature, in which a model returns its best guess with a percentage next to it and the
+interface lets the percentage stand in for knowledge.
 
 There is a third constraint that only appears once foragers are involved. Nobody shares
 where they pick. A social feature that publishes locations is a feature nobody will switch
@@ -60,8 +61,8 @@ confidence, alongside the toxic species it can be confused with and the morpholo
 that separate them, dig up the stem base and look for a volva, check the gill colour. The
 reference data is built for exactly this: about a hundred and twenty-five species and a
 hundred and thirty confusion pairs, each with the distinguishing features written out and a
-severity marking for the ones that are lethal. The model narrows the question; the person
-answers it, holding the mushroom.
+severity marking so the most serious ones are treated differently in the interface. The model
+narrows the question; the person answers it, holding the mushroom.
 
 Calibration is treated as a feature: temperature scaling, an explicit reject option and
 out-of-distribution detection, so that "I do not know" is a first-class output rather than
@@ -99,10 +100,10 @@ capability.
 
 ## What it taught us
 
-Where a wrong answer is dangerous, the useful question is not how to raise accuracy but what
-the system does when it is unsure. An abstention that is designed, calibrated and visible is
-worth more than several points of top-1 accuracy, because the user's decision is the one that
-matters and the interface either supports it or replaces it.
+In a domain where the user makes the final call, the useful question is not how to raise
+accuracy but what the system does when it is unsure. An abstention that is designed,
+calibrated and visible is worth more than several points of top-1 accuracy, because the
+user's decision is the one that matters and the interface either supports it or replaces it.
 
 The second lesson is narrower and cost us time: quantisation is not a setting. It is a
 numerical decision about a specific graph, and it has to be measured on that graph. Ours

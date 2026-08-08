@@ -1,6 +1,6 @@
 ---
-title: "Asystent, którego błędna odpowiedź może kogoś otruć"
-summary: "Jak zbudować wizję komputerową działającą na urządzeniu, kiedy model musi pracować bez zasięgu, musi umieć nie odpowiedzieć i nie może pozwolić, by pewna siebie liczba zastąpiła decyzję należącą do użytkownika."
+title: "Wizja komputerowa, która musi działać tam, gdzie nie ma zasięgu"
+summary: "Jak uruchomić detekcję i identyfikację gatunku w całości na telefonie, offline w lesie, z pewnością skalibrowaną zamiast ozdobnej i gatunkami podobnymi pokazanymi przy każdym wyniku."
 sector: "Produkty własne, mobile i wizja komputerowa"
 period: "2026–2027"
 disclosure: "public"
@@ -42,10 +42,11 @@ W lesie nie ma zasięgu. Nie „słaby", tylko żadnego: w momencie, w którym p
 serwera, żeby odpowiedzieć, jest bezużyteczny dokładnie tam, gdzie się go używa. Więc
 inferencja, mapa, baza gatunków i cały zapis sesji muszą mieszkać na telefonie.
 
-A kosztem złej odpowiedzi nie jest zepsute wrażenie z użytkowania. Pomylenie czubajki kani z
-muchomorem sromotnikowym zabija. To wyklucza zwykły kształt konsumenckiej funkcji AI, w
-którym model zwraca najlepsze przypuszczenie z procentem obok, a interfejs sprawia, że ten
-procent wygląda na wiedzę.
+Drugie ograniczenie: poprzeczkę trafności ustawia dziedzina, a nie gust. Kilka gatunków
+jadalnych ma sobowtóry różniące się szczegółami, których pojedyncze zdjęcie może w ogóle nie
+uchwycić, a ta różnica ma znaczenie. To wyklucza zwykły kształt konsumenckiej funkcji AI, w
+którym model zwraca najlepsze przypuszczenie z procentem obok, a interfejs pozwala temu
+procentowi zastąpić wiedzę.
 
 Jest trzecie ograniczenie, które pojawia się dopiero przy grzybiarzach. Nikt nie zdradza
 swoich miejsc. Funkcja społecznościowa publikująca lokalizacje to funkcja, której nikt nie
@@ -58,8 +59,9 @@ formułka o odpowiedzialności. Każda identyfikacja pokazywana jest ze skalibro
 obok gatunków trujących, z którymi da się ją pomylić, i cech morfologicznych, które je
 rozdzielają: odkop podstawę trzonu i sprawdź pochwę, zobacz kolor blaszek. Dane referencyjne
 są zbudowane dokładnie pod to: około stu dwudziestu pięciu gatunków i sto trzydzieści par
-mylących, każda z wypisanymi cechami różnicującymi i oznaczeniem wagi dla tych śmiertelnych.
-Model zawęża pytanie; odpowiada człowiek, który trzyma grzyba w ręku.
+mylących, każda z wypisanymi cechami różnicującymi i oznaczeniem wagi, żeby interfejs
+traktował te najpoważniejsze inaczej. Model zawęża pytanie; odpowiada człowiek, który trzyma
+grzyba w ręku.
 
 Kalibracja jest traktowana jak funkcja: temperature scaling, jawna opcja odmowy i wykrywanie
 próbek spoza rozkładu, żeby „nie wiem" było wynikiem pierwszej kategorii, a nie niskim
@@ -98,10 +100,10 @@ zdolnością.
 
 ## Wnioski
 
-Tam, gdzie błędna odpowiedź jest niebezpieczna, użyteczne pytanie nie brzmi, jak podnieść
-trafność, tylko co system robi, kiedy nie jest pewny. Zaprojektowana, skalibrowana i widoczna
-odmowa jest warta więcej niż kilka punktów trafności top-1, bo to decyzja użytkownika jest tą
-istotną, a interfejs albo ją wspiera, albo ją zastępuje.
+W dziedzinie, w której ostateczną decyzję podejmuje użytkownik, użyteczne pytanie nie brzmi,
+jak podnieść trafność, tylko co system robi, kiedy nie jest pewny. Zaprojektowana,
+skalibrowana i widoczna odmowa jest warta więcej niż kilka punktów trafności top-1, bo to
+decyzja użytkownika jest tą istotną, a interfejs albo ją wspiera, albo ją zastępuje.
 
 Drugi wniosek jest węższy i kosztował nas czas: kwantyzacja nie jest ustawieniem. Jest
 decyzją numeryczną dotyczącą konkretnego grafu i na tym grafie trzeba ją zmierzyć. Nasza
