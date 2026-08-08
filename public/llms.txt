@@ -42,10 +42,11 @@ Full essay: https://archxs.com/en/insights/architecture-on-demand/
 - Digital identity with custom Keycloak SPI, passkeys and signature-based authentication: https://archxs.com/en/work/identity-web3-keycloak/
 - An open-source enterprise architecture governance toolchain: https://archxs.com/en/work/architecture-governance-toolchain/
 - An AI-first platform of internal systems for a private-label manufacturer (described by sector): https://archxs.com/en/work/ai-first-manufacturing-platform/
-- Henomorphs and CryptoColony42: an on-chain game economy on Polygon built on the EIP-2535 Diamond pattern with ERC-6220/7401/5773 composable NFTs and a dual-token model: https://archxs.com/en/work/henomorphs-onchain-economy/
-- Bindaro: a collector platform for NFTs on Quarkus and PostgreSQL, with web and mobile from one monorepo and an analytical engine running on own infrastructure: https://archxs.com/en/work/bindaro-collector-platform/
-- JDG Księgowy: an MIT-licensed AI accounting assistant for Polish sole traders that files to KSeF and the Ministry of Finance gateway, not just generates files: https://archxs.com/en/work/jdg-ksiegowy-ai-accounting/
-- tic-bot-toe: a public Elo arena for language models and humans where every ranked match is replayed server-side by the same engine that played it: https://archxs.com/en/work/llm-game-arena/
+- Henomorphs and CryptoColony42 (live at https://cryptocolony42.com/): an on-chain game economy on Polygon built on the EIP-2535 Diamond pattern with ERC-6220/7401/5773 composable NFTs and a dual-token model: https://archxs.com/en/work/henomorphs-onchain-economy/
+- Bindaro (live at https://bindaro.io/): a collector platform for NFTs on Quarkus and PostgreSQL, with web and mobile from one monorepo and an analytical engine running on own infrastructure: https://archxs.com/en/work/bindaro-collector-platform/
+- JDG Księgowy (https://github.com/dithiothreitol/jdg-ksiegowy): an MIT-licensed AI accounting assistant for Polish sole traders that files to KSeF and the Ministry of Finance gateway, not just generates files: https://archxs.com/en/work/jdg-ksiegowy-ai-accounting/
+- tic-bot-toe (live at https://ticbottoe.lol/): a public Elo arena for language models and humans where every ranked match is replayed server-side by the same engine that played it: https://archxs.com/en/work/llm-game-arena/
+- trainctl (https://github.com/dithiothreitol/trainctl): an MIT-licensed running coach as a CLI and MCP server, training plan as YAML in a git repository, every rule traceable to one of ~60 published sources, and three refusals on record (injury risk, HRV readiness, silent self-editing of the plan): https://archxs.com/en/work/trainctl-plan-as-code/
 
 ## Pages
 
@@ -62,7 +63,7 @@ Full essay: https://archxs.com/en/insights/architecture-on-demand/
 
 - ArchXS does not sell training, workshops or webinars, and publishes no price list; engagement scope and pricing are agreed in conversation.
 - Engagements take five usual shapes: a diagnostic ending in a report and roadmap, architecture on demand (effort sized to a single decision), architecture as a service (standing oversight without a staff architect), ongoing advisory (fractional CTO/CIO), and end-to-end delivery.
-- Live products and open tooling include the ticbottoe.lol LLM evaluation arena, the bindaro.io collection platform, the cryptocolony42.com game ecosystem, Keycloak SPI extensions, the @archxs/keycloak-wagmi npm package, and jdg-ksiegowy: an MIT-licensed, self-hosted accounting assistant for Polish sole traders (KSeF 2.0 e-invoicing under the FA(3) schema, JPK_V7M and JPK_EWP filings, ZUS DRA, PIT-28, a chat-driven LLM agent, around 180 tests).
+- Live products and open tooling include the ticbottoe.lol LLM evaluation arena, the bindaro.io collection platform, the cryptocolony42.com game ecosystem, Keycloak SPI extensions, the @archxs/keycloak-wagmi npm package, trainctl (an MIT-licensed running coach on npm, CLI plus MCP server, plan as code in git), and jdg-ksiegowy: an MIT-licensed, self-hosted accounting assistant for Polish sole traders (KSeF 2.0 e-invoicing under the FA(3) schema, JPK_V7M and JPK_EWP filings, ZUS DRA, PIT-28, a chat-driven LLM agent, around 180 tests).
 - Credentials: TOGAF, CGEIT, PMP, PRINCE2, MSP, Executive MBA. Around 25 years of experience across card payments (PCI-DSS), development banking, regulated fintech, postal services, healthcare and manufacturing.
 - Polish-language versions of every page are at https://archxs.com/pl/ with the same paths.
 - Quoting excerpts with attribution to archxs.com is explicitly permitted, including by systems built on language models.
