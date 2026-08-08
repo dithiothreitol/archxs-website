@@ -410,6 +410,57 @@ TECHNICAL: 16:9, axonometric, thin ink linework, one accent colour.
 ${ARCHXS_STYLE_GUIDE}`,
   },
 
+  {
+    id: "work-grzybiarz",
+    outputPath: "img/work/mushroom-foraging-offline-cv.png",
+    width: 1600,
+    height: 900,
+    aspectRatio: "16:9",
+    prompt: `SCENE: A botanical plate redrawn as an engineering comparison. Two
+mushroom specimens stand side by side on a shared baseline, drawn as precise
+technical objects rather than as naturalistic illustration: thin contour lines,
+one shown in vertical section with hatched cut faces so the stem base and the cup
+at its foot are visible. Between them, a comparison caliper spans from one
+specimen to the other, and three small paired detail circles below magnify the
+features that separate them — the stem base, the gills, the cap surface. On the
+left of the composition, a compact framed viewport with corner registration
+brackets encloses one specimen, as a measuring instrument would frame a subject;
+its frame is drafting red-orange. Dimension lines with end ticks run beneath the
+baseline.
+IMPORTANT: the specimens must read as measured objects on a drafting sheet, calm
+and clinical, never as decorative botanical art and never as a warning sign.
+CRITICAL: the drawing carries no labels, no callouts and no lettering of any
+kind, including inside the detail circles.
+BACKGROUND: drafting paper, faint grid, generous empty space.
+TECHNICAL: 16:9, orthographic elevation with hatched section, thin ink linework,
+one accent colour.
+${ARCHXS_STYLE_GUIDE}`,
+  },
+  {
+    id: "work-formatka",
+    outputPath: "img/work/furniture-cutlist-engine.png",
+    width: 1600,
+    height: 900,
+    aspectRatio: "16:9",
+    prompt: `SCENE: An exploded axonometric drawing of a simple rectangular cabinet
+carcass: side panels, top, bottom, back and a single door front, separated along
+thin dashed assembly guide lines in the order they would go together. Around one
+panel, a rectangular bounding box is drawn as a light dashed cage enclosing it
+completely, with dimension lines and end ticks running along all three of its
+edges — the panel measured inside its envelope. That bounding cage is the single
+drafting red-orange element. Below the exploded carcass lies a flat rectangular
+sheet drawn in plan, divided by straight edge-to-edge cuts into the same panel
+shapes nested efficiently, every cut running the full width or full height of the
+sheet.
+IMPORTANT: the cuts on the flat sheet must all run edge to edge, never stopping
+in the middle; the bounding cage must clearly enclose exactly one panel.
+CRITICAL: the drawing carries no labels, no callouts and no lettering of any kind.
+BACKGROUND: drafting paper, faint grid, wide empty margins.
+TECHNICAL: 16:9, exploded axonometric above, orthographic plan below, dashed
+guide lines, thin ink linework, one accent colour.
+${ARCHXS_STYLE_GUIDE}`,
+  },
+
   // ── Method ──────────────────────────────────────────────────────────────
   {
     id: "method-loop",
