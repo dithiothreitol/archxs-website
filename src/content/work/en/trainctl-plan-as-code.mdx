@@ -1,0 +1,112 @@
+---
+title: "A coach that cites its sources and refuses to invent the rest"
+summary: "How to build a domain engine whose every recommendation is traceable to published research, and which declines to compute the three numbers the market most wants, because the evidence does not support them."
+sector: "Own products, open source"
+period: "2026"
+disclosure: "public"
+metrics:
+  - label: "Traceability"
+    value: "Every rule carries a source ID, ~60 sources"
+  - label: "Two interfaces"
+    value: "CLI and 16 MCP tools over one handler set"
+  - label: "Evidence"
+    value: "525 tests, backtest against 50 real plans"
+capabilities:
+  - "Applied AI"
+  - "Business processes"
+  - "Software delivery"
+stack:
+  - "TypeScript, Node 22"
+  - "pnpm workspace"
+  - "MCP (Model Context Protocol)"
+  - "YAML plan as code, git"
+  - "Constraint solver"
+  - "VDOT, physiological models"
+  - "intervals.icu sync"
+  - "Vitest, MIT licence"
+order: 11
+---
+
+## Context
+
+trainctl is a running coach that lives in a terminal. A training plan is a YAML
+file in a git repository, every session can be asked why it exists, and the same
+engine is exposed to an agent as MCP tools. There is no account, no database and
+no backend: the files in the working directory are the whole system, so the
+history of someone's training is their git history. Published on npm under MIT.
+
+## Problem
+
+Training advice is a domain with an unusual property: the recommendations are
+confident, widely repeated, and frequently not supported by the literature they
+are attributed to. Acute-to-chronic workload ratios, the ten percent rule,
+readiness scores computed from overnight heart rate variability, all of these are
+sold as measurement. Building a coach means deciding, for each of them, whether
+to ship a number that users expect or to say plainly that it cannot be computed.
+
+The second problem is what happens when a language model is added to a domain
+like this. A model asked about a training week will produce paces, volumes and
+justifications with complete fluency, and no way for the reader to tell which of
+them came from anywhere. That is not a coaching product, it is a product that
+sounds like one.
+
+## Approach
+
+The engine is deterministic and the rules are attributed. Every rule carries an
+identifier pointing into a foundations document of roughly sixty sources, and a
+`why` command quotes them back at the user for any given session. Where a value
+has no source, it is labelled in the code as an engineering choice rather than
+dressed as science. Where the evidence is genuinely weak, `why` says so: strength
+work is justified by running economy, not by injury prevention, because the
+meta-analysis in runners came out non-significant.
+
+Three things are refused outright, each with a documented reason. Injury risk is
+not computed, because the load metrics used for it do not survive the
+literature. Readiness from heart rate variability is not computed, because the
+effect size is small and its confidence interval crosses zero; zones come from
+race results instead. And the engine never silently rewrites its own plan:
+`adapt` returns proposals, applying them means editing the profile and
+regenerating, so a change to someone's training is a diff they approved. It also
+refuses rather than guesses at the edges, below four weeks of history it will
+not infer a profile, and with no race result it will not calibrate zones from
+watch estimates.
+
+A corpus of fifty real coaching plans, about thirteen hundred days from one
+coach, sits beside the research as a separate source and is used for house style
+rather than for physiology. It earned its place by refuting assumptions: the
+coach never scheduled a time trial in twelve hundred days, which changed how
+calibration works, and measuring actual long runs removed a solver penalty that
+had been pushing generated plans away from what a coach really does. The corpus
+holds personal data and is not distributed.
+
+The agent integration follows from the same split. Sixteen MCP tools sit over the
+same handlers the CLI calls, so the terminal and the agent cannot disagree, and
+the instruction file written at setup tells the agent to ask before regenerating
+a plan and never to invent numbers. The model contributes conversation and
+context, what the calendar says, why a week was missed; the engine contributes
+every figure.
+
+## Outcome
+
+The product is public on npm and MIT-licensed, with around five hundred tests and
+a backtest against the coaching corpus. It runs as a CLI, as an MCP server for
+any agent client, and it syncs with a training platform and exports to watches.
+Repository: [github.com/dithiothreitol/trainctl](https://github.com/dithiothreitol/trainctl).
+
+The cost of the refusals is honest to state: a competitor that ships an injury
+risk score and a readiness percentage will look more capable in a feature
+comparison. The position taken here is that a number nobody can defend is worse
+than an absence, and the absence is documented so a user can disagree with the
+reasoning rather than with the omission.
+
+## What it taught us
+
+This is the same pattern we apply in regulated systems, arriving from the
+opposite direction. The model handles intent and context; anything a reader might
+act on is produced by deterministic code and carries a citation. That the domain
+here is a training week rather than a tax filing changes the consequences, not
+the architecture.
+
+The second lesson is that refusing to compute is a design output, not a gap. The
+list of things a system declines to produce, with reasons attached, tells a user
+more about its judgement than the feature list does.

@@ -1,0 +1,110 @@
+---
+title: "Trener, który podaje źródła i odmawia zmyślania reszty"
+summary: "Jak zbudować silnik dziedzinowy, w którym każda rekomendacja jest identyfikowalna co do publikacji, i który odmawia policzenia trzech liczb najchętniej kupowanych na rynku, bo dowody ich nie bronią."
+sector: "Produkty własne, open source"
+period: "2026"
+disclosure: "public"
+metrics:
+  - label: "Identyfikowalność"
+    value: "Każda reguła z ID źródła, ~60 pozycji"
+  - label: "Dwa interfejsy"
+    value: "CLI i 16 narzędzi MCP na jednym zestawie handlerów"
+  - label: "Dowody"
+    value: "525 testów, backtest na 50 realnych planach"
+capabilities:
+  - "Applied AI"
+  - "Procesy biznesowe"
+  - "Wytwarzanie oprogramowania"
+stack:
+  - "TypeScript, Node 22"
+  - "pnpm workspace"
+  - "MCP (Model Context Protocol)"
+  - "Plan jako kod w YAML, git"
+  - "Solver ograniczeń"
+  - "VDOT, modele fizjologiczne"
+  - "Synchronizacja z intervals.icu"
+  - "Vitest, licencja MIT"
+order: 11
+---
+
+## Kontekst
+
+trainctl to trener biegowy mieszkający w terminalu. Plan treningowy jest plikiem
+YAML w repozytorium git, każdą jednostkę można zapytać, dlaczego istnieje, a ten
+sam silnik wystawiony jest agentowi jako narzędzia MCP. Nie ma konta, nie ma bazy
+i nie ma backendu: pliki w katalogu roboczym są całym systemem, więc historia
+czyjegoś treningu jest jego historią w git. Opublikowany na npm na licencji MIT.
+
+## Problem
+
+Porada treningowa to dziedzina o nietypowej własności: rekomendacje są pewne
+siebie, szeroko powtarzane i często nie mają oparcia w literaturze, do której się
+odwołują. Stosunek obciążenia ostrego do przewlekłego, reguła dziesięciu procent,
+wskaźniki gotowości liczone z nocnej zmienności rytmu serca, wszystko to sprzedaje
+się jako pomiar. Budowa trenera oznacza rozstrzygnięcie przy każdej z tych rzeczy,
+czy wydać liczbę, której użytkownik oczekuje, czy powiedzieć wprost, że nie da się
+jej policzyć.
+
+Drugi problem pojawia się, kiedy do takiej dziedziny dokłada się model językowy.
+Model zapytany o tydzień treningowy wyprodukuje tempa, objętości i uzasadnienia z
+pełną płynnością, bez żadnej możliwości sprawdzenia przez czytelnika, które z nich
+skądkolwiek pochodzą. To nie jest produkt trenerski, to produkt, który tak brzmi.
+
+## Podejście
+
+Silnik jest deterministyczny, a reguły mają przypisane źródła. Każda reguła niesie
+identyfikator wskazujący do dokumentu podstaw z około sześćdziesięcioma pozycjami,
+a polecenie `why` cytuje je dla dowolnej jednostki. Tam, gdzie wartość nie ma
+źródła, jest w kodzie oznaczona jako decyzja inżynierska, a nie przebrana za naukę.
+Tam, gdzie dowody są naprawdę słabe, `why` to mówi: trening siłowy uzasadniamy
+ekonomią biegu, a nie profilaktyką kontuzji, bo metaanaliza na biegaczach wyszła
+nieistotna statystycznie.
+
+Trzech rzeczy silnik odmawia wprost, każdej z udokumentowanym powodem. Nie liczy
+ryzyka kontuzji, bo używane do tego metryki obciążenia nie wytrzymują konfrontacji
+z literaturą. Nie liczy gotowości ze zmienności rytmu serca, bo wielkość efektu
+jest mała, a przedział ufności przechodzi przez zero; strefy biorą się z wyników
+startowych. I nigdy nie przepisuje po cichu własnego planu: `adapt` zwraca
+propozycje, a ich zastosowanie oznacza edycję profilu i ponowne wygenerowanie,
+więc zmiana w czyimś treningu jest diffem, który ten ktoś zatwierdził. Na
+krawędziach też raczej odmawia, niż zgaduje: poniżej czterech tygodni historii nie
+wyprowadzi profilu, a bez wyniku startowego nie skalibruje stref z odczytów zegarka.
+
+Korpus pięćdziesięciu realnych planów trenerskich, około tysiąca trzystu dni od
+jednego trenera, stoi obok badań jako osobne źródło i służy stylowi, a nie
+fizjologii. Zapracował na swoje miejsce, obalając założenia: trener przez tysiąc
+dwieście dni ani razu nie zaplanował sprawdzianu na czas, co zmieniło sposób
+kalibracji, a zmierzenie rzeczywistych wybiegań usunęło karę w solverze, która
+spychała generowane plany od tego, co trener naprawdę robi. Korpus zawiera dane
+osobowe i nie jest dystrybuowany.
+
+Integracja z agentem wynika z tego samego podziału. Szesnaście narzędzi MCP stoi
+na tych samych handlerach, które wywołuje CLI, więc terminal i agent nie mogą się
+rozjechać, a plik instrukcji pisany przy inicjalizacji każe agentowi pytać przed
+przegenerowaniem planu i nigdy nie wymyślać liczb. Model wnosi rozmowę i kontekst,
+co mówi kalendarz, dlaczego tydzień wypadł; silnik wnosi każdą liczbę.
+
+## Rezultat
+
+Produkt jest publiczny na npm na licencji MIT, ma około pięciuset testów i backtest
+na korpusie trenerskim. Działa jako CLI, jako serwer MCP dla dowolnego klienta
+agentowego, synchronizuje się z platformą treningową i eksportuje na zegarki.
+Repozytorium: [github.com/dithiothreitol/trainctl](https://github.com/dithiothreitol/trainctl).
+
+Koszt tych odmów warto nazwać uczciwie: konkurent, który wyda wskaźnik ryzyka
+kontuzji i procent gotowości, wypadnie lepiej w porównaniu funkcji. Przyjęte tu
+stanowisko brzmi, że liczba, której nikt nie potrafi obronić, jest gorsza niż jej
+brak, a ten brak jest opisany, więc użytkownik może się spierać z uzasadnieniem, a
+nie z pominięciem.
+
+## Wnioski
+
+To ten sam wzorzec, który stosujemy w systemach regulowanych, dojście do niego
+tylko biegnie z przeciwnej strony. Model bierze intencję i kontekst; wszystko, na
+czym czytelnik mógłby oprzeć działanie, produkuje deterministyczny kod i opatruje
+cytowaniem. To, że dziedziną jest tu tydzień treningowy, a nie deklaracja
+podatkowa, zmienia konsekwencje, a nie architekturę.
+
+Drugi wniosek: odmowa policzenia jest wynikiem projektowym, a nie luką. Lista
+rzeczy, których system nie wyprodukuje, z podanymi powodami, mówi użytkownikowi o
+jego osądzie więcej niż lista funkcji.

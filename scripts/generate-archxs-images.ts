@@ -386,6 +386,30 @@ TECHNICAL: 16:9, axonometric, thin ink linework, one accent colour.
 ${ARCHXS_STYLE_GUIDE}`,
   },
 
+  {
+    id: "work-trainctl",
+    outputPath: "img/work/trainctl-plan-as-code.png",
+    width: 1600,
+    height: 900,
+    aspectRatio: "16:9",
+    prompt: `SCENE: An axonometric drawing of a planning rail: a long horizontal
+track carrying a row of small identical plates standing upright in sequence, like
+cards in a filing rail. From several plates, thin leader lines drop down to a neat
+stack of closed bound volumes resting on the table below, tying each plate to a
+source. One plate stands slightly proud of the row and is outlined in drafting
+red-orange. To the right, mounted on a small upright panel, sit three circular
+instrument dials: one has a needle and a graduated scale, the other two have no
+needle at all and are covered by plain blank cover plates fixed with small screws
+— instruments deliberately not fitted.
+IMPORTANT: the two capped dials must read as intentionally blanked, not broken;
+the volumes must read as closed reference books, plain objects with no cover art.
+CRITICAL: the drawing carries no labels, no callouts and no lettering of any
+kind, including on the dial faces, the plates and the book spines.
+BACKGROUND: drafting paper, faint grid, generous empty space.
+TECHNICAL: 16:9, axonometric, thin ink linework, one accent colour.
+${ARCHXS_STYLE_GUIDE}`,
+  },
+
   // ── Method ──────────────────────────────────────────────────────────────
   {
     id: "method-loop",
