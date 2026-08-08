@@ -54,7 +54,7 @@
     },
     "practiceIntro": {
       "label": "Obszary praktyki",
-      "title": "Pięć rodzajów problemów, przy których byliśmy wystarczająco długo, żeby znać ich zwyczajowe miejsca pęknięć.",
+      "title": "Siedem rodzajów problemów, przy których byliśmy wystarczająco długo, żeby znać ich zwyczajowe miejsca pęknięć.",
       "lead": "Nie prowadzimy katalogu usług. Każdy obszar opisujemy tak samo: jak na niego patrzymy, co konkretnie zbudowaliśmy i co z tego wynika, z nazwami standardów i liczbami, bo ogólniki nie niosą odpowiedzialności.",
       "evidenceLabel": "Dowód"
     },
@@ -143,7 +143,7 @@
       "items": [
         {
           "q": "Czym dokładnie zajmuje się ArchXS?",
-          "a": "Doradztwem architektonicznym i wytwarzaniem oprogramowania w pięciu obszarach: architektura korporacyjna, procesy biznesowe i ich automatyzacja, cyberbezpieczeństwo i tożsamość cyfrowa, applied AI oraz wytwarzanie systemów. W praktyce oznacza to trzy rodzaje pracy: ocenić stan i zaproponować kierunek, prowadzić decyzje technologiczne przez dłuższy czas albo zbudować system i przekazać go zespołowi klienta."
+          "a": "Doradztwem architektonicznym i wytwarzaniem oprogramowania w siedmiu obszarach: architektura korporacyjna, procesy biznesowe i ich automatyzacja, cyberbezpieczeństwo i tożsamość cyfrowa, applied AI, physical AI na hali produkcyjnej, blockchain i Web3 oraz wytwarzanie systemów. W praktyce oznacza to trzy rodzaje pracy: ocenić stan i zaproponować kierunek, prowadzić decyzje technologiczne przez dłuższy czas albo zbudować system i przekazać go zespołowi klienta."
         },
         {
           "q": "Czym jest architektura na żądanie?",

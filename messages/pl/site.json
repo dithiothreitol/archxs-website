@@ -2,12 +2,12 @@
   "meta": {
     "site": {
       "title": "ArchXS: dokładnie tyle architektury, ile trzeba",
-      "description": "Zwinna praktyka doradczo-inżynierska pracująca metodą architektury na żądanie: nakład architektoniczny proporcjonalny do ryzyka, reszta wysiłku w działający system. Architektura korporacyjna, procesy, bezpieczeństwo, applied AI, wytwarzanie oprogramowania.",
-      "keywords": "architektura na żądanie, architecture on demand, architecture as a service, architektura korporacyjna, doradztwo IT, enterprise architecture, applied AI, wdrożenie AI w firmie, automatyzacja procesów biznesowych, cyberbezpieczeństwo, tożsamość cyfrowa, Keycloak, KSeF, ISA-95, governance IT, fractional CTO, przegląd architektury"
+      "description": "Zwinna praktyka doradczo-inżynierska pracująca metodą architektury na żądanie: nakład architektoniczny proporcjonalny do ryzyka, reszta wysiłku w działający system. Architektura korporacyjna, procesy, bezpieczeństwo, applied AI, physical AI, blockchain i Web3, wytwarzanie oprogramowania.",
+      "keywords": "architektura na żądanie, architecture on demand, architecture as a service, architektura korporacyjna, doradztwo IT, enterprise architecture, applied AI, wdrożenie AI w firmie, automatyzacja procesów biznesowych, cyberbezpieczeństwo, tożsamość cyfrowa, Keycloak, KSeF, ISA-95, robotyka i physical AI, blockchain, Web3, smart kontrakty, governance IT, fractional CTO, przegląd architektury"
     },
     "practice": {
       "title": "Obszary praktyki",
-      "description": "Pięć obszarów, w których pracujemy: architektura korporacyjna, procesy biznesowe, cyberbezpieczeństwo i tożsamość, applied AI, wytwarzanie oprogramowania."
+      "description": "Siedem obszarów, w których pracujemy: architektura korporacyjna, procesy biznesowe, cyberbezpieczeństwo i tożsamość, applied AI, physical AI, blockchain i Web3, wytwarzanie oprogramowania."
     },
     "work": {
       "title": "Realizacje",
