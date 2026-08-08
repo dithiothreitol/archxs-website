@@ -1,0 +1,109 @@
+---
+title: "An assistant whose wrong answer can poison somebody"
+summary: "How to build on-device computer vision for mushroom foraging where the model must run with no signal, must know when to say nothing, and must never let a confident number stand in for a decision the user has to make."
+sector: "Own products, mobile and computer vision"
+period: "2026–2027"
+disclosure: "public"
+metrics:
+  - label: "Reference data"
+    value: "125 species, 130 toxic lookalike pairs"
+  - label: "Offline requirement"
+    value: "Inference, maps and database on the phone"
+  - label: "State"
+    value: "In development, subsystems shipped"
+capabilities:
+  - "Applied AI"
+  - "Cybersecurity & identity"
+  - "Software delivery"
+stack:
+  - "React Native, Expo SDK 54"
+  - "Tamagui, Next.js"
+  - "ExecuTorch (on-device)"
+  - "YOLO segmentation, BioCLIP"
+  - "MapLibre, PMTiles offline"
+  - "op-sqlite, Drizzle"
+  - "Quarkus, Keycloak SPI"
+  - "H3, Argon2id"
+order: 12
+---
+
+## Context
+
+Grzybiarz is our own product: a mobile application that helps a forager spot fruiting bodies
+in forest litter, and assists in identifying a species by comparing it against the toxic
+species it can be confused with. It is under development, with a launch targeted for autumn
+2027; several subsystems are finished and running, and the on-device vision pipeline is the
+part still being closed.
+
+## Problem
+
+Two constraints shape everything, and both are unusual.
+
+The forest has no signal. Not "poor connectivity", none: the moment the product needs a
+server to answer, it is useless exactly where it is used. So inference, the map, the species
+reference and the whole session record have to live on the phone.
+
+And the cost of a wrong answer is not a bad user experience. Confusing a parasol mushroom
+with a death cap kills people. That rules out the ordinary shape of a consumer AI feature,
+in which a model returns its best guess with a percentage next to it and the interface makes
+the percentage look like knowledge.
+
+There is a third constraint that only appears once foragers are involved. Nobody shares
+where they pick. A social feature that publishes locations is a feature nobody will switch
+on, and one that quietly publishes them is a betrayal.
+
+## Approach
+
+The product is positioned as an assistant, not an oracle, and that is enforced in the
+architecture rather than in a disclaimer. Every identification is shown with a calibrated
+confidence, alongside the toxic species it can be confused with and the morphological checks
+that separate them, dig up the stem base and look for a volva, check the gill colour. The
+reference data is built for exactly this: about a hundred and twenty-five species and a
+hundred and thirty confusion pairs, each with the distinguishing features written out and a
+severity marking for the ones that are lethal. The model narrows the question; the person
+answers it, holding the mushroom.
+
+Calibration is treated as a feature: temperature scaling, an explicit reject option and
+out-of-distribution detection, so that "I do not know" is a first-class output rather than
+a low bar on a chart. A photograph of something the model never trained on has to fail
+loudly, not land on the nearest species.
+
+The on-device pipeline produced the most instructive engineering result. Quantising the
+detector to INT8 would have halved the model, and it does not work here: the head emits
+boxes, confidences and mask coefficients concatenated into one tensor, so they share a
+quantisation scale. The pixel-valued boxes force a step of roughly 2.5, and every confidence
+in the zero-to-one range then rounds to zero. That was measured on the exported graph, not
+assumed, and the answer was to ship fp32 with a smaller backbone rather than a quantised
+model that returns nothing.
+
+Privacy was designed around what foragers actually do. There are no accounts: identity is
+anonymous, with a recovery code hashed with Argon2id and burned on first use, implemented as
+a Keycloak SPI so the backend still has one identity provider rather than a homemade one.
+GPS is stripped from photo EXIF before the file is stored. A find shared publicly is jittered
+by up to two hundred metres server-side and reduced to an H3 hex cell, so the community map
+shows where the season is running without showing anyone's spot.
+
+## Outcome
+
+What is finished and running: the foraging session subsystem with GPS tracking, background
+capture and personal records; fully offline Polish maps through MapLibre and PMTiles; the
+local database; the community backend on Quarkus with anonymous authentication; and about
+thirty cross-platform screens shared between the mobile and web applications. Around eleven
+hundred TypeScript tests and a Java test suite cover it.
+
+What is not finished, and should be said plainly, is the part the product is named for. The
+detector and classifier are integrated and building on device, the export toolchain is
+decided, and the frame-rate acceptance measurement on physical hardware is still outstanding.
+A vision feature that has not been measured on a real phone in real light is a plan, not a
+capability.
+
+## What it taught us
+
+Where a wrong answer is dangerous, the useful question is not how to raise accuracy but what
+the system does when it is unsure. An abstention that is designed, calibrated and visible is
+worth more than several points of top-1 accuracy, because the user's decision is the one that
+matters and the interface either supports it or replaces it.
+
+The second lesson is narrower and cost us time: quantisation is not a setting. It is a
+numerical decision about a specific graph, and it has to be measured on that graph. Ours
+failed for a reason nothing in the documentation would have warned us about.

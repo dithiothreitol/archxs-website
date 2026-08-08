@@ -1,0 +1,105 @@
+---
+title: "Silnik geometryczny, którego testy regresji da się naprawdę zrecenzować"
+summary: "Jak zbudować silnik dziedzinowy do formatek meblowych, w którym bramką poprawności jest złoty test, który ktoś faktycznie przeczyta, a nie diff macierzy transformacji zatwierdzany bez czytania."
+sector: "Produkty własne, silnik dziedzinowy"
+period: "2026"
+disclosure: "public"
+metrics:
+  - label: "Bramka poprawności"
+    value: "Złote testy, nigdy nieregenerowane w CI"
+  - label: "Kontrakt silnika"
+    value: "Zapisana intencja, geometria zawsze liczona od nowa"
+  - label: "Stan"
+    value: "Wczesna faza, silnik i bramka stoją"
+capabilities:
+  - "Wytwarzanie oprogramowania"
+  - "Procesy biznesowe"
+  - "Architektura korporacyjna"
+stack:
+  - "TypeScript strict, Zod"
+  - "pnpm workspace, Turborepo"
+  - "Next.js 16, Expo SDK 57"
+  - "Tamagui"
+  - "Vitest, złote testy"
+  - "Optymalizacja rozkroju gilotynowego"
+  - "Rejestry decyzji (ADR)"
+order: 13
+# Świadomie wstrzymane: produkt nie ma jeszcze wydania, a nazwa jest robocza.
+# Zmienić na false, kiedy będzie gotowy do pokazania.
+draft: true
+---
+
+## Kontekst
+
+Formatka to nasz własny produkt we wczesnej fazie: aplikacja web i mobile do projektowania
+mebli z płyt meblowych. Parametryczne moduły składa się w zabudowę, silnik wyprowadza wymiary
+formatek z okleiną i usłojeniem według polskiej praktyki stolarskiej, rozkrój jest
+optymalizowany pod cięcie gilotynowe, a wyjściem jest zestawienie, z którego stolarnia
+wyceni, plus instrukcja montażu.
+
+## Problem
+
+Widocznym produktem jest edytor. Prawdziwym produktem jest silnik: na wejściu opis modułu, na
+wyjściu formatki z wymiarami, okleiną, usłojeniem, połączeniami, okuciami i operacjami
+obróbki. Wszystko, za co użytkownik ostatecznie płaci, zamówione płyty, wykonane cięcia,
+nawiercone otwory, wynika z tego obliczenia, a błąd w nim nie jest usterką renderowania. Jest
+formatką krótszą o dwa milimetry, co w meblarstwie nazywa się odpadem.
+
+To czyni testy regresji całą stawką i to jest miejsce, w którym taki projekt zwykle cicho
+przegrywa. Naturalny złoty test porównuje strukturę wyjścia silnika, a dla frontu oznacza to
+transform w rodzaju: obrót dziewięćdziesiąt wokół x, dziewięćdziesiąt wokół z, pozycja 598,
+0, 2. Człowiek recenzujący diff takich liczb nie odróżni zmiany poprawnej od błędnej. Więc
+diff zostaje zatwierdzony, bo testy są czerwone, a termin prawdziwy, i od tej chwili bramka
+jest ozdobą.
+
+## Podejście
+
+Zrobiliśmy oczekiwany wynik czytelnym. Obok transformu każdy plik złotego testu zapisuje
+prostopadłościan otaczający każdą formatkę: x od 2 do 598, y od minus 18 do 0, z od 2 do 718.
+Człowiek sprawdza to wzrokiem w jakieś pięć sekund i od razu wie, czy formatka nie przejechała
+przez korpus. Maszyna porównuje transform, człowiek recenzuje prostopadłościan, a służy im ten
+sam plik. Brakujące okucie i operacja, która wypadła po złej stronie podziału klient–stolarnia,
+siedzą w tym samym pliku, bo są błędem tej samej wagi co zły wymiar i tak samo mają dawać
+czerwony test.
+
+CI nigdy nie regeneruje plików złotych testów. Ich aktualizacja to świadome polecenie
+lokalne, którego wynik ktoś recenzuje, i jest to jedyny układ, w którym złoty test cokolwiek
+znaczy; regeneracja w CI zamienia bramkę w pieczątkę utrwalającą to, co kod akurat robi.
+
+Kontrakt danych rozstrzygnęliśmy wcześnie i zapisali jako rejestr decyzji. Plik projektu
+przechowuje wyłącznie intencję, układy i moduły, plus snapshoty użytych katalogów. Formatki i
+cechy nie są zapisywane nigdy, są wynikiem silnika, liczonym za każdym razem od nowa. To
+usuwa całą klasę błędów, bo geometria zapisana i geometria policzona nie mogą się rozjechać,
+i sprawia, że stary projekt korzysta z poprawki w silniku, zamiast konserwować błąd, z którym
+został zapisany. Typy dziedzinowe mieszkają w jednym schemacie Zod dzielonym przez aplikację
+webową, mobilną i silnik, więc istnieje jedna definicja tego, czym jest formatka, a nie trzy
+zgodne przez pewien czas.
+
+Tor AI planowany po klinie trzyma tę samą regułę, co reszta praktyki: zdjęcie pomieszczenia i
+opis dają warianty umeblowania, a te warianty są zawsze renderem modelu parametrycznego ze
+stylizacją, nigdy wygenerowanym obrazem. Obraz, którego użytkownik nie zamieni potem na
+zestawienie formatek, to obraz, który zmarnował mu popołudnie.
+
+## Rezultat
+
+Silnik, pakiet geometrii, schemat i bramka złotych testów istnieją i działają w CI, z zestawem
+testów liczącym około dwóch tysięcy asercji i rejestrami decyzji obejmującymi układ
+współrzędnych, konwencję UV na ścianach formatki, kontrakt silnika oraz podział operacji na
+te po stronie klienta i te po stronie stolarni. Wydania jeszcze nie ma, a ten opis jest tu ze
+względu na metodę, nie na kamień milowy.
+
+Koszt kontraktu na samą intencję warto nazwać uczciwie: każde otwarcie projektu jest
+przeliczeniem, a zmiana w silniku zmienia stare projekty. Takie jest zamierzone zachowanie i
+oznacza, że zmiany w silniku wymagają tej samej dyscypliny przeglądu co migracja.
+
+## Wnioski
+
+Bramka testowa jest warta tyle, ile zdolność recenzenta, żeby się z nią nie zgodzić. Jeśli
+oczekiwane wartości są nieczytelne, przegląd degeneruje się do zatwierdzania tego, co kod
+wyprodukował, a zestaw testów przechodzi z dowodu w rytuał, choć nikt takiej decyzji nie
+podjął. Uczynienie oczekiwanego wyniku czytelnym dla człowieka kosztowało niewiele i jest
+powodem, dla którego ta bramka działa.
+
+Drugi wniosek: zapisywanie danych wyprowadzonych jest decyzją, a nie ustawieniem domyślnym.
+Zapisz intencję, resztę policz od nowa, a pytanie „dlaczego ten projekt nie zgadza się z
+silnikiem" przestaje istnieć.

@@ -1,0 +1,104 @@
+---
+title: "A geometry engine whose regression tests a human can actually review"
+summary: "How to build a domain engine for furniture panels where the correctness gate is a golden test somebody will really read, instead of a diff of transformation matrices that gets approved unread."
+sector: "Own products, domain engine"
+period: "2026"
+disclosure: "public"
+metrics:
+  - label: "Correctness gate"
+    value: "Golden tests, never regenerated in CI"
+  - label: "Engine contract"
+    value: "Intent stored, geometry always recomputed"
+  - label: "State"
+    value: "Early phase, engine and gate in place"
+capabilities:
+  - "Software delivery"
+  - "Business processes"
+  - "Enterprise architecture"
+stack:
+  - "TypeScript strict, Zod"
+  - "pnpm workspace, Turborepo"
+  - "Next.js 16, Expo SDK 57"
+  - "Tamagui"
+  - "Vitest, golden tests"
+  - "Guillotine cutting optimisation"
+  - "Decision records (ADR)"
+order: 13
+# Held back deliberately: the product has no release yet and the working name
+# is not final. Flip to false when it is ready to be shown.
+draft: true
+---
+
+## Context
+
+Formatka is our own product, in an early phase: a web and mobile application for designing
+furniture out of board panels. Parametric modules are assembled into a fitted unit, the
+engine derives the panel sizes with edge banding and grain direction as Polish carpentry
+practice requires, the cutting is optimised for guillotine saws, and the output is a sheet a
+workshop can quote from plus an assembly guide.
+
+## Problem
+
+The visible product is an editor. The real product is an engine: a module description in,
+a set of panels with dimensions, edges, grain, joints, hardware and machining operations out.
+Everything a user ends up paying for, boards ordered, cuts made, holes drilled, is derived
+from that computation, and an error in it is not a rendering glitch. It is a panel cut two
+millimetres short, which in furniture means scrap.
+
+That makes regression testing the whole game, and it is where this kind of project usually
+fails quietly. The natural golden test compares the engine's output structure, which for a
+door front means a transform such as rotate ninety about x, ninety about z, positioned at
+598, 0, 2. A human reviewing a diff of those numbers cannot tell a correct change from a
+wrong one. So the diff gets approved because the tests are red and the deadline is real, and
+from that moment the gate is decorative.
+
+## Approach
+
+We made the expected output readable. Alongside the transform, every golden file records the
+axis-aligned bounding box of each panel: x from 2 to 598, y from minus 18 to 0, z from 2 to
+718. A person checks that by eye in about five seconds, and knows immediately whether a panel
+just moved through the carcass. The machine compares the transform, the human reviews the
+bounding box, and the same file serves both. Missing hardware and a machining operation that
+landed on the wrong side of the client-versus-workshop split are recorded in the same file,
+because they are errors of the same weight as a wrong dimension and must go red the same way.
+
+CI never regenerates golden files. Updating them is an explicit local command whose output a
+person reviews, which is the only arrangement under which a golden test means anything;
+regeneration in CI turns the gate into a stamp that records whatever the code currently does.
+
+The data contract was decided early and written down as a decision record. The project file
+stores intent only, layouts and modules, plus snapshots of the catalogues used. Panels and
+features are never stored, they are the engine's result, recomputed every time. That removes
+a whole class of defect, since stored geometry and recomputed geometry cannot drift apart,
+and it means an old project benefits from an engine fix instead of preserving the bug it was
+saved with. The domain types live in one Zod schema shared by the web application, the mobile
+application and the engine, so there is one definition of what a panel is rather than three
+that agree for a while.
+
+The AI track planned after the wedge follows the same rule as the rest of the practice: a
+photograph of a room and a description produce furnishing variants, and those variants are
+always renders of the parametric model with styling applied, never generated imagery. A
+picture a user cannot then turn into a cut list is a picture that wastes their afternoon.
+
+## Outcome
+
+The engine, the geometry package, the schema and the golden gate exist and run in CI, with a
+test suite of a couple of thousand assertions and decision records covering the coordinate
+system, the panel-face UV convention, the engine contract and the split of operations between
+what a client does and what a workshop does. There is no release yet, and the case study is
+here for the method rather than for the milestone.
+
+The cost of the intent-only contract is honest to state: every open of a project is a
+recomputation, and a change to the engine changes old projects. That is the intended
+behaviour, and it means engine changes need the same review discipline as a migration.
+
+## What it taught us
+
+A test gate is only as good as a reviewer's ability to disagree with it. If the expected
+values are unreadable, the review degenerates into approving whatever the code produced, and
+the suite goes from evidence to ritual without anyone deciding to let it. Making the expected
+output legible to a human was a small engineering cost and it is the reason the gate works.
+
+The second lesson is that storing derived data is a decision, not a default. Store the
+intent, recompute the rest, and the question "why does this project disagree with the engine"
+stops existing.

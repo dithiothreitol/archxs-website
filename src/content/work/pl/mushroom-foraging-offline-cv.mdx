@@ -1,0 +1,108 @@
+---
+title: "Asystent, którego błędna odpowiedź może kogoś otruć"
+summary: "Jak zbudować wizję komputerową działającą na urządzeniu, kiedy model musi pracować bez zasięgu, musi umieć nie odpowiedzieć i nie może pozwolić, by pewna siebie liczba zastąpiła decyzję należącą do użytkownika."
+sector: "Produkty własne, mobile i wizja komputerowa"
+period: "2026–2027"
+disclosure: "public"
+metrics:
+  - label: "Dane referencyjne"
+    value: "125 gatunków, 130 par mylących"
+  - label: "Wymóg offline"
+    value: "Inferencja, mapy i baza na telefonie"
+  - label: "Stan"
+    value: "W budowie, podsystemy wdrożone"
+capabilities:
+  - "Applied AI"
+  - "Cyberbezpieczeństwo i tożsamość"
+  - "Wytwarzanie oprogramowania"
+stack:
+  - "React Native, Expo SDK 54"
+  - "Tamagui, Next.js"
+  - "ExecuTorch (on-device)"
+  - "Segmentacja YOLO, BioCLIP"
+  - "MapLibre, PMTiles offline"
+  - "op-sqlite, Drizzle"
+  - "Quarkus, Keycloak SPI"
+  - "H3, Argon2id"
+order: 12
+---
+
+## Kontekst
+
+Grzybiarz to nasz własny produkt: aplikacja mobilna, która pomaga wypatrzeć owocniki w
+ściółce leśnej i wspiera identyfikację gatunku przez porównanie z gatunkami trującymi,
+z którymi da się go pomylić. Jest w budowie, z premierą celowaną na jesień 2027; kilka
+podsystemów jest skończonych i działa, a domykaną częścią jest potok wizyjny na urządzeniu.
+
+## Problem
+
+Wszystko kształtują dwa ograniczenia i oba są nietypowe.
+
+W lesie nie ma zasięgu. Nie „słaby", tylko żadnego: w momencie, w którym produkt potrzebuje
+serwera, żeby odpowiedzieć, jest bezużyteczny dokładnie tam, gdzie się go używa. Więc
+inferencja, mapa, baza gatunków i cały zapis sesji muszą mieszkać na telefonie.
+
+A kosztem złej odpowiedzi nie jest zepsute wrażenie z użytkowania. Pomylenie czubajki kani z
+muchomorem sromotnikowym zabija. To wyklucza zwykły kształt konsumenckiej funkcji AI, w
+którym model zwraca najlepsze przypuszczenie z procentem obok, a interfejs sprawia, że ten
+procent wygląda na wiedzę.
+
+Jest trzecie ograniczenie, które pojawia się dopiero przy grzybiarzach. Nikt nie zdradza
+swoich miejsc. Funkcja społecznościowa publikująca lokalizacje to funkcja, której nikt nie
+włączy, a taka, która publikuje je po cichu, jest zdradą.
+
+## Podejście
+
+Produkt jest ustawiony jako asystent, nie wyrocznia, i pilnuje tego architektura, a nie
+formułka o odpowiedzialności. Każda identyfikacja pokazywana jest ze skalibrowaną pewnością,
+obok gatunków trujących, z którymi da się ją pomylić, i cech morfologicznych, które je
+rozdzielają: odkop podstawę trzonu i sprawdź pochwę, zobacz kolor blaszek. Dane referencyjne
+są zbudowane dokładnie pod to: około stu dwudziestu pięciu gatunków i sto trzydzieści par
+mylących, każda z wypisanymi cechami różnicującymi i oznaczeniem wagi dla tych śmiertelnych.
+Model zawęża pytanie; odpowiada człowiek, który trzyma grzyba w ręku.
+
+Kalibracja jest traktowana jak funkcja: temperature scaling, jawna opcja odmowy i wykrywanie
+próbek spoza rozkładu, żeby „nie wiem" było wynikiem pierwszej kategorii, a nie niskim
+słupkiem na wykresie. Zdjęcie czegoś, czego model nigdy nie widział w treningu, ma polec
+głośno, a nie wylądować na najbliższym gatunku.
+
+Najbardziej pouczający wynik inżynierski dał potok on-device. Kwantyzacja detektora do INT8
+zmniejszyłaby model o połowę i tutaj nie działa: głowa emituje pudełka, pewności i
+współczynniki masek sklejone w jeden tensor, więc dzielą skalę kwantyzacji. Pudełka w
+pikselach narzucają krok około 2,5, po czym każda pewność z zakresu od zera do jedynki
+zaokrągla się do zera. Zostało to zmierzone na wyeksportowanym grafie, a nie założone, i
+odpowiedzią było wydanie fp32 na mniejszym backbone zamiast skwantyzowanego modelu, który
+nie zwraca nic.
+
+Prywatność zaprojektowaliśmy wokół tego, co grzybiarze naprawdę robią. Nie ma kont: tożsamość
+jest anonimowa, z kodem odzyskiwania haszowanym Argon2id i spalanym przy pierwszym użyciu,
+zrobionym jako SPI Keycloaka, żeby backend nadal miał jednego dostawcę tożsamości, a nie
+własnoręcznie zszytego. GPS jest usuwany z EXIF zdjęcia przed zapisem pliku. Znalezisko
+udostępnione publicznie jest po stronie serwera przesuwane losowo do dwustu metrów i
+sprowadzane do komórki H3, więc mapa społeczności pokazuje, gdzie idzie sezon, nie pokazując
+niczyjego miejsca.
+
+## Rezultat
+
+Skończone i działające jest: podsystem sesji grzybobrania z śledzeniem GPS, rejestracją w tle
+i rekordami osobistymi; w pełni offline'owe mapy Polski na MapLibre i PMTiles; lokalna baza;
+backend społecznościowy na Quarkusie z anonimowym uwierzytelnieniem; oraz około trzydziestu
+ekranów cross-platform dzielonych przez aplikację mobilną i webową. Pokrywa to blisko tysiąc
+sto testów TypeScript i zestaw testów po stronie Javy.
+
+Nieskończona, i trzeba to powiedzieć wprost, jest ta część, od której produkt bierze nazwę.
+Detektor i klasyfikator są zintegrowane i budują się na urządzeniu, toolchain eksportu jest
+rozstrzygnięty, a pomiar akceptacyjny liczby klatek na fizycznym sprzęcie wciąż przed nami.
+Funkcja wizyjna niezmierzona na prawdziwym telefonie w prawdziwym świetle jest planem, a nie
+zdolnością.
+
+## Wnioski
+
+Tam, gdzie błędna odpowiedź jest niebezpieczna, użyteczne pytanie nie brzmi, jak podnieść
+trafność, tylko co system robi, kiedy nie jest pewny. Zaprojektowana, skalibrowana i widoczna
+odmowa jest warta więcej niż kilka punktów trafności top-1, bo to decyzja użytkownika jest tą
+istotną, a interfejs albo ją wspiera, albo ją zastępuje.
+
+Drugi wniosek jest węższy i kosztował nas czas: kwantyzacja nie jest ustawieniem. Jest
+decyzją numeryczną dotyczącą konkretnego grafu i na tym grafie trzeba ją zmierzyć. Nasza
+poległa z powodu, przed którym nic w dokumentacji by nie ostrzegło.
