@@ -54,7 +54,7 @@
     },
     "practiceIntro": {
       "label": "Practice areas",
-      "title": "Five kinds of problem we have stayed with long enough to know their usual breaking points.",
+      "title": "Seven kinds of problem we have stayed with long enough to know their usual breaking points.",
       "lead": "There is no service catalogue here. Each area is described the same way: how we look at it, what we have actually built, and what follows, with named standards and numbers, because generalities carry no accountability.",
       "evidenceLabel": "Evidence"
     },
@@ -143,7 +143,7 @@
       "items": [
         {
           "q": "What exactly does ArchXS do?",
-          "a": "Architecture advisory and software delivery across five areas: enterprise architecture, business processes and their automation, cybersecurity and digital identity, applied AI, and building systems. In practice that means three kinds of work: assess the current state and propose a direction, steer technology decisions over a longer period, or build a system and hand it to the client's team."
+          "a": "Architecture advisory and software delivery across seven areas: enterprise architecture, business processes and their automation, cybersecurity and digital identity, applied AI, physical AI on the plant floor, blockchain and Web3, and building systems. In practice that means three kinds of work: assess the current state and propose a direction, steer technology decisions over a longer period, or build a system and hand it to the client's team."
         },
         {
           "q": "What is architecture on demand?",

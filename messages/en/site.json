@@ -2,12 +2,12 @@
   "meta": {
     "site": {
       "title": "ArchXS: exactly as much architecture as needed",
-      "description": "A boutique advisory and engineering practice built on architecture on demand: architectural effort proportional to risk, the rest of the effort in a working system. Enterprise architecture, processes, security, applied AI, software delivery.",
-      "keywords": "architecture on demand, architecture as a service, just enough architecture, enterprise architecture, IT advisory, architecture review, applied AI, AI adoption, business process automation, cybersecurity architecture, digital identity, Keycloak SPI, IT governance, fractional CTO, ISO 42010, ArchiMate"
+      "description": "A boutique advisory and engineering practice built on architecture on demand: architectural effort proportional to risk, the rest of the effort in a working system. Enterprise architecture, processes, security, applied AI, physical AI, blockchain and Web3, software delivery.",
+      "keywords": "architecture on demand, architecture as a service, just enough architecture, enterprise architecture, IT advisory, architecture review, applied AI, AI adoption, business process automation, cybersecurity architecture, digital identity, Keycloak SPI, physical AI, industrial robotics, blockchain, Web3, smart contracts, IT governance, fractional CTO, ISO 42010, ArchiMate"
     },
     "practice": {
       "title": "Practice areas",
-      "description": "The five areas we work in: enterprise architecture, business processes, cybersecurity and identity, applied AI, and software delivery."
+      "description": "The seven areas we work in: enterprise architecture, business processes, cybersecurity and identity, applied AI, physical AI, blockchain and Web3, and software delivery."
     },
     "work": {
       "title": "Work",

@@ -7,6 +7,8 @@ export const PRACTICE_SLUGS = [
   "business-process-automation",
   "cybersecurity-identity",
   "applied-ai",
+  "physical-ai",
+  "blockchain-web3",
   "software-delivery",
 ] as const;
 

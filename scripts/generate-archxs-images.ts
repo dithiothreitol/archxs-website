@@ -177,6 +177,67 @@ TECHNICAL: 16:9, axonometric, thin ink linework, one accent colour.
 ${ARCHXS_STYLE_GUIDE}`,
   },
   {
+    id: "physical-ai",
+    outputPath: "img/practice/physical-ai.png",
+    width: 1600,
+    height: 900,
+    aspectRatio: "16:9",
+    prompt: `SCENE: An axonometric drawing of a closed working loop laid out on a
+drafting table. At the upper left, a hand-operated leader linkage with a simple
+grip — an articulated arm, no hand and no figure drawn — is coupled by a thin
+dashed line to a follower arm of identical geometry that repeats its pose. That
+follower stands inside a sectioned enclosure with hatched cut faces and is drawn
+entirely in fine dashed line, a rehearsal rather than a real machine. To the
+right, an arm of exactly the same geometry appears again, this time in solid
+line, mounted on a plain bench beside a small stack of flat parts. A caliper is
+set between the dashed pose and the solid pose, measuring the difference between
+them; the caliper is the single drafting red-orange element. A closed track of
+linked rods and pivots runs around all the stations and returns to the leader
+linkage, so the whole drawing reads as one repeating cycle, with a small
+recording spool mounted on the track between the enclosure and the bench.
+IMPORTANT: the dashed arm must read as a rehearsal of the solid arm, identical in
+geometry. No humanoid robots, no faces, no factory scenery, nothing sci-fi.
+CRITICAL: the drawing carries no labels, no callouts and no lettering of any kind.
+BACKGROUND: drafting paper, faint grid, generous empty space.
+TECHNICAL: 16:9, axonometric, hatched cut faces on the enclosure, dashed guide
+lines, thin ink linework, one accent colour.
+${ARCHXS_STYLE_GUIDE}`,
+  },
+  {
+    id: "blockchain-web3",
+    outputPath: "img/practice/blockchain-web3.png",
+    width: 1600,
+    height: 900,
+    aspectRatio: "16:9",
+    prompt: `SCENE: An axonometric drawing of a registry mechanism composed of two
+parts that must read as opposites, placed side by side and filling the frame
+evenly.
+On the right, the immutable part: one heavy monolithic bar cast as a single
+continuous piece, its top face divided only by shallow pressed seal impressions,
+with no seams, no fasteners and no openings anywhere on it. Its near end is shown
+cut in section with hatching, proving it is solid all the way through.
+On the left, sitting directly against it and joined by a single hinged coupling,
+the changeable part: an open frame holding a row of clearly separate rectangular
+modules of visibly differing depths, each retained by a quarter-turn fastener,
+one module drawn lifted out along thin dashed guide lines above the empty slot it
+came from. That hinged coupling between the solid bar and the module frame is the
+single drafting red-orange element in the drawing.
+In the foreground below, drawn at generous size, a plain counter hatch seen from
+the customer's side: a flat blank plate rests on a shallow tray being pushed
+through the opening, and on the far side of the hatch, clearly beyond the tray's
+reach, a small key hangs on a hook — custody stays behind the counter. Dimension
+lines with end ticks run beneath the bar and the frame.
+IMPORTANT: the monolithic bar must read as impossible to open and the module
+frame as designed to be taken apart; they must not look like two rows of the same
+thing. No coins, no currency symbols, no chain links, no padlocks, no crystals.
+CRITICAL: the drawing carries no labels, no callouts and no lettering of any kind.
+BACKGROUND: drafting paper, faint grid, balanced composition with even margins on
+both sides.
+TECHNICAL: 16:9, axonometric, hatching on the cut end of the solid bar, dashed
+assembly guide lines, thin ink linework, one accent colour.
+${ARCHXS_STYLE_GUIDE}`,
+  },
+  {
     id: "software-delivery",
     outputPath: "img/practice/software-delivery.png",
     width: 1600,
