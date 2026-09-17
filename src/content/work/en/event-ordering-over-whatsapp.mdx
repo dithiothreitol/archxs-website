@@ -1,0 +1,111 @@
+---
+title: "An order that begins as a WhatsApp message and ends in the ERP"
+summary: "How to turn free-text requests for trade fair and sampling stock into ERP order lines, where every proposed product carries a confidence and a quoted fragment of the original message, and the catalogue is frozen at the moment of extraction."
+sector: "Pet food manufacturing, trade fairs and sampling"
+period: "2026"
+disclosure: "anonymised"
+metrics:
+  - label: "Entry point"
+    value: "A message in natural language, no form to fill in"
+  - label: "Every proposal"
+    value: "Carries a confidence score and a quoted fragment of the request"
+  - label: "Reproducibility"
+    value: "Catalogue snapshot taken at extraction, model and prompt logged"
+  - label: "Boundary"
+    value: "Separate bounded context, read-only on the planning schema"
+capabilities:
+  - "Applied AI"
+  - "Business processes"
+  - "Enterprise architecture"
+stack:
+  - "FastAPI, Next.js 15"
+  - "WhatsApp Business API"
+  - "PostgreSQL, hash-chained audit"
+  - "Prefect orchestration"
+  - "LLM gateway with tracing"
+  - "ERP order integration"
+  - "Keycloak, two roles"
+order: 17
+---
+
+## Context
+
+A manufacturer sends product to trade fairs and sampling events throughout the year. An
+events coordinator needs stock at a stand on a particular date, and the request arrives
+as a message: a fair, its dates, some product codes, and some descriptions of product
+the coordinator knows by sight rather than by code.
+
+Before this work the orders department retyped those requests from one spreadsheet into
+another, caught or missed typing errors in short product codes, lost items described in
+prose because they were not given as codes, left no trace in the company data of which
+event an order belonged to, and sent no status back.
+
+## Problem
+
+The tempting response is a form. Give the coordinator a catalogue, a picker and required
+fields, and the ambiguity disappears at the point of entry. It also moves the whole
+burden onto somebody who is standing in a warehouse or travelling to a venue, and the
+request will continue to arrive as a message regardless, because that is how the work
+actually happens.
+
+Accepting free text means accepting a matching problem. A phrase describing a wet dog
+food in a particular can size and flavour has to become a specific product code, and a
+model asked to do that will produce a code with complete confidence whether or not the
+product exists.
+
+## Approach
+
+The message itself is the interface, so the coordinator writes what they need, the
+system extracts the event, the dates and the items, maps each item onto a product from
+the catalogue and comes back on the same channel with an interactive list asking for
+confirmation. Every proposed mapping carries a confidence score and a quoted fragment of
+the original message that produced it, so a reviewer sees what the model was reading
+rather than only what it concluded. Proposals below the confidence threshold go to the
+orders department for acceptance instead of back to the coordinator.
+
+The AI proposes and does not decide, which in this domain has a precise meaning: no
+order line reaches the ERP without a human confirmation, and the confirmation is
+recorded against a person.
+
+Reproducibility is handled the way it is elsewhere in the estate. The product catalogue
+is snapshotted at the moment of extraction, so a mapping can be re-examined later
+against the catalogue as it stood rather than as it is now, and the model, the prompt
+and the response are logged through the tracing layer. Message templates are versioned,
+because a change in wording changes what people send back.
+
+The system is built as a separate bounded context alongside the planning platform rather
+than inside it, and the reasoning is worth stating. The domain language is different,
+the release cycle is different, and the security surface is materially different,
+because this application exposes a public webhook to a messaging provider while the
+planning platform does not. The catalogue and the order status are read through the
+planning platform's stable read interface, and this system never writes to that schema
+or to the ERP directly.
+
+Privacy was treated as a design input rather than a review item. The coordinators are
+employees and their telephone numbers are personal data, so message contents are not
+held in logs in clear form and the tracing layer carries the appropriate classification.
+
+Delivery was staged so that value arrived before the integration did. The first phase
+produces the spreadsheet the orders department already imports, which removes the
+retyping immediately, and the later phase writes the order to the ERP through an outbox
+with idempotency. Status from the ERP travels back to the coordinator on the channel
+they started on.
+
+## Outcome
+
+A request that used to be retyped between two spreadsheets now arrives, is mapped, is
+confirmed by the people accountable for it and lands in the ERP under the event customer
+and series, with a trace connecting the order to the event it was for and a status that
+returns to the person who asked.
+
+## What it taught us
+
+Meeting people on the channel they already use costs more engineering than a form and
+removes a failure mode a form cannot address, which is the request that never gets
+entered at all. The extraction problem is real, and it is a better problem than the
+compliance problem of asking busy people to use software they resent.
+
+The second lesson is that a confidence score alone is not reviewable. A number attached
+to a proposal tells a reviewer how sure the model claims to be, and the quoted fragment
+of the source tells them whether that claim is worth anything. Shipping the second
+alongside the first is what makes a review faster than redoing the work.

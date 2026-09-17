@@ -1,0 +1,126 @@
+---
+title: "A production plan that can still be reproduced a year later"
+summary: "How to build planning and manufacturing operations on a constraint solver so that a scheduling decision taken months ago can be regenerated exactly, and so that the most dangerous defect in the system cannot pass with the tests green."
+sector: "Food manufacturing, production planning and maintenance"
+period: "2026"
+disclosure: "anonymised"
+metrics:
+  - label: "Reproducibility"
+    value: "Same canonical payload, seed and solver version give a byte-identical plan"
+  - label: "Solver inputs"
+    value: "Every run persisted append-only, with immutability enforced in the database"
+  - label: "Measured variance"
+    value: "144–168 plan items from identical content in a different order"
+  - label: "Coverage"
+    value: "367 test modules, property-based tests on the solver"
+capabilities:
+  - "Enterprise architecture"
+  - "Business processes"
+  - "Applied AI"
+  - "Physical AI"
+  - "Software delivery"
+stack:
+  - "ISA-95 (APS/MOM)"
+  - "OR-Tools CP-SAT"
+  - "Python 3.12, FastAPI"
+  - "PostgreSQL, row-level security"
+  - "TimescaleDB"
+  - "OPC UA, MQTT / Sparkplug B"
+  - "Keycloak"
+  - "Hypothesis, testcontainers"
+order: 7
+---
+
+## Context
+
+A food manufacturer plans across several horizons at once. Sales and operations planning
+sets the shape of a quarter, rough-cut capacity checks it against the lines, a master
+schedule turns it into weeks, and a finite scheduling layer turns those weeks into
+orders on specific machines. Around that sit maintenance, shift rosters, stock levels
+and telemetry coming off the plant floor. Before this work, those decisions lived in
+spreadsheets and in the judgement of a handful of people who had been doing the job long
+enough to hold the constraints in their heads.
+
+## Problem
+
+Planning systems are usually judged by the quality of the plan they produce, and that is
+a reasonable way to choose one. In a plant that is audited, and where a published plan
+commits raw material purchases and agency staffing several weeks ahead, a second
+property turns out to matter just as much: whether the plan can be explained after the
+fact. When somebody asks in November why week thirty-four looked the way it did, a
+satisfying answer is a rerun that lands on the same result, and a recollection is worth
+very little.
+
+A constraint solver makes that harder than it first appears. The objective function
+admits many optima that score identically, and the search is sensitive to the order in
+which variables and constraints enter the model. Two runs over the same business facts
+can therefore produce visibly different schedules while both remain entirely correct,
+which is fine for the mathematics and unhelpful for anybody who has to defend one of
+them.
+
+## Approach
+
+Every planning decision is taken by OR-Tools CP-SAT, and the language model in the
+system never decides anything; it answers questions about a plan and helps read it.
+Nothing reaches the ERP or the MES without approval from a person holding the right
+role, and every operation that modifies data leaves an entry in an append-only audit log
+with a hash chain.
+
+The reproducibility claim is stated precisely enough to be tested: an identical
+canonical payload, the same seed, the same version of the solver and a single worker
+thread produce a result that is identical byte for byte. The word doing the work there
+is canonical. A single function builds that canonical form, and the same function feeds
+both the input hash and the model builder. Had the hash been computed from one ordering
+while the model was built from another, the system would have produced a matching hash
+beside a different plan, and the suite would have reported nothing at all. Designing
+that failure out was the point of keeping the two on one code path.
+
+Solver inputs are persisted rather than reconstructed. A dedicated table holds the full
+payload as JSON together with its hash, written only by insert from the five services
+that call the solver, and read back by the scheduling layer. Immutability is enforced by
+the database instead of by convention: one migration froze the payload column and made
+the content hash write-once, a later one blocked deletion outright, including through
+cascade from plan versions, and froze the reference from an input to the version it
+belongs to.
+
+Two limits are documented rather than quietly left out. Plans generated before
+canonicalisation cannot be reproduced, and the reason is ordering instead of missing
+data — the inputs are all there, but the same inputs yielded different plans. Snapshot
+hashes written before that date embed a random identifier, which makes them incomparable
+with anything at all, including each other.
+
+Measurement received the same scrutiny, because the number of positions in a plan looked
+like an obvious regression metric until it was measured: identical snapshot content
+presented in a different order produced between 144 and 168 positions against an
+unchanged objective value, a spread of roughly sixteen percent. Regression tests compare
+units, weighted shortfall and coverage by source, and the position count is treated as
+noise until the model carries a time term.
+
+The plant side follows the same discipline in a different medium. The domain model
+conforms to ISA-95 so that the words resource, operation and order mean one thing in a
+conversation with a controls engineer, in the interface and in the database schema. The
+operational network is separated from IT, with an edge gateway and OPC UA in
+sign-and-encrypt mode as the only crossing, and telemetry lands in a time-series store
+beside the business data rather than inside it.
+
+## Outcome
+
+The platform runs in production as a thin deployment on shared infrastructure, with the
+planning and maintenance modules developed in parallel by two streams working under
+strict module boundaries and a single migration chain. Around 367 test modules cover it,
+including property-based tests for the solver and container-backed integration tests.
+Solver inputs have been persisted since the spring of 2026, canonicalisation arrived
+that summer, and reproducibility holds forward from it.
+
+## What it taught us
+
+Reproducibility is a property of the whole pipeline and not of the solver. The solver
+was deterministic from the first day; what was missing was a guarantee that the same
+business facts would reach it in the same shape, and that guarantee lives in
+serialisation, storage and database constraints.
+
+The second lesson concerns which defects to design against. In an optimisation system
+the expensive class of bug produces a plausible artefact carrying correct metadata,
+because nothing downstream has any reason to question it. Tests catch outputs that look
+wrong, so the work worth doing early is removing the paths on which a wrong output can
+look right.

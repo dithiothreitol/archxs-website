@@ -1,0 +1,105 @@
+---
+title: "Budowa narzędzia do projektów przez rozstrzygnięcie, czego nigdy nie będzie zawierać"
+summary: "Jak zastąpić komercyjny produkt do zarządzania projektami i CRM modułem wewnętrznym, kiedy decyzją czyniącą tę budowę wykonalną jest lista funkcji świadomie wykluczonych na stałe, a nie odłożonych w czasie."
+sector: "Grupa produkcyjna, prowadzenie projektów i CRM"
+period: "2026"
+disclosure: "anonymised"
+metrics:
+  - label: "Decyzja o zakresie"
+    value: "Benchmark funkcja po funkcji wobec dotychczasowego produktu"
+  - label: "Wykluczone na stałe"
+    value: "Komunikator i zarządzanie nieobecnościami, z zapisanymi powodami"
+  - label: "Mierniki procesu"
+    value: "Flow metrics liczone z append-only zapisu tranzycji stanów"
+  - label: "Reużycie"
+    value: "Łańcuch audytu, tożsamość, biblioteka komponentów i warstwa AI z platformy"
+capabilities:
+  - "Procesy biznesowe"
+  - "Architektura korporacyjna"
+  - "Applied AI"
+  - "Wytwarzanie oprogramowania"
+stack:
+  - "Python, FastAPI"
+  - "PostgreSQL, schematy projektowy i CRM"
+  - "Next.js 15, współdzielona biblioteka komponentów"
+  - "Append-only log tranzycji"
+  - "Keycloak"
+  - "Platforma asystenta dla funkcji AI"
+order: 20
+---
+
+## Kontekst
+
+Grupa produkcyjna prowadziła pracę projektową i część pipeline'u handlowego na
+komercyjnej platformie obejmującej zadania, tablice, wykresy Gantta, rejestrację czasu,
+budżety, CRM, automatyzacje workflow, komunikator, wiki, ticketing klienta i dostęp
+gościnny. Większość organizacji używała jej ułamka, a ten ułamek różnił się działem.
+
+## Problem
+
+Zastąpienie dojrzałego produktu komercyjnego modułem wewnętrznym zaprasza porażkę, którą
+każdy już widział. Porównanie prowadzi się funkcja po funkcji, każda luka wygląda na
+ryzyko, zakres rośnie, żeby te luki domknąć, a dwa lata później organizacja utrzymuje
+gorszą wersję czegoś, co wcześniej wynajmowała.
+
+Budowa ma sens wyłącznie wtedy, gdy odpowiedzią na część tych funkcji jest trwałe nie,
+zapisane z powodem, a nie miejsce na mapie drogowej. Rozstrzygnięcie tego jest
+niewygodne, bo każde wykluczenie jest sporem z osobą, która o daną rzecz poprosiła.
+
+## Podejście
+
+Dotychczasowy produkt zbenchmarkowaliśmy obszar po obszarze, a każdy wiersz tabeli
+dostał jedną z trzech odpowiedzi: w pierwszym wydaniu, w późniejszym albo nigdy. To
+trzecia kolumna uczyniła ten projekt wykonalnym.
+
+Komunikator jest wykluczony na stałe, ponieważ firma ma już kanały komunikacji, a
+narzędzie projektowe dokładające czwarte miejsce do pisania wiadomości utrudnia
+odnajdywanie rozmów, zamiast je ułatwiać. Zarządzanie nieobecnościami jest wykluczone na
+stałe, ponieważ należy do dziedziny kadrowej i mieszka w systemie będącym właścicielem
+danych o zatrudnieniu. Ticketing klienta i wiki stoją w kolumnie późniejszej z
+zapisanymi warunkami powrotu do tematu. Pola własne odrzuciliśmy w pierwszym wydaniu, z
+kolumną JSON jako jawną furtką awaryjną, co jest uczciwą wersją tej decyzji: potrzeba
+jest realna, edytor kosztowny, a furtka mówi to wprost, zamiast udawać, że potrzeby nie
+ma.
+
+Zbudowaliśmy zadania z konfigurowalnymi stanami, tablice i osie czasu, cykle,
+rejestrację czasu timerem i ręcznie, budżety oraz rentowność liczone z zarejestrowanego
+czasu wobec stawek, widok dostępności zbudowany z faktów, a nie z szacunków, lekki CRM
+kontrahentów, kontaktów, deali i aktywności, silnik reguł workflow oraz szablony
+projektów.
+
+Mierniki procesu są tą częścią, którą trudno byłoby kupić. Tranzycje stanów zapisujemy
+do append-only logu, a flow metrics liczymy z niego, zamiast próbkować, dzięki czemu
+czas cyklu i przepustowość opisują to, co się wydarzyło, a nie to, jak wyglądała tablica
+w chwili, gdy ktoś zrobił eksport. Ten log reużywa wzorca audytu z hash-chainem
+ustalonego już w całym majątku aplikacyjnym.
+
+Funkcje AI działają przez współdzieloną platformę asystenta, zamiast powstawać tutaj:
+reporter statusu redagujący aktualizację projektu i zapytania w języku naturalnym
+odpowiadane na opublikowanych widokach tylko do odczytu. Wzorzec trzyma się tak samo jak
+gdzie indziej, z modelem streszczającym i odpytującym oraz liczbami pochodzącymi z
+widoków.
+
+Moduł reużywa platformy pod sobą w całości, z własnymi schematami obok istniejących,
+ustalonym łańcuchem audytu, współdzielonym dostawcą tożsamości, współdzieloną biblioteką
+komponentów dla nowego frontendu i wzorcem wdrożenia, który zespół utrzymania już
+prowadzi.
+
+## Rezultat
+
+Projekty i CRM stają się modułem platformy wewnętrznej zamiast osobną subskrypcją, z
+danymi stojącymi obok danych rekrutacyjnych, dokumentowych i planistycznych, których
+projekty naprawdę dotykają, i z funkcjami wykluczonymi wykluczonymi na piśmie, więc
+rozmowa nie zaczyna się od nowa co kwartał.
+
+## Wnioski
+
+Decyzję o budowie kontra zakupie przedstawia się zwykle jako porównanie możliwości i
+kosztu, a lepiej rozumie się ją jako pytanie o dyscyplinę zakresu. Budowa wewnętrzna
+wygrywa tam, gdzie organizacja godzi się używać mniej, i przegrywa wszędzie tam, gdzie
+od wersji wewnętrznej żąda się dorównania produktowi komercyjnemu funkcja po funkcji.
+
+Drugi wniosek brzmi tak, że wykluczenie potrzebuje dopiętego powodu, żeby przetrwać.
+Funkcja oznaczona jako poza zakresem zostanie poproszona ponownie w ciągu kwartału, a
+jedyną rzeczą skracającą tę drugą rozmowę jest spisany powód, który ktoś może przyjąć
+albo z którym może się wprost nie zgodzić.

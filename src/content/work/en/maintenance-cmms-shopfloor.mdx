@@ -1,0 +1,111 @@
+---
+title: "Replacing a maintenance system by building less of one"
+summary: "How to retire a standalone CMMS without rebuilding it, by treating the asset register, the shop-floor telemetry and the plant hierarchy that already existed as the foundation and constructing only the parts that were genuinely missing."
+sector: "Food manufacturing, maintenance and shop-floor data"
+period: "2026"
+disclosure: "anonymised"
+metrics:
+  - label: "Asset register"
+    value: "327 canonical machines with plant coding, criticality and condition"
+  - label: "Reused rather than rebuilt"
+    value: "Register, OEE live, alarm wallboard, maintenance calendar"
+  - label: "Preventive triggers"
+    value: "Machine counters from the acquisition layer, alongside the calendar"
+  - label: "Reliability figures"
+    value: "MTBF, MTTR and cost computed from actual work orders"
+capabilities:
+  - "Physical AI"
+  - "Enterprise architecture"
+  - "Business processes"
+  - "Applied AI"
+stack:
+  - "ISA-95 plant hierarchy"
+  - "OPC UA, SCADA and machine counters"
+  - "TimescaleDB telemetry"
+  - "Python 3.12, FastAPI"
+  - "PostgreSQL, append-only audit"
+  - "Expo mobile client"
+  - "Keycloak role-based access"
+order: 9
+---
+
+## Context
+
+The plant ran its maintenance on a standalone commercial CMMS: an asset card index,
+breakdowns, preventive schedules, spare parts, reliability indicators and a set of
+mobile applications for reporting and inspections. Alongside it, and entirely
+separately, the planning platform already held a machine register, the plant hierarchy,
+live telemetry and the alarm wallboard. The two systems described the same equipment and
+agreed with each other only by coincidence.
+
+## Problem
+
+The obvious project is to buy or build a replacement CMMS, and it is the wrong shape. A
+standalone maintenance system needs its own asset register, its own view of the plant
+structure, its own users and its own integration with everything else, which is
+precisely the duplication that made the situation awkward in the first place. Rebuilding
+it in-house reproduces the same duplication at greater expense and with the added cost
+of maintaining it.
+
+The more useful question is narrower. Given a platform that already knows what the
+machines are, where they sit in the plant hierarchy, how critical each one is and what
+its counters are reading right now, what is actually missing?
+
+## Approach
+
+The answer was written down as a comparison table before any code, listing what the
+incumbent system provided against what the platform already held. The machine register
+was there and richer than the incumbent one, carrying plant coding, condition,
+criticality and position in the ISA-95 hierarchy across 327 canonical machines. Live
+OEE, the shop-floor data collection and the alarm wallboard were there. A department
+dictionary maintained by the operations team was there, along with weekly maintenance
+windows imported from the plant schedule and already blocking line capacity in the
+planning calendar.
+
+What was genuinely missing came down to four things: work orders and breakdown handling
+as an operational core, preventive maintenance as a schedule, spare parts, and
+reliability figures. Only those four were built, and nothing beside them.
+
+Two of the four were built differently from the system being replaced, and the
+difference came from what the platform already had. Preventive maintenance triggers on
+machine counters read from the data acquisition layer as well as on the calendar, which
+a standalone system cannot do without an integration nobody had bought. Reliability
+indicators are computed from the actual work orders rather than stored as target
+columns, so the numbers describe the plant instead of describing an intention.
+
+Spare parts were the clearest case of declining to build. Stock levels are read from the
+ERP, because the company already runs one and a maintenance module that keeps its own
+parallel stock would create a reconciliation problem in exchange for a convenience. The
+same reasoning kept the warehouse system out of scope here, where it belongs to its own
+bounded context.
+
+The AI layer proposes and never decides, in keeping with the rest of the estate. It
+reads service documentation to suggest which parts a job will need, and it analyses
+failure history and causes to propose minimum stock levels for parts. Both outputs land
+in front of a person who approves or discards them, and both leave an entry in the
+append-only audit log with its hash chain.
+
+The mobile client is shared with the planning side rather than separate, with the
+visible tabs following the role a person holds in the identity provider, so a
+maintenance technician and a planner install the same application and see different
+halves of it.
+
+## Outcome
+
+The maintenance module runs inside the planning platform, on its database, its identity
+provider and its deployment pattern, developed as a parallel stream under strict module
+boundaries and a shared migration chain. The external system it replaces stops being a
+separate contract, a separate login and a second opinion about which machines exist.
+
+## What it taught us
+
+The size of a replacement project is decided by how honestly the inventory is taken
+before it starts. Listing what the incumbent system does is the easy half; listing what
+the organisation already owns and would otherwise rebuild by accident is the half that
+changes the budget.
+
+The second lesson concerns where an integrated module beats a specialised product. A
+standalone maintenance system is better than a module at everything it does in
+isolation, and worse at everything that depends on knowing what the rest of the plant is
+doing. Counter-driven preventive schedules and parts levels derived from failure
+analysis both need that context, and they are the reasons this module exists at all.

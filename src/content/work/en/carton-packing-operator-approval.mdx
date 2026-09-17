@@ -1,0 +1,129 @@
+---
+title: "A packing engine that declines to report the savings it was hired to prove"
+summary: "How to choose shipping cartons from a validated three-dimensional arrangement instead of a volume comparison, and why the reports stop one step short of the financial claim everybody expected them to make."
+sector: "E-commerce fulfilment, food manufacturing"
+period: "2026"
+disclosure: "anonymised"
+metrics:
+  - label: "Benchmark"
+    value: "386 complete geometric plans from 400 orders, 544 parcels"
+  - label: "Validation"
+    value: "Independent validator: collisions, support, transmitted load, mass"
+  - label: "Status vocabulary"
+    value: "Six outcomes, each tied to a distinct cause"
+  - label: "Write safety"
+    value: "Simulated by default, real writes gated on four conditions"
+capabilities:
+  - "Business processes"
+  - "Physical AI"
+  - "Software delivery"
+stack:
+  - "Python 3.13+, mypy strict"
+  - "Integer mm/g arithmetic"
+  - "Constraint search with an independent validator"
+  - "SQLite in WAL mode"
+  - "WhatsApp gateway"
+  - "Interactive 3D preview in the browser"
+  - "Order platform REST API"
+  - "ruff, pytest"
+order: 13
+---
+
+## Context
+
+A warehouse ships several hundred orders a day, and until this project the choice of
+carton was made by whoever was packing. The two questions put to us were whether
+software could propose the carton, and whether the cartons actually used could be
+recorded well enough to reconcile consumption against stock.
+
+## Problem
+
+The tempting shortcut in carton selection is volumetric. Add up the volume of the goods,
+compare it against the internal volume of the box, and accept anything that fits with a
+margin. It is wrong often enough to matter, and the way it fails is unpleasant: the
+operator discovers the mistake holding the goods, halfway through a shift, with the
+packing slip already printed.
+
+The second problem is commercial rather than technical. A project like this is approved
+on the promise of savings, and the easiest number to produce is cubic decimetres
+eliminated against a nominal courier tariff. That number is arithmetic performed on
+assumptions, and it becomes a claim about money only once the products have been
+measured, the cartons have been measured, the operating rules have been adopted by the
+warehouse and the tariff has been confirmed. Every one of those was outstanding while
+the engine was being built.
+
+## Approach
+
+No path in the system accepts a carton on volume. Every item carries an identity taken
+from its order line, appears exactly once in the result, and comes back with a position
+and an orientation, so the output is an arrangement that can be drawn rather than a
+verdict that something ought to fit.
+
+A validator written separately from the solver then checks that arrangement
+independently: boundaries, collisions between items, permitted orientations, support
+beneath each item, load transmitted through the stack, and the mass of each finished
+parcel including its packaging. Soft products provide no support for anything above
+them, and trays lie flat on their thin edge. Units are handled so that rounding always
+works against acceptance — input arrives in centimetres and kilograms, the model and the
+validator work in whole millimetres and grams, product dimensions and masses round up,
+carton interiors round down.
+
+The status vocabulary carries more weight than it looks. A result marked ready means a
+complete validated plan on approved data and rules, and it says nothing about
+optimality. Two statuses describe what a human has to supply, one for review and one for
+missing measurements. The remaining three separate a demonstrated physical constraint
+from an exhausted search and from a timeout, and keeping them apart matters because only
+one of the three gets better when the solver gets better. Collapsing them into a single
+failure would hide the distinction between a box that cannot work and a box we stopped
+looking for.
+
+Approval runs over WhatsApp, where the operator receives the proposal with a link to an
+interactive preview on the phone, which shows the arrangement in three dimensions
+alongside top, front and side views, reveals whole layers on demand, names the products,
+counts the parcels already inspected and keeps the decision bar fixed on screen. At the
+station the operator confirms the carton code for each parcel individually; changing a
+carton or the way goods are split requires a reason and a fresh validation, and only
+completing the session records consumption. Corrections, returns and damage create their
+own events instead of editing history.
+
+Writing back to the order platform is disabled by default, and turning it on requires
+four separate things to line up: an explicit commit flag on the command, a live-enabled
+setting in configuration, a verified pagination flag proving the reader has seen
+complete pages, and a credential holding the writer role. Reader and writer credentials
+are kept apart, an HTTP 200 is not treated as success until the status field inside the
+response body has been read, and manual or unrecognised entries in the carton field are
+protected from overwriting. Where a response is lost, the next attempt reconciles
+against the platform before it writes, because a lost response says nothing about
+whether the write landed. Idempotency is keyed on the session and the parcel rather than
+on the carton code, since two parcels in one order legitimately use the same box.
+Closing a session, recording consumption and queueing the outbound write happen in one
+database transaction, so a network failure cannot erase a physical fact.
+
+## Outcome
+
+On the first four hundred real orders the engine produced 386 complete geometric plans,
+14 results flagged for missing data, and 544 parcels in total. All 386 carry the review
+status, because the products, the cartons and the policy have not yet been physically
+measured and confirmed, and the reports say so in those words. The twenty-kilogram
+parcel limit and the seventy-percent support rule are configurable operating rules that
+the warehouse has to adopt; the software does not settle legal requirements on anybody's
+behalf.
+
+The engine, the operator station, the approval route and the HTTPS preview run on a
+server, and the integration with the carton catalogue is deployed and enabled with the
+owner's agreement. The reports state processing times and status distributions, and they
+stop there. A figure for money saved will exist once the measurements are accepted, and
+not before.
+
+## What it taught us
+
+The status a system returns is part of its interface, and a vocabulary that
+distinguishes causes gives an operations team something to act on. Knowing that a plan
+needs a measurement, rather than that it failed, turns a software output into a task
+somebody can pick up.
+
+The second lesson is about the number a project is expected to produce. Reporting a
+saving that rests on unconfirmed measurements would have been easy, defensible in a
+slide and impossible to stand behind in a review six months later. Naming which figures
+are evidence and which are still assumptions costs a little enthusiasm at the start and
+buys the credibility of every number that follows.

@@ -1,0 +1,118 @@
+---
+title: "Accounting automation in which the model never supplies a number"
+summary: "How to automate invoice handling for a group of companies under mandatory national e-invoicing, where every amount comes from the structured XML rather than from a model, and a database trigger rather than a policy prevents an unapproved posting."
+sector: "Group of companies, finance and accounting"
+period: "2026"
+disclosure: "anonymised"
+metrics:
+  - label: "Numbers from AI"
+    value: "None — every amount is read from the structured invoice XML"
+  - label: "Compliance gate"
+    value: "Deterministic checks run before an invoice reaches a person"
+  - label: "Authentication"
+    value: "Two paths built in parallel against a known token expiry"
+  - label: "Isolation"
+    value: "Multi-tenant per tax identifier with row-level security"
+capabilities:
+  - "Business processes"
+  - "Applied AI"
+  - "Enterprise architecture"
+  - "Cybersecurity & identity"
+stack:
+  - "FastAPI, Next.js 15"
+  - "BPMN workflow engine"
+  - "Document repository and e-signature"
+  - "National e-invoicing API, FA(3)"
+  - "XAdES-BES signing service"
+  - "PostgreSQL, row-level security"
+  - "ERP integration"
+  - "LLM gateway with tracing"
+order: 6
+---
+
+## Context
+
+A group of limited companies handles cost and sales invoices across several tax
+identifiers, with intercompany transactions between them. The national e-invoicing
+system became mandatory during the period covered here, arriving for large taxpayers in
+February 2026 and for everyone else in April, with the grace period on penalties closing
+at the end of that year. Structured reporting obligations were phasing in alongside it,
+and the accounting act, the split payment mechanism and the taxpayer whitelist all
+continued to apply as before.
+
+## Problem
+
+Invoice automation attracts a particular shape of AI product: a model reads the
+document, proposes the posting, extracts the amounts and, where confidence is high
+enough, books it. Every part of that except the last is reasonable, and the last part is
+where the design goes wrong for reasons that have nothing to do with model quality.
+
+Amounts and identifiers do not need to be extracted at all once invoices arrive as
+structured XML, so asking a model for them introduces a class of error that the format
+had already eliminated. Retrieval over a corpus of tax rules hallucinates at rates that
+are tolerable in a summary and unacceptable on a tax operation. And the accounting act
+places responsibility for a posting on a person, which is not a preference that an
+automation can negotiate.
+
+## Approach
+
+The first decision is stated as a rule about data rather than as a principle. The model
+proposes a posting, a category, a split-payment flag or a summary, and every operation
+with a tax consequence requires human acceptance. That is enforced where it cannot be
+bypassed: the suggestion record carries an approval field that stays null until somebody
+decides, and a database trigger blocks posting while it is null. A policy document would
+have expressed the same intention and a future deadline would eventually have found a
+way around it.
+
+Numbers never come from the model. Amounts, tax rates and counterparty identifiers are
+read from the structured invoice XML, which removes the possibility of a hallucinated
+figure rather than mitigating it. Where the system answers questions about regulation it
+cites its sources, and retrieval runs under least privilege so that a question cannot
+reach documents the asker may not see.
+
+A deterministic compliance gate runs before an invoice reaches anybody's queue. Checksum
+validation on tax identifiers, the taxpayer whitelist, the split payment obligation,
+duplicate detection, schema validation of the structured invoice and the reporting code
+are all computed without a model, so the person opening the invoice sees the risks
+already flagged. That ordering is the difference between an accountant reviewing an
+invoice and an accountant investigating one.
+
+Authentication to the national system was built along two paths from the start. Token
+authentication works until the end of 2026 and certificate authentication with XAdES-BES
+signatures is required from the start of 2027, and building only the first would have
+guaranteed a rushed migration against a fixed public deadline. The private key is
+isolated in a dedicated signing service, and the token path is scheduled for removal
+rather than left in place.
+
+Retrieval of invoices runs by polling per tax identifier, because the national system
+offers no webhooks and is pull-only, with an outbox and idempotency keyed on the invoice
+reference so that a repeated poll cannot duplicate a document. Multi-tenancy runs on the
+tax identifier with row-level security in Postgres and a single workflow engine
+providing logical isolation, which keeps the operational surface to one deployment while
+keeping the companies apart in the data.
+
+The positioning under the AI Act was a deliberate choice rather than an afterthought.
+Keeping the model out of decisions holds the system in the limited-risk class, outside
+Annex III, so the obligations reduce to transparency and the ordinary duties of a
+deployer. A management system for AI was adopted voluntarily on top of that as evidence
+of diligence.
+
+## Outcome
+
+The automation is built as modules inside the existing document workflow platform rather
+than as a new system, reusing its repository, its workflow engine, its signature
+service, its identity provider and its model gateway, with the signing service as the
+only genuinely new component. Cost invoices, sales invoices, posting proposals,
+reporting and the receivables process run through the same audited path.
+
+## What it taught us
+
+The most valuable constraint in this project was refusing to let a model produce a
+number that a structured format already contained. Hallucination is discussed as a
+property of models, and in practice it is often a property of an architecture that asked
+a model for something it had no need to ask.
+
+The second lesson concerns deadlines that belong to somebody else. Two authentication
+paths cost more than one, and the alternative was a migration scheduled by a public
+authority for a date the project could not move. Building against the later requirement
+from the beginning converted a future emergency into ordinary work.

@@ -1,0 +1,105 @@
+---
+title: "A warehouse system built for the second warehouse on the first day"
+summary: "How to start a WMS from a single module without acquiring the decisions that make the next three modules expensive, by treating location as an entity, warehouse as a dimension and the audit trail as something a database trigger enforces."
+sector: "Manufacturing group, warehouse operations"
+period: "2026"
+disclosure: "anonymised"
+metrics:
+  - label: "Multi-warehouse"
+    value: "Every business aggregate carries a warehouse reference from day one"
+  - label: "Location"
+    value: "An entity of warehouse, zone and place, never a text field"
+  - label: "Audit"
+    value: "Hash-chained, with a trigger blocking update and delete"
+  - label: "External effects"
+    value: "Outbox with retry and idempotency key from the first module"
+capabilities:
+  - "Business processes"
+  - "Enterprise architecture"
+  - "Software delivery"
+stack:
+  - "Python 3.13, FastAPI"
+  - "PostgreSQL, separate business and audit schemas"
+  - "Next.js admin panel, Expo worker client"
+  - "Turborepo, pnpm workspace"
+  - "Keycloak, two roles"
+  - "Outbox with a dispatch worker"
+order: 14
+---
+
+## Context
+
+A manufacturing group runs warehousing for raw materials, packaging and finished goods,
+with the eventual scope covering stock by location, scanners, ERP integration and a link
+to the production planning platform. The starting point is narrower: warehouse and
+procurement tasks, assigned and completed by people on the floor.
+
+## Problem
+
+An incremental warehouse system carries a specific risk, and it is not that the first
+module will be inadequate. It is that the first module will be built with assumptions
+that are correct for one warehouse, one stock model and one integration, and that
+removing those assumptions later means touching every table and every endpoint that was
+written in the meantime.
+
+Three assumptions in particular are cheap to avoid now and expensive to retract. There
+is only one warehouse, so warehouse is not a column. A location is a label on a shelf,
+so it is a string. Tasks belong with stock, so they share a schema and grow into each
+other until neither can be changed alone.
+
+## Approach
+
+Every business aggregate carries a warehouse reference from the first migration,
+pointing at a warehouse table that initially holds one row. The cost is a column and a
+join, and it is paid once, whereas retrofitting a tenancy dimension into a system
+already holding a year of data is a project with its own budget.
+
+Location is an entity rather than a text field, modelled as a warehouse containing zones
+containing places. A string location survives exactly until somebody needs to know what
+is in a zone, and by then the strings have acquired five spelling conventions and a
+manual reconciliation.
+
+One bounded context gets one schema, so the task module lives in its own schema and the
+future stock ledger, inbound and outbound contexts will get theirs. The point of the
+boundary is explicit: the task module is not to fuse with the stock ledger, because the
+moment those two share tables neither can be released independently and the increments
+stop being increments.
+
+The audit trail is append-only with a hash chain, enforced by a trigger that blocks
+update and delete rather than by a convention that code should write to it. Tasks are
+never deleted; a cancelled task takes a status and leaves its trace, which is what makes
+the record usable in a dispute about what was actually picked.
+
+The outbox pattern is present from the first module, before anything external exists to
+receive from it. Writes with an external effect go to an outbox table drained by a
+worker with retries and an idempotency key, so when the ERP link and the push
+notifications arrive they connect to a delivery mechanism that is already correct.
+Adding an outbox to a system that has been sending directly for a year means finding
+every send site, and there are always more than expected.
+
+Human approval sits on the ERP boundary from the start of that phase: no document
+returns to the ERP without a person with the right role releasing it.
+
+The worker interface was designed against the conditions it runs in, with large targets,
+a minimum of options and a fast path from the camera, while the admin panel is an
+ordinary responsive web application. Neither ships with mock data or demonstration
+pages, which keeps the question of what actually works answerable at any moment.
+
+## Outcome
+
+The task module runs as the first phase, with the data model, the audit enforcement, the
+tenancy dimension and the delivery mechanism already shaped for the stock ledger and the
+ERP integration that follow, on the shared database instance, identity provider and
+deployment pattern used across the estate.
+
+## What it taught us
+
+An incremental system is only genuinely incremental if the first increment declines to
+make the decisions that belong to the later ones. Most of what makes a phase two
+expensive was decided in phase one by somebody choosing the shortest correct thing
+rather than the shortest thing that stays correct.
+
+The second lesson is that structural guarantees belong in the structure. An audit trail
+protected by a trigger and an outbox present before it has a consumer are both slightly
+more work than the alternative and both remove a class of future defect entirely, which
+is a better trade than it looks on the day it is made.

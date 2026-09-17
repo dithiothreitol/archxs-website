@@ -1,0 +1,106 @@
+---
+title: "Field sales software that assumes there is no signal in the shop"
+summary: "How to build a sales force application for representatives working inside retail premises, where the hardest architectural question is not the feature set but which system owns the identity of a customer account."
+sector: "Pet food manufacturing, B2B sales and distribution"
+period: "2026"
+disclosure: "anonymised"
+metrics:
+  - label: "Offline first"
+    value: "Local database with synchronisation, not a cached web view"
+  - label: "Account identity"
+    value: "ERP contractor code paired with a CRM company reference"
+  - label: "One codebase"
+    value: "Representatives, partner network and trade fair mode by role"
+  - label: "Order path"
+    value: "Placed in the application, pushed to the ERP as the system of record"
+capabilities:
+  - "Business processes"
+  - "Enterprise architecture"
+  - "Applied AI"
+  - "Software delivery"
+stack:
+  - "Expo, React Native, Tamagui"
+  - "Local SQLite with sync"
+  - "Quarkus, Java 21"
+  - "GraphQL and REST"
+  - "PostgreSQL, Flyway"
+  - "OIDC with PKCE"
+  - "ERP and CRM integration"
+order: 15
+---
+
+## Context
+
+A pet food manufacturer sells through key account managers visiting retail chains, and
+through a network of distributors and partners running tasks in the field. The
+commercial process lived in a CRM for the business development track, an ERP for
+contractors, products, stock and prices, and a good deal of improvisation in between,
+with trade fairs handled by a separate kiosk application.
+
+## Problem
+
+Two constraints shape everything else in this kind of product, and neither is a feature.
+
+The first constraint is connectivity, and a representative works inside a shop, often in
+a back room or a warehouse aisle, on a phone with one bar of signal or none at all.
+Software that treats the network as available and degrades when it is not will be
+abandoned within a month, because it fails at exactly the moment the representative is
+standing in front of the customer.
+
+The second is ownership of the customer. A B2B account exists in the ERP as a contractor
+with a code, a price list and a credit position, and in the CRM as a company with a
+pipeline, opportunities and activity history. Both are correct and neither is complete,
+and a sales application that picks one of them as its definition of an account will
+spend the rest of its life reconciling.
+
+## Approach
+
+The application is offline-first in the literal sense, with a local database on the
+device and synchronisation on top, rather than a web view with a cache. Visit plans,
+account data, the product catalogue, prices and stock are present before the
+representative walks in, an order or a request for quotation is composed and stored
+locally, and synchronisation reconciles when the signal returns. The consequence is that
+the interesting engineering sits in conflict handling and in deciding which fields the
+device may author, which is where it belongs.
+
+The account boundary was written down as an equation before the data model was drawn. An
+account in the application is the pairing of an ERP contractor code with a CRM company
+reference, and neither system is asked to hold the other's concerns. The ERP remains the
+master for contractors, products, stock and price lists, and it is the destination for
+orders placed in the field. The CRM remains the system of record for the business
+development track, and the application posts field activities back to it, so a visit, a
+quotation request and an order appear in the pipeline without a second data entry.
+
+One codebase serves three audiences separated by role rather than by application. Key
+account managers get a full account view, visit planning, ordering with catalogue and
+upsell, a briefing prepared before a meeting and trade fair preparation. The partner
+network gets field tasks with a map, validation by survey, photograph, QR code or
+contactless tag, points converting to rewards, e-learning and communications. Managers
+get assignment, targets, dashboards and a points budget from a web panel sharing the
+same component library as the mobile client. The trade fair kiosk mode was carried
+across from the application it replaces rather than being dropped.
+
+The AI layer reaches the application through the shared assistant platform rather than
+being embedded in it. A briefing before a meeting, a summary of an account's history and
+a draft of a follow-up are produced there, which keeps model access, cost observability
+and tracing in one place for the whole estate instead of scattered across products.
+
+## Outcome
+
+The result is one sales ecosystem covering field execution, ordering, gamification of a
+partner network and the trade fair mode, on the shared identity provider and the shared
+database instance with its own dedicated schema, and with the ERP and CRM boundaries
+stated rather than negotiated per feature.
+
+## What it taught us
+
+The defining decision in a sales application is which system owns which fact, and it is
+made before the first screen. Teams tend to treat integration as work that follows the
+product, and in a commercial system the integration boundary is the product, because
+every screen is a projection of somebody else's master data.
+
+The second lesson concerns working without a network. Building offline-first costs
+considerably more than adding a cache later, and the two are not the same thing arriving
+at different times. A cached application answers questions that were asked before; an
+offline-first one lets a representative do the work and settle up afterwards, and only
+the second survives a shop with thick walls.

@@ -1,0 +1,104 @@
+---
+title: "Building a project tool by deciding what it will never contain"
+summary: "How to replace a commercial project and CRM product with an internal module, when the decision that makes the build viable is the list of features deliberately excluded for good rather than postponed."
+sector: "Manufacturing group, project delivery and CRM"
+period: "2026"
+disclosure: "anonymised"
+metrics:
+  - label: "Scope decision"
+    value: "Benchmarked feature by feature against the incumbent product"
+  - label: "Permanently excluded"
+    value: "Chat and absence management, with the reasons recorded"
+  - label: "Process metrics"
+    value: "Flow metrics computed from append-only state transitions"
+  - label: "Reuse"
+    value: "Audit chain, identity, component library and AI layer from the platform"
+capabilities:
+  - "Business processes"
+  - "Enterprise architecture"
+  - "Applied AI"
+  - "Software delivery"
+stack:
+  - "Python, FastAPI"
+  - "PostgreSQL, project and CRM schemas"
+  - "Next.js 15, shared component library"
+  - "Append-only transition log"
+  - "Keycloak"
+  - "Assistant platform for AI features"
+order: 20
+---
+
+## Context
+
+A manufacturing group ran its project work and part of its commercial pipeline on a
+commercial platform covering tasks, boards, Gantt charts, time tracking, budgets, a CRM,
+workflow automation, a chat, a wiki, client ticketing and guest access. Most of the
+organisation used a fraction of it, and the fraction differed by department.
+
+## Problem
+
+Replacing a mature commercial product with an internal module invites the failure
+everybody has seen. The comparison is drawn feature by feature, every gap looks like a
+risk, the scope expands to close the gaps, and two years later the organisation
+maintains a worse version of something it used to rent.
+
+The build only makes sense if the answer to some of those features is a permanent no,
+recorded with a reason, rather than a place on a roadmap. Deciding that is
+uncomfortable, because each exclusion is an argument with whoever asked for it.
+
+## Approach
+
+The incumbent product was benchmarked area by area, and each row of the table received
+one of three answers: in the first release, in a later one, or never. The third column
+is the one that made the project viable.
+
+Chat is excluded permanently, because the company already has communication channels and
+a project tool that adds a fourth place to write a message makes conversations harder to
+find rather than easier. Absence management is excluded permanently, because it belongs
+to the HR domain and lives in the system that owns employment data. Client ticketing and
+a wiki sit in the later column with the conditions for revisiting them written down.
+Custom fields were declined in the first release with a JSON column as an explicit
+escape hatch, which is the honest version of that decision: the need is real, the editor
+is expensive, and the escape hatch says so instead of pretending the need does not
+exist.
+
+What was built covers tasks with configurable states, boards and timelines, cycles, time
+tracking by timer and by hand, budgets and profitability computed from tracked time
+against rates, a capacity view built from facts rather than estimates, a lightweight CRM
+of accounts, contacts, deals and activities, a workflow rule engine and project
+templates.
+
+Process metrics are the part that would be hard to buy. State transitions are written to
+an append-only log, and flow metrics are computed from it rather than sampled, so cycle
+time and throughput describe what happened rather than what the board looked like when
+somebody exported it. That log reuses the hash-chained audit pattern already established
+across the estate.
+
+The AI features run through the shared assistant platform rather than being built here:
+a status reporter that drafts a project update, and natural language queries answered
+against published read-only views. The pattern holds as it does elsewhere, with the
+model summarising and querying while the numbers come from the views.
+
+The module reuses the platform underneath it in full, with its own schemas beside the
+existing ones, the established audit chain, the shared identity provider, the shared
+component library for the new front end, and the deployment pattern the operations team
+already runs.
+
+## Outcome
+
+Project and CRM become a module of the internal platform rather than a separate
+subscription, with the data sitting beside the recruitment, document and planning data
+that projects actually touch, and with the excluded features excluded on record so the
+conversation does not restart every quarter.
+
+## What it taught us
+
+A build-versus-buy decision is usually presented as a comparison of capability and cost,
+and it is better understood as a question about scope discipline. An internal build wins
+where an organisation is willing to use less, and it loses wherever the internal version
+is asked to match a commercial product feature for feature.
+
+The second lesson is that an exclusion needs a reason attached to survive. A feature
+marked as out of scope will be requested again within a quarter, and the only thing that
+makes the second conversation short is a written reason that somebody can either accept
+or argue with directly.

@@ -1,0 +1,128 @@
+---
+title: "Werdykty zgodności, których laboratorium obroni w audycie certyfikacyjnym"
+summary: "Jak umieścić deterministyczny rdzeń zgodności między prawem paszowym a asystentem AI, tak żeby asystent interpretował, orkiestrował i tłumaczył, a werdykt pass lub fail wychodził z kodu odpowiadającego za każdym razem tak samo."
+sector: "Badania i rozwój oraz jakość w produkcji karm"
+period: "2026"
+disclosure: "anonymised"
+metrics:
+  - label: "Werdykty"
+    value: "Deterministyczne pass lub fail, identyczne przy każdym uruchomieniu"
+  - label: "Zakres regulacyjny"
+    value: "Wytyczne żywieniowe FEDIAF i cztery akty prawa UE"
+  - label: "Postać reguł"
+    value: "Dane strukturalne zamiast PDF-ów wytycznych w indeksie wyszukiwania"
+  - label: "Ochrona receptur"
+    value: "Wrażliwa inferencja na model lokalny albo cechy strukturalne zamiast receptury"
+capabilities:
+  - "Applied AI"
+  - "Procesy biznesowe"
+  - "Architektura korporacyjna"
+  - "Wytwarzanie oprogramowania"
+stack:
+  - "Python, FastAPI"
+  - "Next.js 15, Recharts"
+  - "PostgreSQL z pgvector"
+  - "ChromaDB do wyszukiwania regulacyjnego"
+  - "Brama LiteLLM, Langfuse"
+  - "Keycloak, RBAC deny-by-default"
+  - "Procedury wersjonowane jako kod"
+order: 8
+---
+
+## Kontekst
+
+Dział technologii i jakości producenta karm opracowuje, waliduje i kontroluje receptury
+dla psów i kotów. Praca rozkłada się na silnik formulacji least-cost, ERP trzymający
+surowce, stany i ceny, system laboratoryjny, arkusze kalkulacyjne oraz spory zasób
+wiedzy eksperckiej ulokowanej w konkretnych osobach. Brakowało tego, co leży między tymi
+systemami: warstwy, która egzekwuje zgodność, utrwala procedury, łączy dane jakościowe i
+pokazuje je w miejscu, w którym osoba kierująca działem da radę je przeczytać.
+
+## Problem
+
+Receptury paszowe reguluje wytyczna żywieniowa FEDIAF wraz z prawem unijnym obejmującym
+wprowadzanie pasz do obrotu, dodatki, substancje niepożądane i katalog materiałów
+paszowych. Werdykt o zgodności jest badany podczas audytu GMP+, FSSC lub IFS, co stawia
+dwa wymagania, których wygodna architektura nie spełni. Werdykt musi być identyczny przy
+każdym uruchomieniu dla tych samych danych wejściowych i musi dawać się prześledzić do
+konkretnej reguły, która go wydała.
+
+Kuszącym skrótem jest tutaj model językowy nad korpusem przepisów. Odpowiada szybko,
+czyta się go dobrze, radzi sobie z niewygodnymi pytaniami i nie produkuje niczego, co
+audytor prześledzi z powrotem do limitu w rozporządzeniu. Różnica między odpowiedzią,
+która brzmi poprawnie, a odpowiedzią, którą da się obronić, to dokładnie ta różnica, z
+której ten dział jest rozliczany.
+
+## Podejście
+
+Warstwy są nazwane wprost i egzekwowane przez to, gdzie mieszka kod. Na dole stoją
+konektory integracyjne sięgające do silnika formulacji, do ERP, do laboratorium i
+docelowo na halę. Nad nimi stoi deterministyczny rdzeń zgodności napisany zwykłym kodem:
+walidacja żywieniowa wobec wytycznych, tolerancje, limity dodatków, substancje
+niepożądane, komponowanie deklaracji na etykiecie, porównanie do partii wzorcowej i
+modele predykcyjne. Nad nim stoi warstwa agentowa, która wybiera procedurę do
+uruchomienia, orkiestruje ją, odpowiada na pytania z korpusu regulacyjnego i objaśnia
+wynik słowami przydatnymi technologowi. Na samej górze stoi interfejs, przy czym model
+nigdy nie wydaje werdyktu zgodności, a każdy werdykt niesie regułę, z której powstał.
+
+Reguły trzymamy jako dane strukturalne zamiast tekstu wytycznych w indeksie
+wyszukiwania, z dwóch niezależnych powodów, które akurat wskazują w tę samą stronę.
+Warunki komercyjne przypisane do treści wytycznych ograniczają to, co wolno
+zreprodukować, a walidator czytający limity strukturalne zwraca tę samą odpowiedź za
+każdym razem, czego wyszukiwanie po prozie nie robi. Ta decyzja kosztowała przy
+wdrożeniu więcej wysiłku niż wgranie katalogu PDF-ów i to dzięki niej werdykty dają się
+obronić.
+
+Procedury są wersjonowane jako kod w repozytorium i wykonywane przez agenta, przy czym
+twarde bramki napisane są deterministycznym kodem, a nie promptem. Konsekwencja dla
+nadzoru jest zgrabna: pełnomocnik do spraw jakości, przeglądając taką procedurę,
+zatwierdza zmianę w standardowej procedurze operacyjnej, a ten przegląd zostawia ten sam
+ślad co każda inna zmiana w kodzie.
+
+Granice zakresu wytyczyliśmy świadomie i spisaliśmy. Silnik formulacji least-cost
+zostaje tam, gdzie jest, sterowanie liniami w czasie rzeczywistym zostaje przy systemach
+procesowych, a księgowość i logistyka zostają w ERP. Wartość tej warstwy leży w luce
+między tamtymi systemami, a platforma próbująca wchłonąć którykolwiek z nich wydałaby
+budżet na odbudowanie czegoś, co już działa.
+
+Ochrona własności intelektualnej w recepturach ukształtowała kilka decyzji naraz. Cała
+inferencja idzie przez bramę, receptury wrażliwe trafiają na model hostowany lokalnie, a
+tam, gdzie pełna formulacja jest zbędna, system wysyła zamiast niej cechy strukturalne.
+Pamięć receptur, która pozwala działowi badawczemu korzystać z własnej historii, stoi na
+osadzeniach tych samych cech strukturalnych, trzymanych w bazie obok danych biznesowych,
+z tego samego powodu. Współdzielona infrastruktura pod spodem jest w całości utrzymywana
+własnymi siłami, więc jedynym punktem styku z modelem zewnętrznym pozostaje brama, a ten
+punkt jest jawnie nadzorowany.
+
+Dwie kolejne kontrole odbijają się wzajemnie po deterministycznej i probabilistycznej
+stronie systemu. Walidatory pokrywają złote testy, a warstwę wyszukiwania i modelu
+pokrywa zestaw ewaluacyjny działający jako bramka ciągłej integracji, dzięki czemu
+regresja jakości odpowiedzi jest wyłapywana tak samo jak regresja w sprawdzeniu limitu.
+Kontrola dostępu działa na trzech poziomach, z bramką roli dla aplikacji, rolami
+funkcyjnymi jako kompozytami i granularnymi uprawnieniami na poziomie modułu i akcji,
+wszystkie deny by default, co pozwala zmieniać zakres roli w dostawcy tożsamości bez
+zmiany w kodzie.
+
+## Rezultat
+
+Poprzednik tej platformy, wąski weryfikator zgodności, pracuje już produkcyjnie dla
+zespołu jakości i niesie reguły oraz użytkowników, którzy podlegają migracji. Pełna
+platforma istnieje jako projekt wykonawczy: architektura, model danych, API, katalog
+widgetów analitycznych, mapa modułów i gotowe fragmenty wdrożeniowe, przy czym pierwsza
+faza obejmuje asystenta regulacyjnego z zestawem ewaluacyjnym, walidator receptury,
+asystenta deklaracji etykietowej, deterministyczny tryb „co jeśli" dla technologa oraz
+pierwszy zestaw widgetów kokpitu.
+
+## Wnioski
+
+Granica między tym, co model może powiedzieć, a tym, o czym rozstrzyga wyłącznie kod,
+jest centralną decyzją projektową w dziedzinie regulowanej, a wytyczenie jej wcześnie
+kosztuje mniej niż wytyczanie jej w trakcie audytu. Wszystko inne w tej architekturze
+wynika z tego, gdzie ta granica przebiegła.
+
+Drugi wniosek jest mniej oczywisty i dotyczy prawa, a nie inżynierii. Warunki licencyjne
+przypisane do normy ukształtowały architekturę równie bezpośrednio jak dowolne
+ograniczenie techniczne, ponieważ wykluczyły podejście, które w innym razie zostałoby
+wybrane, i zepchnęły reguły w postać strukturalną. Ta postać okazała się przy okazji
+lepszą odpowiedzią inżynierską, co jest przyjemnym rezultatem i nikt go na początku nie
+przewidział.

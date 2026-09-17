@@ -1,0 +1,107 @@
+---
+title: "System magazynowy zbudowany pierwszego dnia pod drugi magazyn"
+summary: "Jak zacząć WMS od jednego modułu, nie nabywając przy tym decyzji, które czynią kolejne trzy moduły drogimi, traktując lokalizację jako encję, magazyn jako wymiar, a ślad audytowy jako coś, co egzekwuje wyzwalacz bazy."
+sector: "Grupa produkcyjna, operacje magazynowe"
+period: "2026"
+disclosure: "anonymised"
+metrics:
+  - label: "Wielomagazynowość"
+    value: "Każdy agregat biznesowy niesie referencję magazynu od pierwszego dnia"
+  - label: "Lokalizacja"
+    value: "Encja magazyn, strefa i miejsce, nigdy pole tekstowe"
+  - label: "Audyt"
+    value: "Hash-chain z wyzwalaczem blokującym update i delete"
+  - label: "Efekty zewnętrzne"
+    value: "Outbox z ponowieniami i kluczem idempotencji od pierwszego modułu"
+capabilities:
+  - "Procesy biznesowe"
+  - "Architektura korporacyjna"
+  - "Wytwarzanie oprogramowania"
+stack:
+  - "Python 3.13, FastAPI"
+  - "PostgreSQL, osobne schematy biznesowy i audytowy"
+  - "Panel admina w Next.js, klient pracownika w Expo"
+  - "Turborepo, workspace pnpm"
+  - "Keycloak, dwie role"
+  - "Outbox z procesem wysyłkowym"
+order: 14
+---
+
+## Kontekst
+
+Grupa produkcyjna prowadzi gospodarkę magazynową surowców, opakowań i wyrobów gotowych,
+przy czym docelowy zakres obejmuje stany per lokalizacja, skanery, integrację z ERP i
+połączenie z platformą planowania produkcji. Punkt startowy jest węższy: zadania
+magazynowe i zaopatrzeniowe, przydzielane i wykonywane przez ludzi na hali.
+
+## Problem
+
+Przyrostowy system magazynowy niesie swoiste ryzyko i nie polega ono na tym, że pierwszy
+moduł okaże się niewystarczający. Polega na tym, że pierwszy moduł powstanie z
+założeniami poprawnymi dla jednego magazynu, jednego modelu stanów i jednej integracji,
+a późniejsze zdjęcie tych założeń oznacza dotknięcie każdej tabeli i każdego endpointu
+napisanego w międzyczasie.
+
+Trzy założenia w szczególności są tanie do uniknięcia teraz i drogie do wycofania
+później. Magazyn jest jeden, więc magazyn nie jest kolumną. Lokalizacja to etykieta na
+regale, więc jest tekstem. Zadania idą razem ze stanami, więc dzielą schemat i zrastają
+się, aż żadnego z nich nie da się zmienić osobno.
+
+## Podejście
+
+Każdy agregat biznesowy niesie referencję magazynu od pierwszej migracji, wskazującą na
+tabelę magazynów, w której na początku stoi jeden wiersz. Kosztem są kolumna i
+złączenie, płacone raz, podczas gdy dorabianie wymiaru najemcy do systemu trzymającego
+już rok danych jest projektem z własnym budżetem.
+
+Lokalizacja jest encją, a nie polem tekstowym, zamodelowaną jako magazyn zawierający
+strefy zawierające miejsca. Lokalizacja tekstowa wytrzymuje dokładnie do chwili, w
+której ktoś potrzebuje wiedzieć, co leży w strefie, a wtedy teksty mają już pięć
+konwencji zapisu i ręczne uzgadnianie.
+
+Jeden kontekst dostaje jeden schemat, więc moduł zadań mieszka we własnym schemacie, a
+przyszłe konteksty stanów, przyjęć i wydań dostaną swoje. Sens tej granicy jest
+wypowiedziany wprost: moduł zadań nie ma zrosnąć się z rejestrem stanów, bo w chwili, w
+której te dwa dzielą tabele, żadnego nie da się wydać niezależnie, a przyrosty przestają
+być przyrostami.
+
+Ślad audytowy jest append-only z hash-chainem, egzekwowany wyzwalaczem blokującym update
+i delete, a nie konwencją mówiącą, że kod powinien do niego pisać. Zadań nie usuwamy;
+zadanie anulowane dostaje status i zostawia ślad, co czyni ten zapis użytecznym w sporze
+o to, co naprawdę zostało skompletowane.
+
+Wzorzec outbox jest obecny od pierwszego modułu, zanim istnieje cokolwiek zewnętrznego,
+co miałoby z niego odbierać. Zapisy z efektem zewnętrznym idą do tabeli outboxu
+opróżnianej przez proces z ponowieniami i kluczem idempotencji, więc kiedy przyjdzie
+połączenie z ERP i powiadomienia push, podłączą się do mechanizmu dostarczania, który
+jest już poprawny. Dokładanie outboxu do systemu wysyłającego bezpośrednio przez rok
+oznacza odnalezienie każdego miejsca wysyłki, a zawsze jest ich więcej, niż się
+spodziewano.
+
+Akceptacja ludzka stoi na granicy ERP od początku tamtej fazy: żaden dokument nie wraca
+do ERP bez zwolnienia go przez osobę z odpowiednią rolą.
+
+Interfejs pracownika projektowaliśmy pod warunki, w jakich pracuje, z dużymi celami
+dotykowymi, minimum opcji i szybką ścieżką z aparatu, podczas gdy panel administracyjny
+jest zwykłą responsywną aplikacją webową. Żaden z nich nie jedzie z danymi atrapowymi
+ani stronami demonstracyjnymi, co utrzymuje pytanie o to, co naprawdę działa, w stanie
+odpowiadalnym w dowolnej chwili.
+
+## Rezultat
+
+Moduł zadań działa jako pierwsza faza, z modelem danych, egzekucją audytu, wymiarem
+najemcy i mechanizmem dostarczania już ukształtowanymi pod rejestr stanów oraz
+integrację z ERP, które przyjdą później, na współdzielonej instancji bazy, dostawcy
+tożsamości i wzorcu wdrożenia używanym w całym majątku aplikacyjnym.
+
+## Wnioski
+
+System przyrostowy jest naprawdę przyrostowy tylko wtedy, gdy pierwszy przyrost odmawia
+podjęcia decyzji należących do późniejszych. Większość tego, co czyni fazę drugą drogą,
+została rozstrzygnięta w fazie pierwszej przez kogoś, kto wybrał rzecz najkrótszą z
+poprawnych, zamiast najkrótszej, która poprawna pozostaje.
+
+Drugi wniosek brzmi tak, że gwarancje strukturalne należą do struktury. Ślad audytowy
+chroniony wyzwalaczem i outbox obecny, zanim ma konsumenta, są obie odrobinę większą
+pracą niż alternatywa i obie likwidują całą klasę przyszłych usterek, co jest lepszą
+wymianą, niż wygląda w dniu jej zawierania.

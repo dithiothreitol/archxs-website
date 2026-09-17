@@ -1,0 +1,129 @@
+---
+title: "Silnik pakowania, który odmawia wykazania oszczędności, po które go zamówiono"
+summary: "Jak dobierać kartony wysyłkowe na podstawie zwalidowanego ułożenia przestrzennego zamiast porównania objętości i dlaczego raporty zatrzymują się krok przed twierdzeniem finansowym, którego wszyscy po nich oczekiwali."
+sector: "Fulfilment e-commerce, produkcja spożywcza"
+period: "2026"
+disclosure: "anonymised"
+metrics:
+  - label: "Benchmark"
+    value: "386 kompletnych planów geometrycznych z 400 zamówień, 544 paczki"
+  - label: "Walidacja"
+    value: "Niezależny walidator: kolizje, podparcie, przenoszone obciążenie, masa"
+  - label: "Słownik statusów"
+    value: "Sześć wyników, każdy powiązany z odrębną przyczyną"
+  - label: "Bezpieczeństwo zapisów"
+    value: "Domyślnie symulacja, realny zapis za czterema warunkami"
+capabilities:
+  - "Procesy biznesowe"
+  - "Physical AI"
+  - "Wytwarzanie oprogramowania"
+stack:
+  - "Python 3.13+, mypy strict"
+  - "Arytmetyka na całkowitych mm/g"
+  - "Przeszukiwanie z niezależnym walidatorem"
+  - "SQLite w trybie WAL"
+  - "Bramka WhatsApp"
+  - "Interaktywny podgląd 3D w przeglądarce"
+  - "REST API platformy zamówień"
+  - "ruff, pytest"
+order: 13
+---
+
+## Kontekst
+
+Magazyn wysyła kilkaset zamówień dziennie, a do tego projektu o wyborze kartonu
+decydowała osoba pakująca. Postawiono nam dwa pytania: czy oprogramowanie może
+zaproponować karton i czy rzeczywiście zużyte kartony da się zaewidencjonować na tyle
+dokładnie, żeby uzgodnić zużycie ze stanem magazynowym.
+
+## Problem
+
+Kuszącym skrótem przy doborze kartonu jest objętość. Zsumować objętość towaru, porównać
+z objętością wnętrza pudła i przyjąć wszystko, co mieści się z zapasem. Pomyłka zdarza
+się wystarczająco często, żeby mieć znaczenie, a sposób, w jaki to zawodzi, jest
+nieprzyjemny: operator odkrywa błąd z towarem w rękach, w środku zmiany, z wydrukowanym
+już dokumentem.
+
+Drugi problem ma naturę handlową, nie techniczną. Taki projekt przechodzi na obietnicy
+oszczędności, a najłatwiejszą do wyprodukowania liczbą są wyeliminowane decymetry
+sześcienne przeliczone przez nominalną taryfę kurierską. Ta liczba jest arytmetyką
+wykonaną na założeniach i staje się twierdzeniem o pieniądzach dopiero wtedy, gdy
+produkty zostaną zmierzone, kartony zmierzone, reguły operacyjne przyjęte przez magazyn,
+a taryfa potwierdzona. Każda z tych czterech rzeczy pozostawała otwarta w czasie, kiedy
+silnik powstawał.
+
+## Podejście
+
+Żadna ścieżka w systemie nie przyjmuje kartonu na podstawie objętości. Każda sztuka
+niesie tożsamość ze swojej pozycji zamówienia, występuje w wyniku dokładnie raz i wraca
+z pozycją oraz orientacją, więc wynikiem jest ułożenie, które da się narysować, a nie
+orzeczenie, że coś powinno się zmieścić.
+
+Walidator napisany osobno od solvera sprawdza następnie to ułożenie niezależnie:
+granice, kolizje między sztukami, dopuszczalne orientacje, podparcie pod każdą sztuką,
+obciążenie przenoszone przez stos oraz masę każdej gotowej paczki razem z opakowaniem.
+Produkty miękkie nie stanowią podpory dla niczego, co leży wyżej, a tacki układają się
+płasko na cienkim boku. Jednostki prowadzimy tak, żeby zaokrąglanie zawsze działało
+przeciwko przyjęciu: wejście przychodzi w centymetrach i kilogramach, model oraz
+walidator pracują na całkowitych milimetrach i gramach, wymiary i masy produktu
+zaokrąglamy w górę, a wnętrze kartonu w dół.
+
+Słownik statusów waży więcej, niż na to wygląda. Wynik oznaczony jako gotowy oznacza
+kompletny zwalidowany plan na zatwierdzonych danych i regułach, i nie mówi nic o
+optymalności. Dwa statusy opisują to, co musi dostarczyć człowiek: jeden wskazuje na
+przegląd, drugi na brakujące pomiary. Pozostałe trzy oddzielają wykazane ograniczenie
+fizyczne od wyczerpanego przeszukiwania i od przekroczenia czasu, a trzymanie ich osobno
+ma znaczenie, bo tylko jeden z tych trzech poprawia się razem z solverem. Zwinięcie ich
+w jedną porażkę ukryłoby różnicę między pudłem, które nie może zadziałać, a pudłem,
+którego przestaliśmy szukać.
+
+Zgoda przechodzi przez WhatsApp, gdzie operator dostaje propozycję z linkiem do
+interaktywnego podglądu na telefonie, który pokazuje ułożenie w trzech wymiarach obok
+rzutów z góry, z przodu i z boku, na żądanie odsłania całe warstwy, nazywa produkty,
+liczy obejrzane już paczki i trzyma pasek decyzji na stałe na ekranie. Na stanowisku
+operator potwierdza kod kartonu osobno dla każdej paczki; zmiana kartonu albo sposobu
+podziału towaru wymaga podania powodu i nowej walidacji, a zużycie zapisuje dopiero
+zakończenie sesji. Korekty, zwroty i uszkodzenia tworzą własne zdarzenia zamiast
+edytować historię.
+
+Zapis zwrotny do platformy zamówień jest domyślnie wyłączony, a jego włączenie wymaga
+zgrania czterech rzeczy: jawnej flagi zatwierdzenia w poleceniu, ustawienia
+zezwalającego na tryb produkcyjny w konfiguracji, potwierdzonej flagi stronicowania
+dowodzącej, że odczyt widział kompletne strony, oraz poświadczenia z rolą zapisu.
+Poświadczenia odczytu i zapisu trzymamy osobno, odpowiedź HTTP 200 nie jest uznawana za
+sukces, dopóki nie zostanie odczytane pole statusu w treści, a ręczne i nierozpoznane
+wpisy w polu kartonu są chronione przed nadpisaniem. Kiedy odpowiedź przepadnie, kolejna
+próba uzgadnia stan z platformą, zanim cokolwiek zapisze, ponieważ utracona odpowiedź
+nie mówi nic o tym, czy zapis doszedł. Idempotencję kluczujemy sesją i paczką zamiast
+kodem kartonu, bo dwie paczki w jednym zamówieniu zupełnie zasadnie używają tego samego
+pudła. Zamknięcie sesji, zapis zużycia i zakolejkowanie zadania wychodzącego dzieją się
+w jednej transakcji bazy, więc awaria sieci nie może wymazać faktu fizycznego.
+
+## Rezultat
+
+Na pierwszych czterystu realnych zamówieniach silnik wyprodukował 386 kompletnych planów
+geometrycznych, 14 wyników oznaczonych brakiem danych i łącznie 544 paczki. Wszystkie
+386 mają status wymagający przeglądu, ponieważ produkty, kartony i polityka nie zostały
+jeszcze fizycznie zmierzone i potwierdzone, a raporty mówią to wprost. Limit dwudziestu
+kilogramów na paczkę i siedemdziesięcioprocentowe podparcie są konfigurowalnymi regułami
+operacyjnymi, które magazyn musi przyjąć; oprogramowanie nie rozstrzyga za nikogo
+wymogów prawnych.
+
+Silnik, stanowisko operatora, trasa zgody i podgląd po HTTPS pracują na serwerze, a
+integracja z katalogiem kartonów jest wdrożona i włączona za zgodą właściciela. Raporty
+podają czasy przetwarzania i rozkłady statusów, i na tym się kończą. Liczba opisująca
+zaoszczędzone pieniądze pojawi się wtedy, gdy pomiary zostaną odebrane, i ani chwili
+wcześniej.
+
+## Wnioski
+
+Status zwracany przez system jest częścią jego interfejsu, a słownik rozróżniający
+przyczyny daje zespołowi operacyjnemu coś, z czym można pójść dalej. Wiedza, że plan
+potrzebuje pomiaru, zamiast informacji, że się nie powiódł, zamienia wynik
+oprogramowania w zadanie, które ktoś podejmie.
+
+Drugi wniosek dotyczy liczby, której od projektu się oczekuje. Podanie oszczędności
+opartej na niepotwierdzonych pomiarach byłoby łatwe, obronne na slajdzie i niemożliwe do
+utrzymania na przeglądzie pół roku później. Nazwanie, które liczby są dowodem, a które
+wciąż założeniem, kosztuje na starcie trochę entuzjazmu i kupuje wiarygodność każdej
+kolejnej liczby.

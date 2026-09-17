@@ -1,0 +1,144 @@
+---
+title: "Recruitment software written around the audit that is coming"
+summary: "How to build AI-assisted hiring as a high-risk system under the EU AI Act, where the measure against a model inventing a qualification is a string containment check, and the list of behaviours the system must never exhibit was written before the list of features."
+sector: "Manufacturing group, HR and recruitment"
+period: "2026"
+disclosure: "anonymised"
+metrics:
+  - label: "Classification"
+    value: "Annex III(4) high-risk, deployer obligations under Article 26"
+  - label: "Grounding"
+    value: "Every evidence quote must be a literal substring of the parsed CV"
+  - label: "Audit trail"
+    value: "Append-only, hash-chained, retained at least six months"
+  - label: "Bias review"
+    value: "Quarterly and idempotent, thresholds fixed in advance"
+capabilities:
+  - "Applied AI"
+  - "Business processes"
+  - "Cybersecurity & identity"
+  - "Software delivery"
+stack:
+  - "Python 3.12, FastAPI"
+  - "PostgreSQL, append-only audit schema"
+  - "Keycloak RBAC"
+  - "Claude API via structured output"
+  - "Document parsing to markdown"
+  - "Langfuse, Prometheus"
+  - "pytest, testcontainers"
+order: 5
+---
+
+## Context
+
+A manufacturing group hires continuously across production, logistics and office roles,
+and ran the whole process on a shared mailbox and a spreadsheet. The brief was an
+in-house applicant tracking system with AI doing the reading: parsing a CV into
+structure, scoring it against a published rubric, drafting correspondence and keeping
+the recruiters ahead of their own deadlines.
+
+## Problem
+
+Recruitment assisted by AI sits in Annex III point 4 of the EU AI Act, covering
+employment and access to self-employment, which makes it a high-risk system. The
+organisation deploying it is a deployer and not a provider, since the model comes from
+elsewhere, so the obligations that apply are those in Article 26. Full enforcement
+arrives on 2 August 2026, with penalties reaching six to seven percent of worldwide
+annual turnover, and GDPR applies in parallel through an entirely separate enforcement
+route.
+
+The practical consequence is uncomfortable for anybody specifying such a product. The
+features that make AI attractive in hiring are ranking, filtering and automatic
+rejection below a threshold, and those are precisely the behaviours the regulation
+constrains. A system designed for throughput first and compliance afterwards will need
+the throughput taken back out of it.
+
+There is a second problem underneath the legal one. A model reading a CV produces a
+score with a fluent justification whether or not the evidence exists in the document,
+and a reviewer working through forty applications will not catch the one that was
+invented.
+
+## Approach
+
+The specification opens with the modes the system must never operate in. It may not
+reject or accept an application without a recruiter, may not predict gender, age or
+nationality from a CV, may not attempt to match anonymised applications back to real
+people, may not reject automatically on a score threshold, may not send a candidate
+anything without approval, and may not draft an employment contract. Writing those down
+first turned the compliance discussion into an architecture, because each prohibition
+names a code path that must not exist.
+
+The permitted modes are then enumerated in a table with an explicit approval gate
+recorded against each one. Parsing and anomaly validation carry no gate, since they
+extract and flag without reaching a conclusion. Scoring, polished replies and rejection
+feedback all require a recruiter to accept, edit or reject before anything leaves the
+system. The three narrow exceptions that act autonomously are an acknowledgement on
+receipt, internal nudges that never reach a candidate, and transition updates that are
+generated as drafts and only auto-send where a recruiter has switched that on for a
+particular posting.
+
+Grounding is enforced mechanically, because each criterion in a score carries a
+rationale and an evidence quote, and that quote has to be a literal substring of the
+parsed CV. A qualification the model has invented therefore fails a string containment
+check inside the service, before it ever reaches a person who would have to notice it.
+The parser itself returns a schema-validated structure with retries on validation
+failure, and a separate validator flags anomalies in the extraction, such as a contact
+detail or a date that does not hold together.
+
+Human oversight is carried in roles and in the interface at the same time. Moving a
+candidate to hired or rejected requires a partner-level role in the identity provider,
+stage transitions run through a state machine that writes audit entries, and the
+interface offers no way to bulk-reject by score, because an interface that makes a
+prohibited action convenient will eventually see it performed.
+
+The audit log is append-only in Postgres with a hash chain, and it records each
+inference with the input hash, the prompt version, the model, the output and what the
+recruiter then did with it. Retention runs to at least six months in line with Article
+12, and the log is deliberately kept free of surplus personal data so that the record
+itself does not become a liability.
+
+Bias monitoring is quarterly, idempotent per quarter, and its thresholds were fixed
+before anyone saw a result: a gender correlation above 0.2 in absolute value, an origin
+disparity above 1.5, or a hire-rate ratio above 1.5 raises a flag. The unit of analysis
+is one canonical score per application, joined on the automatic score, so that a
+candidate reviewed twice does not count twice. Unbounded indicators are clamped to the
+column type with the raw value preserved in a note, which keeps a pathological ratio
+from silently overflowing into something that looks acceptable.
+
+The right to an explanation under Article 86 is an endpoint rather than a promise. A
+candidate reaches it through a secure link in their email and receives the rubric
+criteria with the score, rationale and evidence for each, the final stage and its
+reason, and the contact details for the data protection route, rendered as a PDF on
+request.
+
+Legal bases are mapped purpose by purpose rather than assumed. An application to a
+specific post rests on steps prior to entering a contract, storage for defence against
+claims rests on legitimate interest and is capped at six months as the cautious reading,
+and the talent pool requires explicit consent, runs to twenty-four months at most and
+re-consents automatically.
+
+## Outcome
+
+The system runs on shared infrastructure alongside the other internal applications of
+the group, with its own realm clients, its own schema and the same deployment pattern
+the operations team already knows. The impact assessments required before production,
+covering both data protection and fundamental rights, are treated as a precondition for
+go-live instead of a document produced afterwards.
+
+The cost of all this is worth stating plainly. The system is slower to operate than one
+that filters automatically, and a review queue has to be staffed for it to work at all.
+What the organisation gets in exchange is a hiring process whose every AI-assisted
+decision can be reconstructed, explained to the candidate and handed to a supervisory
+authority without a remediation project first.
+
+## What it taught us
+
+Writing the prohibitions before the features is the most useful hour in a project of
+this kind. A prohibition is a statement about code that must not exist, and it
+constrains the design in a way that a principle expressed as a value never does.
+
+The second lesson is that the compliance controls worth relying on are the ones a
+machine can check. Human oversight, explainability and non-discrimination are easy to
+assert in a policy document and hard to evidence in an inspection. A substring check, a
+hash chain and a threshold fixed in advance each turn one of those commitments into
+something that either holds or fails visibly.

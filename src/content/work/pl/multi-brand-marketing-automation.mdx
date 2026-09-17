@@ -1,0 +1,104 @@
+---
+title: "Jedna automatyzacja marketingu dla kilku marek, bez kopii na markę"
+summary: "Jak prowadzić automatyzację treści i kampanii dla wielu marek e-commerce z jednego zestawu workflowów parametryzowanych najemcą, z kontenerem agenta na markę odizolowanym za kontrolowanym interfejsem."
+sector: "E-commerce, marketing wielomarkowy"
+period: "2026"
+disclosure: "anonymised"
+metrics:
+  - label: "Workflowy"
+    value: "19 automatyzacji parametryzowanych marką, nie duplikowanych na markę"
+  - label: "Izolacja"
+    value: "Identyfikator marki jako klucz izolacji danych w całym systemie"
+  - label: "Warstwa agentowa"
+    value: "Jeden kontener w piaskownicy na markę za śluzą API"
+  - label: "Dostęp do modeli"
+    value: "Jedna brama z cache i pełnym śledzeniem kosztów"
+capabilities:
+  - "Applied AI"
+  - "Procesy biznesowe"
+  - "Wytwarzanie oprogramowania"
+stack:
+  - "Orkiestrator workflowów"
+  - "Brama LLM z cache odpowiedzi"
+  - "PostgreSQL z pgvector"
+  - "Redis jako cache i kolejka"
+  - "Tracing i obserwowalność kosztów"
+  - "Konteneryzowany agent na markę"
+  - "Narzędzia CLI w Pythonie"
+order: 19
+---
+
+## Kontekst
+
+Grupa prowadzi kilka marek e-commerce sprzedających różnym odbiorcom, każdą z własną
+księgą marki, personami, tonem i kanałami. Praca marketingowa ma we wszystkich ten sam
+kształt: wyprodukować treść, dostosować ją do kanału, zaplanować, zareagować na to, co
+działa, i utrzymać pisanie rozpoznawalnie markowym, a nie rozpoznawalnie generowanym.
+
+## Problem
+
+Automatyzacja marketingu dla wielu marek psuje się w przewidywalny sposób. Pierwsza
+marka dostaje zestaw workflowów, które działają. Druga dostaje ich kopię z przerobionymi
+promptami, bo tego dnia kopiowanie jest szybsze niż parametryzowanie. Przy czwartej
+marce istnieją cztery rozjechane kopie każdego workflowu, poprawka nałożona na jedną z
+nich i nikt, kto z przekonaniem powie, co robią pozostałe.
+
+Drugi problem dotyczy tego, do czego agent z dostępem do narzędzi ma prawo sięgnąć.
+Asystent na tyle użyteczny, żeby redagować, planować i analizować dla marki, potrzebuje
+poświadczeń i danych, a asystent trzymający poświadczenia wszystkich marek naraz jest o
+jeden prompt od napisania czegoś dla niewłaściwej.
+
+## Podejście
+
+Identyfikator marki jest kluczem izolacji w całym systemie, a w orkiestratorze stoi
+jeden zestaw workflowów w jednym folderze, parametryzowany tym identyfikatorem, a nie
+duplikowany. Materiał markowy mieszka jako pliki per marka poza definicjami workflowów,
+więc księga marki, persony i treści referencyjne nadające marce głos są danymi, które
+osoba z marketingu może edytować, podczas gdy automatyzacja konsumująca je pozostaje
+pojedyncza.
+
+Dostęp do modeli idzie przez jedną bramę dla całego majątku, z cache odpowiedzi i pełnym
+śledzeniem kosztów, dzięki czemu zmiana modelu albo limit zapytań obsługuje się w jednym
+miejscu, a koszt kampanii jest przypisywalny, a nie szacowany. Warstwa tracingu niesie
+wywołania na potrzeby obserwowalności, a prompty trzymamy jako szablony z symbolami
+zastępczymi, zamiast zaszywać je w węzłach workflowu, co utrzymuje je w stanie
+przeglądalnym i wersjonowanym jako tekst.
+
+Wyszukiwanie korzysta z osadzeń wektorowych trzymanych we współdzielonej bazie z własnym
+schematem, dzięki czemu dotychczasowe treści marki zasilają nowe, a korpusy różnych
+marek się nie mieszają.
+
+Warstwa agentowa jest miejscem, w którym izolacja staje się fizyczna. Każda marka
+dostaje własny kontener trzymający własną pamięć, sesje i poświadczenia, uruchamiany w
+piaskownicy i sięgający świata zewnętrznego przez kontrolowany interfejs, a nie
+bezpośrednio. Agent nie może więc sięgnąć poświadczeń innej marki, ponieważ ich nie
+posiada, a to jest gwarancja mocniejsza niż polecenie, żeby tego nie robił. Opublikowane
+widoki z przeznaczonym do tego prefiksem dają agentowi dostęp tylko do odczytu danych,
+których potrzebuje, i niczego poza nimi.
+
+Pozycja infrastrukturalna jest taka sama jak wszędzie indziej w tym majątku. Nic tutaj
+nie prowadzi własnej bazy, cache'u, orkiestratora, bramy ani stosu obserwowalności;
+wszystko to jest współdzielone z pozostałymi systemami wewnętrznymi, a ten projekt
+trzyma wyłącznie to, co jest dla niego swoiste, czyli prompty, workflowy, dane marek,
+usługę analityczną i konfigurację agentów.
+
+## Rezultat
+
+Dziewiętnaście automatyzacji działa na markach z jednej definicji każda, przy marce
+podanej jako parametr. Dodanie marki oznacza dołożenie jej plików, identyfikatora i
+kontenera agenta, a nie odgałęzienie zestawu workflowów i odziedziczenie kosztu ich
+utrzymania.
+
+## Wnioski
+
+Decyzja rozstrzygająca o tym, czy automatyzacja wielonajemcowa pozostanie utrzymywalna,
+zapada w dniu pojawienia się drugiego najemcy, a presja w tym momencie zawsze idzie w
+stronę kopiowania. Parametryzacja kosztuje wtedy dzień i oszczędza rozjazd, który w
+przeciwnym razie staje się trwały, bo nikt nigdy nie scala z powrotem czterech kopii
+workflowu.
+
+Drugi wniosek dotyczy sposobu izolowania agenta. Instrukcje w promptcie są najsłabszą
+dostępną kontrolą i najłatwiejszą do napisania. Danie każdej marce własnego kontenera
+wyłącznie z jej poświadczeniami przenosi gwarancję z czegoś, o czego poszanowanie
+prosimy model, w coś, co egzekwuje środowisko, a to rozróżnienie stanowi całą postawę
+bezpieczeństwa.

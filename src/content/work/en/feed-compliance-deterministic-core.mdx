@@ -1,0 +1,127 @@
+---
+title: "Compliance verdicts a laboratory can defend in a certification audit"
+summary: "How to place a deterministic compliance core between feed regulation and an AI assistant, so that the assistant interprets, orchestrates and explains while the pass or fail comes from code that answers the same way every time."
+sector: "Animal feed R&D and quality assurance"
+period: "2026"
+disclosure: "anonymised"
+metrics:
+  - label: "Verdicts"
+    value: "Deterministic pass or fail, identical on every run"
+  - label: "Regulatory scope"
+    value: "FEDIAF nutritional guidelines plus four EU instruments"
+  - label: "Rule representation"
+    value: "Structured data rather than guideline PDFs in a retrieval index"
+  - label: "Recipe IP"
+    value: "Sensitive inference routed to a local model or sent as structural features"
+capabilities:
+  - "Applied AI"
+  - "Business processes"
+  - "Enterprise architecture"
+  - "Software delivery"
+stack:
+  - "Python, FastAPI"
+  - "Next.js 15, Recharts"
+  - "PostgreSQL with pgvector"
+  - "ChromaDB for regulatory retrieval"
+  - "LiteLLM gateway, Langfuse"
+  - "Keycloak, deny-by-default RBAC"
+  - "Procedures versioned as code"
+order: 8
+---
+
+## Context
+
+The technology and quality department of a feed manufacturer develops, validates and
+controls recipes for dog and cat food. The work is spread across a least-cost
+formulation engine, an ERP holding materials, stock and prices, a laboratory system,
+spreadsheets and a good deal of expertise held by individuals. What was missing sat
+between those systems: a layer that enforces compliance, records the procedures, joins
+the quality data and presents it somewhere a manager can read it.
+
+## Problem
+
+Feed recipes are governed by the FEDIAF nutritional guidelines together with EU law
+covering the marketing of feed, additives, undesirable substances and the catalogue of
+feed materials. A verdict of compliant is examined during a GMP+, FSSC or IFS audit,
+which sets two requirements that a convenient architecture will fail. The verdict has to
+be identical on every run for the same inputs, and it has to be traceable to the
+specific rule that produced it.
+
+A language model over a corpus of regulation is the appealing shortcut here. It answers
+quickly, reads correctly, handles the awkward questions gracefully and produces nothing
+an auditor can follow back to a limit in a regulation. The gap between an answer that
+sounds right and an answer that can be defended is exactly the gap this department is
+audited on.
+
+## Approach
+
+The layering is stated explicitly and enforced by where the code lives. Integration
+connectors sit at the bottom, reaching the formulation engine, the ERP, the laboratory
+and eventually the plant floor. A deterministic compliance core sits above them, written
+as ordinary code: nutritional validation against the guidelines, tolerances, additive
+limits, undesirable substances, label composition, golden batch comparison and the
+predictive models. An agent layer sits above that, choosing which procedure to run,
+orchestrating it, answering questions against the regulatory corpus and explaining a
+result in words a technologist can use. The interface sits on top of all of it. The
+model never issues a compliance verdict, and every verdict carries the rule that
+produced it.
+
+Rules are held as structured data rather than as guideline text in a retrieval index,
+for two independent reasons that happen to point the same way. The commercial terms
+attached to the guideline text restrict what may be reproduced, and a validator reading
+structured limits returns the same answer every time, where retrieval over prose does
+not. That decision cost more effort during implementation than loading a folder of PDFs
+would have, and it is the reason the verdicts are defensible.
+
+Procedures are versioned as code in the repository and executed by the agent, with the
+hard gates written in deterministic code rather than in the prompt. The consequence for
+governance is neat: the quality representative reviewing one of these procedures is
+approving a change to a standard operating procedure, and that review leaves the same
+trace as any other change to the codebase.
+
+The scope limits were drawn deliberately and written down. The least-cost formulation
+engine stays where it is, real-time line control stays with the process systems, and
+accounting and logistics stay in the ERP. The value of this layer sits in the gap
+between those systems, and a platform that tried to absorb any of them would have spent
+its budget rebuilding something that already works.
+
+Protecting recipe intellectual property shaped several decisions at once. All inference
+goes through a gateway, sensitive recipes are routed to a locally hosted model, and
+where the full formulation is unnecessary the system sends structural features in its
+place. The recipe memory that lets R&D reuse its own history is built on embeddings of
+those same structural features, held in the database beside the business data, for the
+same reason. The shared infrastructure underneath is self-hosted throughout, so the only
+point of contact with an external model is the gateway, and that point is explicitly
+governed.
+
+Two further controls mirror each other across the deterministic and the probabilistic
+halves of the system. The validators are covered by golden tests, and the retrieval and
+model layer is covered by an evaluation set that gates continuous integration, so that a
+regression in answer quality is caught the same way a regression in a limit check would
+be. Access control runs in three layers, with a role gate for the application,
+functional roles as composites and granular module-and-action permissions, all deny by
+default, which lets the scope of a role change in the identity provider without a code
+change.
+
+## Outcome
+
+The predecessor of this platform, a focused compliance verifier, already runs in
+production for the quality team and carries the rules and the users that will migrate.
+The full platform exists as an executable design: architecture, data model, API, the
+catalogue of analytical widgets, the module roadmap and deployment snippets, with the
+first phase scoped to the regulatory assistant with its evaluation set, the recipe
+validator, the labelling assistant, a deterministic what-if mode for technologists and
+the first set of dashboard widgets.
+
+## What it taught us
+
+The line between what a model may say and what only code may decide is the central
+design decision in a regulated domain, and drawing it early is cheaper than drawing it
+during an audit. Everything else in this architecture follows from where that line was
+placed.
+
+The second lesson is less obvious. The licensing terms attached to a standard shaped the
+architecture as directly as any technical constraint did, because they ruled out the
+approach that would otherwise have been chosen and pushed the rules into a structured
+form. That form turned out to be the better engineering answer as well, which is a
+pleasant outcome and not one anybody predicted at the start.
