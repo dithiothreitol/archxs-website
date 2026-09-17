@@ -65,14 +65,14 @@ decyduje o niczym; odpowiada na pytania o plan i pomaga go czytać. Nic nie traf
 ani do MES bez zatwierdzenia przez osobę z odpowiednią rolą, a każda operacja
 modyfikująca dane zostawia wpis w append-only audit logu z hash-chainem.
 
-Twierdzenie o odtwarzalności sformułowaliśmy na tyle precyzyjnie, żeby dało się je
+Twierdzenie o odtwarzalności sformułowałem na tyle precyzyjnie, żeby dało się je
 testować: identyczny kanoniczny ładunek, ten sam seed, ta sama wersja solvera i jeden
 wątek roboczy dają wynik identyczny co do bajta. Całą pracę wykonuje tu słowo
 „kanoniczny", ponieważ postać kanoniczną buduje jedna funkcja i ta sama funkcja karmi
 zarówno hash wejścia, jak i budowniczego modelu. Gdyby hash liczono z jednego porządku,
 a model budowano z drugiego, system wyprodukowałby zgodny hash obok innego planu, a
 zestaw testów nie zgłosiłby niczego. Wyeliminowanie takiego scenariusza było całym
-powodem, dla którego obie ścieżki trzymamy na jednym kodzie.
+powodem, dla którego obie ścieżki trzymam na jednym kodzie.
 
 Wejścia solvera są utrwalane, a nie rekonstruowane. Dedykowana tabela przechowuje pełny
 ładunek w JSON razem z jego hashem, zapisywana wyłącznie insertem przez pięć serwisów
@@ -82,17 +82,17 @@ i nadała hashowi treści charakter write-once, późniejsza zablokowała usuwan
 kaskadą z wersji planu, i zamroziła powiązanie wejścia z wersją, do której należy.
 
 Dwa ograniczenia są opisane, a nie po cichu pominięte. Planów sprzed kanonizacji nie da
-się odtworzyć, przy czym powodem jest kolejność, a nie brak danych — wejścia istnieją,
+się odtworzyć, przy czym powodem jest kolejność, a nie brak danych: wejścia istnieją,
 tyle że te same wejścia dawały różne plany. Hashe migawek zapisane przed tą datą
 zawierają losowy identyfikator, co czyni je nieporównywalnymi z czymkolwiek, również
 między sobą.
 
-Pomiar potraktowaliśmy z tą samą ostrożnością, ponieważ liczba pozycji w planie
-wyglądała na oczywistą metrykę regresyjną do momentu, w którym ją zmierzyliśmy:
+Pomiar potraktowałem z tą samą ostrożnością, ponieważ liczba pozycji w planie
+wyglądała na oczywistą metrykę regresyjną do momentu, w którym ją zmierzyłem:
 identyczna treść migawki podana w innej kolejności dawała od 144 do 168 pozycji przy
 niezmienionej wartości funkcji celu, czyli rozrzut rzędu szesnastu procent. Testy
 regresyjne porównują sztuki, ważone niepokrycie i pokrycie per źródło, a liczbę pozycji
-traktujemy jako szum do czasu, aż model dostanie człon czasowy.
+traktuję jako szum do czasu, aż model dostanie człon czasowy.
 
 Strona hali trzyma tę samą dyscyplinę w innym materiale. Model dziedzinowy jest zgodny z
 ISA-95, dzięki czemu słowa zasób, operacja i zlecenie znaczą jedno w rozmowie z
@@ -106,7 +106,7 @@ Platforma pracuje produkcyjnie jako cienki deployment na współdzielonej infras
 a moduły planistyczny i utrzymania ruchu rozwijają się równolegle w dwóch strumieniach
 pracujących pod ścisłymi granicami modułów i na jednym łańcuchu migracji. Pokrywa ją
 około 367 modułów testowych, w tym testy własnościowe solvera i testy integracyjne na
-kontenerach. Wejścia solvera utrwalamy od wiosny 2026, kanonizacja weszła latem tego
+kontenerach. Wejścia solvera utrwalam od wiosny 2026, kanonizacja weszła latem tego
 samego roku i od niej odtwarzalność obowiązuje w przód.
 
 ## Wnioski

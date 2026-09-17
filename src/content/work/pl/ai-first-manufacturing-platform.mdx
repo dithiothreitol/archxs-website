@@ -45,7 +45,7 @@ rozbijają się o to samo. Każda aplikacja chce własnego uwierzytelniania, wł
 wdrożenia, własnego kanału powiadomień. Przy dziesięciu systemach i jednym zespole utrzymanie zaczyna
 kosztować więcej niż budowa, a integracja staje się osobnym produktem, którego nikt nie zamawiał.
 
-Druga trudność jest merytoryczna. Część tych procesów jest regulowana albo obliczeniowo trudna:
+Druga trudność jest merytoryczna, bo część tych procesów jest regulowana albo obliczeniowo trudna:
 receptury muszą być zgodne z FEDIAF i przepisami UE, faktury z wymogami KSeF, plan produkcji musi
 respektować rzeczywiste ograniczenia linii. To dziedziny, w których wynik „prawdopodobnie poprawny" nie
 ma żadnej wartości.
@@ -60,8 +60,7 @@ nowa. Granice bounded contextów są uzasadniane ADR-ami, bo bez tego „reuse" 
 się w jeden monolit noszący dziesięć nazw.
 
 Warstwa produkcyjna jest zbudowana zgodnie z ISA-95 (APS/MOM), z akwizycją danych przez OPC UA
-i MQTT/Sparkplug B oraz szeregami czasowymi w TimescaleDB. Zgodność z modelem ISA-95 nie jest tu
-ozdobą, to jedyny znany nam sposób, żeby słowa „zasób", „operacja" i „zlecenie" znaczyły to samo
+i MQTT/Sparkplug B oraz szeregami czasowymi w TimescaleDB. Zgodność z modelem ISA-95 zarabia tu na swoje miejsce, bo jest jedynym znanym mi sposobem, żeby słowa „zasób", „operacja" i „zlecenie" znaczyły to samo
 w rozmowie z automatykiem, w interfejsie i w schemacie bazy.
 
 W warstwie AI obowiązuje jedna zasada: AI proponuje, człowiek decyduje. Modele czytają dokumenty,
@@ -74,7 +73,7 @@ wytwarza zobowiązania, którego nikt nie zatwierdził, i każdy da się obroni�
 
 Na wspólnej infrastrukturze pracuje około dziesięciu systemów wewnętrznych, planowanie i monitoring
 produkcji, obieg dokumentów z KSeF, zgodność receptur w R&D, automatyzacja sprzedaży i marketingu
-(19 workflow), e-commerce, ATS. Magazyn jest w budowie. Całość utrzymuje się na jednym VPS.
+(19 workflow), e-commerce, ATS. Magazyn pozostaje w budowie, a całość utrzymuje się na jednym VPS.
 
 Dwie zmiany operacyjne można podać liczbami. Walidacja cennika dostawcy, wcześniej 8–12 godzin pracy
 ręcznej, to dziś około 5 minut przetwarzania i 15–30 minut przeglądu przez człowieka. Audyt półkowy

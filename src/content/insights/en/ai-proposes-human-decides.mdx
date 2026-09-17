@@ -13,24 +13,23 @@ readingMinutes: 6
 
 In a production system a language model is entitled to propose. The decision is taken by a person, or by
 deterministic code sitting next to the model. This is not a legal caveat appended at the end of a project
-but an architectural pattern: we separate generating a hypothesis from approving it, because only then
-can we point to who answers for the outcome, and reconstruct afterwards why the decision took the shape
+but an architectural pattern: I separate generating a hypothesis from approving it, because only then
+can I point to who answers for the outcome, and reconstruct afterwards why the decision took the shape
 it did.
 
-The principle runs consistently through the eight or so systems we keep in production. What follows is
+The principle runs consistently through the eight or so systems I keep in production. What follows is
 what it amounts to in code, and what it costs.
 
 ## What deciding actually means
 
 A decision is the moment state changes: an invoice is coded, a candidate moves to the next stage, a
-formulation is released, a production plan reaches the shop floor. The architectural question is not
-whether to use a model, but which component performs that change of state.
+formulation is released, a production plan reaches the shop floor. The architectural question is which component performs that change of state.
 
 In the feed label verifier, conformance with FEDIAF and EU Regulation 767/2009, the model reads the
 label and proposes a reading. The thresholds the verdict rests on are computed by Python:
-deterministically, on figures that are afterwards visible in the log. We do not ask the model whether the
-protein content falls within tolerance. We ask what figure is printed there, and we compute the tolerance
-ourselves.
+deterministically, on figures that are afterwards visible in the log. I do not ask the model whether the
+protein content falls within tolerance. I ask what figure is printed there, and I compute the tolerance
+myself.
 
 In production planning the decision-maker is an OR-Tools CP-SAT solver. The language model is a copilot:
 it translates constraints out of the planner's language, explains why one variant is worse, prepares a
@@ -42,7 +41,7 @@ That is the heart of the division of labour. The model is good at reading input 
 It is bad at guaranteeing that tomorrow the same input yields the same output. A deterministic component
 alongside the model is the answer to the second half of that sentence.
 
-## How we know a proposal is not invented
+## How I know a proposal is not invented
 
 The label verifier has five layers of integrity control, and none of them is cosmetic. Confidence scoring
 of HIGH/MED/LOW determines the onward path. Figures are read a second time, independently, and
@@ -69,7 +68,7 @@ bears on an individual person.
 
 In the document workflow system, invoice coding is AI-suggested and never auto-applied. Before anything
 reaches a model, personal data is redacted, because the question of whether the model is accurate is
-separate from the question of what we actually sent outside the company. In the export expansion engine a
+separate from the question of what I actually sent outside the company. In the export expansion engine a
 person approves every outbound communication; AI does not send correspondence to a public authority and
 does not rule on compliance.
 
@@ -96,14 +95,14 @@ validated against an XSD. Free text is convenient in a demo and expensive in int
 
 It costs, and it is worth saying so plainly.
 
-It is slower. Every gate is design work: what escalates, to whom, within what time, and what happens when
+The arrangement is slower, because every gate is design work: what escalates, to whom, within what time, and what happens when
 nobody responds. A gate without an owner and without a response time is a queue that grows quietly.
 
 It is more expensive to design, though not to run. The model is the cheap part of the budget. The
 expensive parts are the verification layers, the test sets, PII redaction, the audit log and cost
 observability, everything that is not visible on screen.
 
-It is less impressive. AI proposes and you approve looks weaker in a demo than full automation, and the
+It also looks less impressive, because AI proposes and you approve reads weaker in a demo than full automation, and the
 difference only surfaces at the first error nobody can explain.
 
 The principle has its own failure mode as well: a gate everyone clicks through by reflex is worse than no
@@ -120,7 +119,6 @@ the scope than to keep a gate on paper. And it makes no sense where deterministi
 fair share of the tasks a model is proposed for today are rules somebody once forgot to write down.
 
 Trust in a model is cheap as long as the output is good; the price becomes visible only when it is bad.
-So the question worth asking about a system with AI in it is not how often the model is wrong, but where
-in that system an error stops and who will notice. If the answer is the name of a component or a specific
+So the question worth asking about a system with AI in it is where in that system an error stops and who will notice. If the answer is the name of a component or a specific
 role, the plan is ready. If the answer is that the model is good, there is no architecture yet, there is
 a demo.

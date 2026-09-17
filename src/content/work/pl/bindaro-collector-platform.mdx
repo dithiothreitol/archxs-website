@@ -1,6 +1,6 @@
 ---
 title: "Album kolekcjonerski na NFT z analityką trzymaną u siebie"
-summary: "Jak zbudować produkt konsumencki na danych z blockchaina, w którym ciekawą pracą nie jest łańcuch, tylko indeksacja, tożsamość i silnik analityczny, który nie wysyła kolekcji użytkownika do cudzego API."
+summary: "Jak zbudować produkt konsumencki na danych z blockchaina, w którym ciekawą pracą są indeksacja, tożsamość i silnik analityczny, który nie wysyła kolekcji użytkownika do cudzego API."
 sector: "Produkty własne, Web3 konsumencki"
 period: "2026"
 disclosure: "public"
@@ -31,7 +31,7 @@ order: 27
 
 ## Kontekst
 
-Bindaro to nasz własny produkt: miejsce, w którym posiadacz NFT układa je w album, opisuje, publikuje
+Bindaro to mój własny produkt: miejsce, w którym posiadacz NFT układa je w album, opisuje, publikuje
 wynik i daje się znaleźć innym kolekcjonerom. Pod spodem siedzi marketplace, model rzadkości i punktacji,
 silnik analityczny oraz bot na Discordzie, dostarczone jako aplikacja webowa i aplikacje mobilne na
 Androida i iOS.
@@ -47,37 +47,37 @@ aktywności mieszkają w różnych miejscach, docierają w różnym tempie i byw
 łańcucha w momencie renderowania strony daje produkt, który jest wolny, kiedy działa, i pusty, kiedy
 węzeł ma zły dzień.
 
-Drugi: tożsamość. Odbiorcy dzielą się na tych, którzy przychodzą z portfelem, i tych, którzy przychodzą z
+Drugim problemem jest tożsamość, bo odbiorcy dzielą się na tych, którzy przychodzą z portfelem, i tych, którzy przychodzą z
 adresem e-mail i bez zamiaru uczenia się, czym jest seed phrase. Obsługa wyłącznie pierwszych to produkt
 dla ludzi, którzy mają już trzy takie. Obsługa wyłącznie drugich oznacza, że platforma nie potrafi
 udowodnić, że ktokolwiek cokolwiek posiada.
 
-Trzeci: analityka. Rzadkość, wycena i sygnały zakupowe są powodem, dla którego produkt otwiera się drugi
+Trzecim problemem jest analityka, w której rzadkość, wycena i sygnały zakupowe są powodem, dla którego produkt otwiera się drugi
 raz. Robienie tego przez hostowane API modelu oznacza, że przy każdym zapytaniu portfel użytkownika i
-wyprowadzona z niego sytuacja finansowa opuszczają naszą infrastrukturę, a koszt rośnie wraz z
+wyprowadzona z niego sytuacja finansowa opuszczają moją infrastrukturę, a koszt rośnie wraz z
 ciekawością, nie z przychodem.
 
 ## Podejście
 
-Odczyt łańcucha schowaliśmy za własnym stanem. Backend na Quarkusie, PostgreSQL jako model odczytowy z
+Odczyt łańcucha schowałem za własnym stanem. Backend na Quarkusie, PostgreSQL jako model odczytowy z
 migracjami trzymanymi w repozytorium, Redis na to, czego nie warto liczyć ponownie, S3 na media.
 Aplikacje rozmawiają z GraphQL i REST, nigdy z węzłem. To sprawia, że strona albumu otwiera się w tempie
 strony, a nie w tempie łańcucha, i to samo powoduje, że produkt degraduje się łagodnie, zamiast padać,
 kiedy źródło zwalnia.
 
-Tożsamość rozwiązaliśmy przez niewybieranie. Z przodu stoi Keycloak, przyjmując podpis portfela, kod OTP
+Tożsamość rozwiązałem przez rezygnację z wyboru. Z przodu stoi Keycloak, przyjmując podpis portfela, kod OTP
 na e-mail i logowanie społecznościowe jako metody uwierzytelnienia jednego konta, z portfelem osadzonym,
 tworzonym dla tych, którzy przychodzą bez własnego. Strona podpisowa to osobna praca z własnym opisem; z
 perspektywy Bindaro istotne jest, że platforma ma jeden rejestr użytkowników, jeden ślad audytowy i jedno
 miejsce odbierania dostępu.
 
-Silnik analityczny, BindaroAI, działa na naszej infrastrukturze na modelach self-hosted i była to decyzja
+Silnik analityczny, BindaroAI, działa na mojej infrastrukturze na modelach self-hosted i była to decyzja
 architektoniczna, nie optymalizacja kosztu. Osiem funkcji: rekomendacje, wgląd w rzadkość, sygnały
 cenowe, klasyfikacja, wycena, porównanie kolekcji, wykrywanie wzorców i kuratorskie ekspozycje, z których
-każda jest promptem po danych, które już mamy, przy niskiej temperaturze, bo wynik ma być na tyle
+każda jest promptem po danych, które już mam, przy niskiej temperaturze, bo wynik ma być na tyle
 powtarzalny, żeby dało się z nim polemizować. Kolekcja użytkownika nie jest wsadem do cudzego serwisu.
 
-Mechaniki rynkowej nie wymyślaliśmy od nowa: oferty i wystawienia działają na Seaporcie, obejmując
+Mechaniki rynkowej nie wymyślałem od nowa: oferty i wystawienia działają na Seaporcie, obejmując
 ERC-721 i ERC-1155, więc powiernictwo i rozliczenie idą protokołem, który audytowali ludzie robiący to
 zawodowo.
 
@@ -92,10 +92,10 @@ otwartych testach na Androidzie i w zamkniętych na iOS, na backendzie liczącym
 Javy i dwieście trzydzieści dziewięć migracji schematu, co jest uczciwszą miarą rzeczywistej powierzchni
 platformy niż lista funkcji.
 
-Koszty tych decyzji są widoczne. Własny model odczytowy to własny problem uzgadniania: każde odświeżenie
-metadanych, każda cena podłogi, każda zmiana własności są czymś, co musimy utrzymywać w zgodzie z
+Koszty tych decyzji są dobrze widoczne. Własny model odczytowy to własny problem uzgadniania: każde odświeżenie
+metadanych, każda cena podłogi, każda zmiana własności są czymś, co muszę utrzymywać w zgodzie z
 łańcuchem, i nie ma wersji tego zadania, która jest darmowa. Inferencja u siebie oznacza, że sprzęt,
-aktualizacje modeli i budżet opóźnień są nasze, zamiast płacić komuś, żeby były jego.
+aktualizacje modeli i budżet opóźnień są moje, zamiast płacić komuś, żeby były jego.
 
 ## Wnioski
 
@@ -104,6 +104,5 @@ model odczytowy. Odpowiedź wczesna sprawia, że wszystko dalej jest cachem ze z
 Odpowiedź późna, przez dokładanie cache'ów tam, gdzie strona wydawała się wolna, daje system, w którym
 nikt nie potrafi powiedzieć, co jest prawdą.
 
-Drugi wniosek dotyczy funkcji AI w produkcie konsumenckim. Ciekawą decyzją prawie nigdy nie jest, który
-model, tylko co wychodzi poza budynek. Kiedy w żądaniu są posiadane aktywa i wyprowadzona z nich
+Drugi wniosek dotyczy funkcji AI w produkcie konsumenckim. Ciekawa decyzja prawie zawsze dotyczy tego, co wychodzi poza budynek. Kiedy w żądaniu są posiadane aktywa i wyprowadzona z nich
 zamożność, wybór dostawcy przestaje być pytaniem zakupowym, a staje się architektonicznym.

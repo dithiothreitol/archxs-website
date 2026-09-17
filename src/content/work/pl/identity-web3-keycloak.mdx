@@ -43,14 +43,13 @@ administruje. Zszycie ich konfiguracją jest niemożliwe, bo Keycloak nie zna po
 który udowodnił kontrolę nad kluczem prywatnym".
 
 Oczywiste obejście to postawić własny serwis autoryzacyjny obok Keycloaka: on weryfikuje podpisy
-i wydaje własne tokeny, Keycloak obsługuje resztę. Odrzuciliśmy ten wariant. Dwa serwisy wydające
-tożsamość to dwa rejestry użytkowników, dwie ścieżki audytu i dwa miejsca, w których trzeba odebrać
+i wydaje własne tokeny, Keycloak obsługuje resztę. Odrzuciłem ten wariant, bo dwa serwisy wydające tożsamość to dwa rejestry użytkowników, dwie ścieżki audytu i dwa miejsca, w których trzeba odebrać
 dostęp, a w trakcie incydentu liczy się dokładnie to, że jest jedno. Kosztem tej decyzji było pisanie
 kodu w Javie wewnątrz Keycloaka zamiast konfigurowania gotowego providera.
 
 ## Podejście
 
-Rozszerzyliśmy Keycloak 26.x własnymi SPI tak, żeby podpis był po prostu kolejnym sposobem
+Rozszerzyłem Keycloak 26.x własnymi SPI tak, żeby podpis był po prostu kolejnym sposobem
 uwierzytelnienia w tym samym realmie. `Web3Authenticator` prowadzi przepływ challenge-response zgodnie
 z EIP-191, `Web3CredentialProvider` trzyma powiązanie konta z adresem. Nonce ma TTL, bez tego raz
 przechwycony podpis pozostaje bezterminowym biletem wejścia.
@@ -68,16 +67,16 @@ publikowany pakiet npm `@archxs/keycloak-wagmi` na licencji MIT: connector wagmi
 aplikacji wygląda jak zwykły portfel, a pod spodem korzysta z sesji Keycloaka. Obsługuje też ERC-4337,
 czyli konta jako smart kontrakty.
 
-W aplikacji mobilnej nie skracaliśmy drogi: Authorization Code z PKCE S256 przez `expo-auth-session`,
+W aplikacji mobilnej nie skracałem drogi: Authorization Code z PKCE S256 przez `expo-auth-session`,
 tokeny w `expo-secure-store`, dedykowany klient publiczny, powrót deep linkiem.
 
-Osobną decyzją były granice bezpieczeństwa. Jeden z produktów dostał dedykowaną instancję Keycloaka
+Osobną decyzją były fizyczne granice bezpieczeństwa. Jeden z produktów dostał dedykowaną instancję Keycloaka
 i izolowaną sieć Dockera, żeby backend jednego systemu nie widział kontenerów drugiego. Współdzielony
 IdP jest oszczędnością do chwili, w której staje się wspólnym promieniem rażenia.
 
 ## Rezultat
 
-Powstały własne SPI, nie konfiguracja, a to samo podejście zostało powtórzone w drugim, niezależnym
+Powstały własne SPI zamiast konfiguracji, a to samo podejście zostało powtórzone w drugim, niezależnym
 systemie, z odrębnymi realmami i providerami w repozytorium. To rozstrzyga, że nie był to jednorazowy
 eksperyment. Warstwa kliencka jest publiczna jako pakiet npm na licencji MIT. Repozytoria:
 [github.com/dithiothreitol](https://github.com/dithiothreitol).

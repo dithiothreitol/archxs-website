@@ -29,7 +29,7 @@ order: 24
 
 ## Kontekst
 
-Grzybiarz to nasz własny produkt: aplikacja mobilna, która pomaga wypatrzeć owocniki w
+Grzybiarz to mój własny produkt: aplikacja mobilna, która pomaga wypatrzeć owocniki w
 ściółce leśnej i wspiera identyfikację gatunku przez porównanie z gatunkami trującymi,
 z którymi da się go pomylić. Jest w budowie, z premierą celowaną na jesień 2027; kilka
 podsystemów jest skończonych i działa, a domykaną częścią jest potok wizyjny na urządzeniu.
@@ -38,7 +38,7 @@ podsystemów jest skończonych i działa, a domykaną częścią jest potok wizy
 
 Wszystko kształtują dwa ograniczenia i oba są nietypowe.
 
-W lesie nie ma zasięgu. Nie „słaby", tylko żadnego: w momencie, w którym produkt potrzebuje
+W lesie nie ma zasięgu, a trafnym słowem jest żaden, a nie słaby: w momencie, w którym produkt potrzebuje
 serwera, żeby odpowiedzieć, jest bezużyteczny dokładnie tam, gdzie się go używa. Więc
 inferencja, mapa, baza gatunków i cały zapis sesji muszą mieszkać na telefonie.
 
@@ -48,8 +48,7 @@ uchwycić, a ta różnica ma znaczenie. To wyklucza zwykły kształt konsumencki
 którym model zwraca najlepsze przypuszczenie z procentem obok, a interfejs pozwala temu
 procentowi zastąpić wiedzę.
 
-Jest trzecie ograniczenie, które pojawia się dopiero przy grzybiarzach. Nikt nie zdradza
-swoich miejsc. Funkcja społecznościowa publikująca lokalizacje to funkcja, której nikt nie
+Jest trzecie ograniczenie, które pojawia się dopiero przy grzybiarzach. Nikt nie zdradza swoich miejsc zbioru. Funkcja społecznościowa publikująca lokalizacje to funkcja, której nikt nie
 włączy, a taka, która publikuje je po cichu, jest zdradą.
 
 ## Podejście
@@ -76,7 +75,7 @@ zaokrągla się do zera. Zostało to zmierzone na wyeksportowanym grafie, a nie 
 odpowiedzią było wydanie fp32 na mniejszym backbone zamiast skwantyzowanego modelu, który
 nie zwraca nic.
 
-Prywatność zaprojektowaliśmy wokół tego, co grzybiarze naprawdę robią. Nie ma kont: tożsamość
+Prywatność zaprojektowałem wokół tego, co grzybiarze naprawdę robią. Nie ma kont: tożsamość
 jest anonimowa, z kodem odzyskiwania haszowanym Argon2id i spalanym przy pierwszym użyciu,
 zrobionym jako SPI Keycloaka, żeby backend nadal miał jednego dostawcę tożsamości, a nie
 własnoręcznie zszytego. GPS jest usuwany z EXIF zdjęcia przed zapisem pliku. Znalezisko
@@ -94,7 +93,7 @@ sto testów TypeScript i zestaw testów po stronie Javy.
 
 Nieskończona, i trzeba to powiedzieć wprost, jest ta część, od której produkt bierze nazwę.
 Detektor i klasyfikator są zintegrowane i budują się na urządzeniu, toolchain eksportu jest
-rozstrzygnięty, a pomiar akceptacyjny liczby klatek na fizycznym sprzęcie wciąż przed nami.
+rozstrzygnięty, a pomiar akceptacyjny liczby klatek na fizycznym sprzęcie wciąż przed mną.
 Funkcja wizyjna niezmierzona na prawdziwym telefonie w prawdziwym świetle jest planem, a nie
 zdolnością.
 
@@ -105,6 +104,6 @@ jak podnieść trafność, tylko co system robi, kiedy nie jest pewny. Zaprojekt
 skalibrowana i widoczna odmowa jest warta więcej niż kilka punktów trafności top-1, bo to
 decyzja użytkownika jest tą istotną, a interfejs albo ją wspiera, albo ją zastępuje.
 
-Drugi wniosek jest węższy i kosztował nas czas: kwantyzacja nie jest ustawieniem. Jest
-decyzją numeryczną dotyczącą konkretnego grafu i na tym grafie trzeba ją zmierzyć. Nasza
+Drugi wniosek jest węższy i kosztował mnie czas: kwantyzacja nie jest ustawieniem. Jest
+decyzją numeryczną dotyczącą konkretnego grafu i na tym grafie trzeba ją zmierzyć. Moja
 poległa z powodu, przed którym nic w dokumentacji by nie ostrzegło.

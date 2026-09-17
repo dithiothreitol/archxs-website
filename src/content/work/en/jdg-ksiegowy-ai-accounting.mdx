@@ -37,8 +37,7 @@ against a local model.
 ## Problem
 
 Accounting software for the smallest businesses is a solved market, and it is solved by SaaS that owns
-the data, charges monthly and makes the user drive a form. The gap was never features. It was that the
-work is conversational in shape, "invoice Acme for April", and transactional in consequence, a document
+the data, charges monthly and makes the user drive a form. The gap was never about features. What was missing is that the work is conversational in shape, "invoice Acme for April", and transactional in consequence, a document
 that either satisfies a schema published by the Ministry of Finance or is rejected.
 
 That gap is exactly where AI assistants are weakest. A language model is very good at producing an
@@ -85,12 +84,12 @@ ministry gateway and invoice generation verified end to end against sandbox envi
 the core of a paid SaaS subscription for the case it targets, while the data stays on the user's own
 machine and the model can be local.
 
-The limits are worth stating. It is beta, it targets ryczałt rather than every tax form a JDG can
+The limits of the project are worth stating. It is beta, it targets ryczałt rather than every tax form a JDG can
 choose, and the regulatory surface moves: KSeF schemas, JPK structures and ZUS rates all change on
 someone else's calendar, so maintenance is not optional and the honest measure of the project is how
 fast it tracks those changes.
 
-## What it taught us
+## What it taught me
 
 The useful pattern for AI in a regulated process is narrow and boring: let the model handle intent and
 ambiguity, let deterministic code produce anything that will be validated by somebody else. The moment

@@ -31,7 +31,7 @@ order: 27
 
 ## Context
 
-Bindaro is our own product: a place where someone who owns NFTs can arrange them into an album, describe
+Bindaro is my own product: a place where someone who owns NFTs can arrange them into an album, describe
 them, publish the result and be found by other collectors. Underneath it is a marketplace, a rarity and
 scoring model, an analytical engine and a Discord bot, delivered as a web application and as mobile
 applications for Android and iOS.
@@ -47,19 +47,19 @@ history live in different places, arrive at different speeds and disagree with e
 chain at page render time produces a product that is slow when it works and blank when a node is
 unhappy.
 
-The second is identity. The audience splits into people who arrive with a wallet and people who arrive
+The second problem is identity, because the audience splits into people who arrive with a wallet and people who arrive
 with an email address and no intention of learning what a seed phrase is. Serving only the first is a
 product for an audience that already has three of these. Serving only the second means the platform
 cannot prove anybody owns anything.
 
-The third is analytics. Rarity, valuation and buy signals are the reason to open the product twice.
+The third problem is analytics, where rarity, valuation and buy signals are the reason to open the product twice.
 Doing them with a hosted model API means every user's holdings, and their inferred financial position,
-leave our infrastructure on every request, and the running cost scales with curiosity rather than with
+leave my infrastructure on every request, and the running cost scales with curiosity rather than with
 revenue.
 
 ## Approach
 
-Reading the chain was moved behind our own state. A Quarkus backend, PostgreSQL as the read model with
+Reading the chain was moved behind my own state. A Quarkus backend, PostgreSQL as the read model with
 migrations kept in the repository, Redis for what should not be recomputed, S3 for media. The
 applications talk to GraphQL and REST, never to a node. That is what makes an album page open at the
 speed of a page rather than at the speed of a chain, and it is also what makes the product degrade
@@ -71,10 +71,10 @@ arrive without one. The signature side of that is a separate piece of work with 
 Bindaro's perspective the point is that the platform has one user register, one audit trail and one
 place where access is revoked.
 
-The analytical engine, BindaroAI, runs on our own infrastructure with self-hosted models, and this was a
+The analytical engine, BindaroAI, runs on my own infrastructure with self-hosted models, and this was a
 deliberate architectural decision rather than a cost optimisation. Eight functions, recommendations,
 rarity insight, price signals, classification, valuation, comparison, pattern detection and curated
-spotlights, each of which is a prompt over data we already hold, with low temperature because the output
+spotlights, each of which is a prompt over data I already hold, with low temperature because the output
 has to be repeatable enough to be argued with. A user's collection is not an input to somebody else's
 service.
 
@@ -94,12 +94,12 @@ Android and in closed testing on iOS, over a backend of more than eleven hundred
 hundred and thirty-nine schema migrations, which is a more honest measure of a platform's real surface
 than a feature list is.
 
-The costs of these decisions are visible. Our own read model means our own reconciliation problem: every
-metadata refresh, every floor price, every ownership change is something we have to keep in step with
-the chain, and there is no version of that which is free. Self-hosted inference means we own the
+The costs of these decisions are visible. My own read model means my own reconciliation problem: every
+metadata refresh, every floor price, every ownership change is something I have to keep in step with
+the chain, and there is no version of that which is free. Self-hosted inference means I own the
 hardware, the model updates and the latency budget instead of paying somebody else to own them.
 
-## What it taught us
+## What it taught me
 
 In a product sitting on public data, the architecture question is where the authoritative read model
 lives. Answer it early and everything downstream is a cache with a known refresh story. Answer it late,

@@ -3,18 +3,18 @@
     "work": {
       "kicker": "Realizacje",
       "title": "Realizacje, w których widać sposób pracy.",
-      "lead": "Część projektów jest publiczna z natury, narodowy produkt blockchain albo platforma, którą można kliknąć. Część opisujemy sektorowo, bez nazw i rozpoznawalnych szczegółów. To normalna cena za pracę wewnątrz organizacji, które nie publikują swoich architektur, i nie zamierzamy jej obchodzić aluzjami."
+      "lead": "Część projektów jest publiczna z natury, narodowy produkt blockchain albo platforma, którą można kliknąć. Część opisuję sektorowo, bez nazw i rozpoznawalnych szczegółów. To normalna cena za pracę wewnątrz organizacji, które nie publikują swoich architektur, i nie zamierzam jej obchodzić aluzjami."
     },
     "insights": {
       "kicker": "Teksty",
-      "title": "Rozdajemy myślenie, sprzedajemy wykonanie.",
+      "title": "Rozdaję myślenie, sprzedaję wykonanie.",
       "lead": "Teksty pisane z pozycji osoby, która te systemy buduje i utrzymuje, z liczbami, kosztami i tym, co się nie udało. Bez zapisów, bez bramki mailowej, bez ciągu dalszego za opłatą.",
       "empty": "Ten tekst nie ma jeszcze wersji w tym języku."
     },
     "method": {
       "kicker": "Metoda",
       "title": "Architektura na żądanie.",
-      "lead": "Metoda tej praktyki jest starsza niż ta strona i prostsza, niż brzmi: nakład architektoniczny jest kosztem, więc ponosimy go tylko tam, gdzie redukuje ryzyko, którego organizacja nie może sobie pozwolić ponieść. Resztę wysiłku oddajemy budowie działającego systemu. Wariant ciągły tej metody, architecture as a service, to nadzór architektoniczny kupowany wtedy, gdy pojawia się decyzja warta nadzoru, zamiast etatu, który musi się czymś wykazać.",
+      "lead": "Metoda tej praktyki jest starsza niż ta strona i prostsza, niż brzmi: nakład architektoniczny jest kosztem, więc ponoszę go tylko tam, gdzie redukuje ryzyko, którego organizacja nie może sobie pozwolić ponieść. Resztę wysiłku oddaję budowie działającego systemu. Wariant ciągły tej metody, architecture as a service, to nadzór architektoniczny kupowany wtedy, gdy pojawia się decyzja warta nadzoru, zamiast etatu, który musi się czymś wykazać.",
       "doctrineTitle": "Cztery reguły dawkowania",
       "doctrine": [
         {
@@ -23,31 +23,31 @@
         },
         {
           "title": "Ostatni odpowiedzialny moment",
-          "body": "Decyzję odraczamy dotąd, aż dalsza zwłoka zaczęłaby odbierać opcje, bo najdroższe architektury powstają z odpowiedzi na pytania, których nikt jeszcze nie zadał. W praktyce wygląda to tak: fundamenty, których nie da się tanio dołożyć później, wchodzą od pierwszej migracji; funkcje czekają na dowód potrzeby; a każda odroczona decyzja ma zapisaną ścieżkę odwrotu, łącznie z wersjami zapasowymi zależności."
+          "body": "Decyzję odraczam dotąd, aż dalsza zwłoka zaczęłaby odbierać opcje, bo najdroższe architektury powstają z odpowiedzi na pytania, których nikt jeszcze nie zadał. W praktyce wygląda to tak: fundamenty, których nie da się tanio dołożyć później, wchodzą od pierwszej migracji; funkcje czekają na dowód potrzeby; a każda odroczona decyzja ma zapisaną ścieżkę odwrotu, łącznie z wersjami zapasowymi zależności."
         },
         {
           "title": "Architektura wykonywalna",
-          "body": "Standard, którego nie sprawdza maszyna, jest opinią z dobrą frekwencją na spotkaniach. Model architektury trzymamy w repozytorium, walidacja zwraca kod błędu i działa jako bramka w pipeline, a odstępstwa istnieją wyłącznie jako dyspensy z datą wygaśnięcia. To jest to samo, co architektura ewolucyjna nazywa fitness functions, z tą różnicą, że u nas naprawdę zatrzymuje builda."
+          "body": "Standard, którego nie sprawdza maszyna, jest opinią z dobrą frekwencją na spotkaniach. Model architektury trzymam w repozytorium, walidacja zwraca kod błędu i działa jako bramka w pipeline, a odstępstwa istnieją wyłącznie jako dyspensy z datą wygaśnięcia. To jest to samo, co architektura ewolucyjna nazywa fitness functions, z tą różnicą, że u mnie naprawdę zatrzymuje builda."
         },
         {
           "title": "Minimalny artefakt: decyzja",
-          "body": "Jeśli z całej dokumentacji architektonicznej ma zostać jedno, niech zostanie rejestr decyzji: kontekst, rozważane opcje, powody odrzucenia pozostałych. Prowadzimy też tabele build-vs-buy z werdyktem przy każdej odrzuconej opcji. Diagramy się dezaktualizują; powody decyzji nie."
+          "body": "Jeśli z całej dokumentacji architektonicznej ma zostać jedno, niech zostanie rejestr decyzji: kontekst, rozważane opcje, powody odrzucenia pozostałych. Prowadzę też tabele build-vs-buy z werdyktem przy każdej odrzuconej opcji. Diagramy się dezaktualizują; powody decyzji nie."
         }
       ],
       "lineageTitle": "Rodowód",
-      "lineageBody": "Nie wymyśliliśmy tych reguł, złożyliśmy je z rzeczy sprawdzonych i nazwanych przez innych. Proporcjonalność do ryzyka to teza książki Just Enough Software Architecture George'a Fairbanksa. Architektura wykonywalna to fitness functions z Building Evolutionary Architectures Neala Forda i Rebekki Parsons. Rejestr decyzji w tej formie opisał Michael Nygard. Ostatni odpowiedzialny moment pochodzi z lean software development Mary i Toma Poppendiecków, a sylwetka architekta, który pisze kod zamiast oceniać go z góry, z eseju Martina Fowlera o architectus oryzus. Nasz wkład jest gdzie indziej: w dyscyplinie stosowania tych reguł w środowiskach, które zwykle uważają je za zbyt lekkie, w banku, w regulowanym fintechu, na hali produkcyjnej.",
+      "lineageBody": "Nie wymyśliłem tych reguł, złożyłem je z rzeczy sprawdzonych i nazwanych przez innych. Proporcjonalność do ryzyka to teza książki Just Enough Software Architecture George'a Fairbanksa. Architektura wykonywalna to fitness functions z Building Evolutionary Architectures Neala Forda i Rebekki Parsons. Rejestr decyzji w tej formie opisał Michael Nygard. Ostatni odpowiedzialny moment pochodzi z lean software development Mary i Toma Poppendiecków, a sylwetka architekta, który pisze kod zamiast oceniać go z góry, z eseju Martina Fowlera o architectus oryzus. Mój wkład jest gdzie indziej: w dyscyplinie stosowania tych reguł w środowiskach, które zwykle uważają je za zbyt lekkie, w banku, w regulowanym fintechu, na hali produkcyjnej.",
       "processTitle": "Przebieg",
       "processLead": "Nie ma dwóch identycznych zaangażowań, ale kolejność jest zwykle ta sama.",
       "process": [
         {
           "step": "01",
           "title": "Rozmowa",
-          "body": "Bez prezentacji i bez zobowiązań. Interesuje nas, co konkretnie boli i co się stanie, jeśli nic się nie zmieni. Jeśli po tej rozmowie widać, że nie jesteśmy właściwym adresem, mówimy to od razu."
+          "body": "Bez prezentacji i bez zobowiązań. Interesuje mnie, co konkretnie boli i co się stanie, jeśli nic się nie zmieni. Jeśli po tej rozmowie widać, że nie jestem właściwym adresem, mówię to od razu."
         },
         {
           "step": "02",
           "title": "Rozpoznanie",
-          "body": "Kilka dni na zobaczenie stanu faktycznego: architektury, procesu albo kodu, zależnie od problemu. Rozmawiamy z ludźmi, którzy system utrzymują, nie tylko z tymi, którzy go zamawiali."
+          "body": "Kilka dni na zobaczenie stanu faktycznego: architektury, procesu albo kodu, zależnie od problemu. Rozmawiam z ludźmi, którzy system utrzymują, nie tylko z tymi, którzy go zamawiali."
         },
         {
           "step": "03",
@@ -57,21 +57,21 @@
         {
           "step": "04",
           "title": "Wykonanie albo nadzór",
-          "body": "Albo budujemy, albo prowadzimy decyzje przy zespole klienta. W obu przypadkach dokumentacja i rejestr decyzji powstają razem z pracą, a nie po niej."
+          "body": "Albo buduję, albo prowadzę decyzje przy zespole klienta. W obu przypadkach dokumentacja i rejestr decyzji powstają razem z pracą, a nie po niej."
         },
         {
           "step": "05",
           "title": "Przekazanie",
-          "body": "Runbooki, środowisko odtwarzalne z repozytorium i przegląd z zespołem, który przejmuje. Uznajemy zaangażowanie za udane wtedy, gdy da się je zakończyć bez szkody dla klienta."
+          "body": "Runbooki, środowisko odtwarzalne z repozytorium i przegląd z zespołem, który przejmuje. Uznaję zaangażowanie za udane wtedy, gdy da się je zakończyć bez szkody dla klienta."
         }
       ],
-      "aiTitle": "AI w naszej pracy",
-      "aiBody": "Używamy agentów AI w codziennym wytwarzaniu oprogramowania, to jeden z powodów, dla których niewielka praktyka jest w stanie prowadzić kilkanaście produkcyjnych repozytoriów naraz. Obowiązuje przy tym dokładnie ta sama zasada, którą stosujemy u klientów: model proponuje, testy i deterministyczna walidacja orzekają, człowiek odpowiada za wynik. Specyfikacja i rejestr decyzji są źródłem prawdy, kod jest ich konsekwencją."
+      "aiTitle": "AI w mojej pracy",
+      "aiBody": "Używam agentów AI w codziennym wytwarzaniu oprogramowania, to jeden z powodów, dla których niewielka praktyka jest w stanie prowadzić kilkanaście produkcyjnych repozytoriów naraz. Obowiązuje przy tym dokładnie ta sama zasada, którą stosuję u klientów: model proponuje, testy i deterministyczna walidacja orzekają, człowiek odpowiada za wynik. Specyfikacja i rejestr decyzji są źródłem prawdy, kod jest ich konsekwencją."
     },
     "engage": {
       "kicker": "Współpraca",
       "title": "Jak zwykle zaczyna się współpraca.",
-      "lead": "Nie mamy pakietów ani cennika na stronie, nie z tajemniczości, tylko dlatego, że sensowny zakres da się ustalić dopiero po rozmowie o problemie. Formy współpracy wynikają wprost z metody: architektura na żądanie to nakład dobrany do jednej decyzji, architektura jako usługa to ta sama dyscyplina utrzymywana w czasie. Obie opisujemy niżej, obok diagnozy i wytworzenia systemu.",
+      "lead": "Nie mam pakietów ani cennika na stronie, ponieważ sensowny zakres da się ustalić dopiero po rozmowie o problemie. Formy współpracy wynikają wprost z metody: architektura na żądanie to nakład dobrany do jednej decyzji, architektura jako usługa to ta sama dyscyplina utrzymywana w czasie. Obie opisuję niżej, obok diagnozy i wytworzenia systemu.",
       "formsTitle": "Formy zaangażowania",
       "forms": [
         {
@@ -96,9 +96,9 @@
         }
       ],
       "selectivityTitle": "Ile zaangażowań naraz",
-      "selectivityBody": "Kilka. Ta praktyka nie skaluje się rekrutacją, skaluje się metodą i narzędziami. To oznacza, że czasem trzeba poczekać na termin, a czasem powiemy, że nie jesteśmy w stanie wziąć projektu w danym kwartale. Uważamy to za uczciwsze niż podstawienie zespołu, którego nie znamy.",
+      "selectivityBody": "Kilka. Ta praktyka skaluje się metodą i narzędziami zamiast rekrutacją. To oznacza, że czasem trzeba poczekać na termin, a czasem powiem, że nie jestem w stanie wziąć projektu w danym kwartale. Uważam to za uczciwsze niż podstawienie zespołu, którego nie znam.",
       "pricingTitle": "A ceny?",
-      "pricingBody": "Ustalamy je w rozmowie, po zrozumieniu zakresu. Publikowanie widełek bez kontekstu prowadzi albo do zaniżonej wyceny źle zdefiniowanego problemu, albo do odsiania rozmów, które warto było odbyć."
+      "pricingBody": "Ustalam je w rozmowie, po zrozumieniu zakresu. Publikowanie widełek bez kontekstu prowadzi albo do zaniżonej wyceny źle zdefiniowanego problemu, albo do odsiania rozmów, które warto było odbyć."
     },
     "about": {
       "kicker": "O praktyce",
@@ -106,7 +106,7 @@
       "lead": "ArchXS istnieje wokół jednej metody: architektury na żądanie. Nakład architektoniczny jest dobierany do ryzyka konkretnej decyzji, a w wariancie ciągłym, jako architektura w formie usługi, zastępuje etat architekta tam, gdzie etat by się nie obronił. Warunkiem tej metody jest połączenie, które zwykle rozchodzi się wraz ze stażem: architektura w dużej skali i nieprzerwana praktyka wykonawcza.",
       "paragraphs": [
         "Praktyka wyrosła z dwóch dekad pracy w organizacjach, w których błąd architektoniczny jest kosztowny: osiem lat w globalnych płatnościach kartowych pod reżimem PCI-DSS, architektura korporacyjna w państwowym banku rozwoju i przy wymianie systemu centralnego, technologia w regulowanym fintechu, produkt blockchain w skali ogólnokrajowej, wreszcie technologia w firmie produkcyjnej, od hali po e-commerce.",
-        "Równolegle powstaje kod. Kilkanaście czynnych repozytoriów produkcyjnych, systemy backendowe w dwóch niezależnych ekosystemach, aplikacje web i mobilne, integracje przemysłowe, własne rozszerzenia serwera tożsamości, narzędzia open source. To nie jest portfolio, to sposób weryfikowania własnych rekomendacji, zanim trafią do kogoś innego.",
+        "Równolegle powstaje kod. Kilkanaście czynnych repozytoriów produkcyjnych, systemy backendowe w dwóch niezależnych ekosystemach, aplikacje web i mobilne, integracje przemysłowe, własne rozszerzenia serwera tożsamości, narzędzia open source. Ten dorobek jest sposobem weryfikowania własnych rekomendacji, zanim trafią do kogoś innego.",
         "Stąd bierze się zakres tej strony. Nie znajdziesz tu biografii ani zdjęć z konferencji, bo nie one są przedmiotem pracy. Znajdziesz stanowiska, dowody i teksty, po których można ocenić sposób myślenia, a to jedyna rzecz, którą naprawdę kupuje się w doradztwie."
       ],
       "credentialsLabel": "Certyfikacje",
@@ -156,14 +156,14 @@
     "contact": {
       "kicker": "Kontakt",
       "title": "Kontakt.",
-      "lead": "Dwie drogi: poczta i formularz. Odpowiadamy w ciągu dwóch dni roboczych. Jeśli nie jesteśmy właściwym adresem, mówimy to wprost i w miarę możliwości wskazujemy kierunek.",
+      "lead": "Dwie drogi: poczta i formularz. Odpowiadam w ciągu dwóch dni roboczych. Jeśli nie jestem właściwym adresem, mówię to wprost i w miarę możliwości wskazuję kierunek.",
       "bookTitle": "Kalendarz",
       "bookBody": "Dla spraw, które łatwiej omówić niż opisać: trzydzieści minut rozmowy, bez prezentacji.",
       "book": "Kalendarz",
       "emailTitle": "Poczta",
       "emailBody": "Zwykle najszybsza droga. Wystarczą dwa, trzy zdania o tym, co jest problemem.",
       "formTitle": "Formularz",
-      "formNote": "Formularz obsługuje zewnętrzny dostawca; szczegóły w polityce prywatności. Nie zapisujemy adresów do newslettera, nie mamy newslettera.",
+      "formNote": "Formularz obsługuje zewnętrzny dostawca; szczegóły w polityce prywatności. Nie zapisuję adresów do newslettera, bo go nie prowadzę.",
       "form": {
         "name": "Imię i nazwisko",
         "email": "Adres e-mail",
@@ -172,7 +172,7 @@
         "messagePlaceholder": "Dwa–trzy zdania wystarczą.",
         "submit": "Wyślij",
         "sending": "Wysyłanie…",
-        "success": "Dziękujemy, odpowiemy w ciągu dwóch dni roboczych.",
+        "success": "Dziękuję, odpowiem w ciągu dwóch dni roboczych.",
         "error": "Nie udało się wysłać. Napisz proszę bezpośrednio na contact@archxs.com.",
         "fallback": "Formularz nie jest w tej chwili skonfigurowany. Napisz proszę na contact@archxs.com."
       }
@@ -186,20 +186,20 @@
           "body": "Administratorem danych osobowych przekazanych za pośrednictwem tej strony jest Dariusz Tyszka, prowadzący praktykę doradczą pod marką ArchXS. Kontakt w sprawach danych osobowych: contact@archxs.com."
         },
         {
-          "heading": "Jakie dane zbieramy",
-          "body": "Wyłącznie dane, które przekażesz nam sam: imię i nazwisko, adres e-mail, opcjonalnie nazwę organizacji oraz treść wiadomości. Strona nie stosuje plików cookie do celów marketingowych ani profilowania. Statystyki odwiedzin, jeśli są zbierane, mają charakter zagregowany i nie pozwalają na identyfikację osoby."
+          "heading": "Jakie dane zbieram",
+          "body": "Wyłącznie dane, które przekażesz mi bezpośrednio: imię i nazwisko, adres e-mail, opcjonalnie nazwę organizacji oraz treść wiadomości. Strona nie stosuje plików cookie do celów marketingowych ani profilowania. Statystyki odwiedzin, jeśli są zbierane, mają charakter zagregowany i nie pozwalają na identyfikację osoby."
         },
         {
           "heading": "Cel i podstawa prawna",
-          "body": "Dane z formularza przetwarzamy w celu odpowiedzi na zapytanie i ewentualnego podjęcia współpracy, na podstawie prawnie uzasadnionego interesu administratora, jakim jest komunikacja z osobami zainteresowanymi usługami (art. 6 ust. 1 lit. f RODO), a po rozpoczęciu współpracy w celu jej realizacji (art. 6 ust. 1 lit. b RODO)."
+          "body": "Dane z formularza przetwarzam w celu odpowiedzi na zapytanie i ewentualnego podjęcia współpracy, na podstawie prawnie uzasadnionego interesu administratora, jakim jest komunikacja z osobami zainteresowanymi usługami (art. 6 ust. 1 lit. f RODO), a po rozpoczęciu współpracy w celu jej realizacji (art. 6 ust. 1 lit. b RODO)."
         },
         {
           "heading": "Odbiorcy danych",
-          "body": "Obsługę formularza kontaktowego i rezerwację terminu rozmowy realizują zewnętrzni dostawcy usług, którzy przetwarzają dane wyłącznie w naszym imieniu. Poczta elektroniczna jest obsługiwana przez dostawcę hostingu poczty. Nie sprzedajemy ani nie udostępniamy danych w celach marketingowych."
+          "body": "Obsługę formularza kontaktowego i rezerwację terminu rozmowy realizują zewnętrzni dostawcy usług, którzy przetwarzają dane wyłącznie w moim imieniu. Poczta elektroniczna jest obsługiwana przez dostawcę hostingu poczty. Nie sprzedaję ani nie udostępniam danych w celach marketingowych."
         },
         {
           "heading": "Okres przechowywania",
-          "body": "Korespondencję, która nie doprowadziła do współpracy, usuwamy nie później niż po dwunastu miesiącach od ostatniego kontaktu. Dane związane ze zrealizowaną współpracą przechowujemy przez okres wymagany przepisami podatkowymi i przedawnieniem roszczeń."
+          "body": "Korespondencję, która nie doprowadziła do współpracy, usuwam nie później niż po dwunastu miesiącach od ostatniego kontaktu. Dane związane ze zrealizowaną współpracą przechowuję przez okres wymagany przepisami podatkowymi i przedawnieniem roszczeń."
         },
         {
           "heading": "Twoje prawa",
@@ -225,7 +225,7 @@
         },
         {
           "heading": "Podmiot",
-          "body": "Praktyka doradcza ArchXS, Dariusz Tyszka. Kontakt: contact@archxs.com. Szczegóły rejestrowe podajemy na etapie zawierania umowy."
+          "body": "Praktyka doradcza ArchXS, Dariusz Tyszka. Kontakt: contact@archxs.com. Szczegóły rejestrowe podaję na etapie zawierania umowy."
         }
       ]
     }

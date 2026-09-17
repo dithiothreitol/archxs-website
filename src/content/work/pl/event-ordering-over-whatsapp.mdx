@@ -67,26 +67,26 @@ AI proponuje i nie decyduje, co w tej dziedzinie ma precyzyjne znaczenie: żadna
 zamówienia nie trafia do ERP bez potwierdzenia przez człowieka, a potwierdzenie zapisuje
 się przy konkretnej osobie.
 
-Odtwarzalność obsługujemy tak samo jak w pozostałych systemach. Katalog produktów
+Odtwarzalność obsługuję tak samo jak w pozostałych systemach. Katalog produktów
 zostaje zamrożony w migawce w momencie ekstrakcji, dzięki czemu odwzorowanie można
 później zbadać wobec katalogu w stanie ówczesnym, a nie obecnym, a model, prompt i
 odpowiedź są logowane przez warstwę tracingu. Szablony wiadomości są wersjonowane, bo
 zmiana sformułowania zmienia to, co ludzie odpisują.
 
-System zbudowaliśmy jako osobny kontekst obok platformy planistycznej, a nie w jej
+System zbudowałem jako osobny kontekst obok platformy planistycznej, a nie w jej
 wnętrzu, i uzasadnienie warto wypowiedzieć. Język dziedziny jest inny, cykl wydawniczy
 jest inny, a powierzchnia bezpieczeństwa różni się istotnie, ponieważ ta aplikacja
 wystawia publiczny webhook dostawcy komunikatora, czego platforma planistyczna nie robi.
-Katalog i status zamówienia czytamy przez stabilny interfejs odczytu platformy
+Katalog i status zamówienia czytam przez stabilny interfejs odczytu platformy
 planistycznej, a ten system nigdy nie pisze ani do tamtego schematu, ani bezpośrednio do
 ERP.
 
-Prywatność potraktowaliśmy jako dane wejściowe projektu, a nie punkt przeglądu. Osoby
+Prywatność potraktowałem jako dane wejściowe projektu, a nie punkt przeglądu. Osoby
 prowadzące eventy są pracownikami, a ich numery telefonów danymi osobowymi, więc treści
 wiadomości nie leżą w logach w postaci jawnej, a warstwa tracingu niesie odpowiednią
 klasyfikację.
 
-Dostarczanie rozłożyliśmy tak, żeby wartość przyszła przed integracją. Pierwsza faza
+Dostarczanie rozłożyłem tak, żeby wartość przyszła przed integracją. Pierwsza faza
 produkuje arkusz, który dział zamówień i tak już importuje, co natychmiast likwiduje
 przeklejanie, a faza późniejsza zapisuje zamówienie do ERP przez outbox z idempotencją.
 Status z ERP wraca do osoby zgłaszającej tym kanałem, od którego zaczęła.

@@ -7,7 +7,7 @@ disclosure: "public"
 metrics:
   - label: "Granica zaufania"
     value: "Każdy mecz rankingowy odtwarzany po stronie serwera"
-  - label: "Nasz koszt inferencji"
+  - label: "Mój koszt inferencji"
     value: "Zero, gracz przynosi własny klucz"
   - label: "Dowody"
     value: "~300 testów, od jednostkowych po Playwright"
@@ -51,10 +51,10 @@ przyjmuje „wygrałem" od anonimowej przeglądarki, jest rankingiem umiejętno�
 
 ## Podejście
 
-Granicę zaufania postawiliśmy w jednym miejscu: przy zapisie do rankingu. Cała reszta, granie, oglądanie,
+Granicę zaufania postawiłem w jednym miejscu: przy zapisie do rankingu. Cała reszta, granie, oglądanie,
 analizowanie, eksperymentowanie, dzieje się w przeglądarce i nie jest broniona, bo nie musi.
 
-Tej granicy pilnuje odtwarzanie. Silnik gry jest czystym pakietem TypeScript bez DOM i bez zależności od
+Tej granicy pilnuje serwerowe odtwarzanie partii. Silnik gry jest czystym pakietem TypeScript bez DOM i bez zależności od
 Node'a, więc identyczny kod działa u klienta, żeby grać, i na serwerze, żeby weryfikować. Każde zgłoszenie
 rankingowe jest odtwarzane ruch po ruchu; podstawiony zwycięzca, ruch niedozwolony albo plansza, która nie
 mogła powstać, zostają odrzucone przez ten sam silnik, który wyprodukował partie legalne. To jest cały
@@ -67,8 +67,8 @@ meczu związany z graczem, kontrola sensowności czasów oraz dzienne limity na 
 to losowy sekret w pamięci przeglądarki, z którego serwer trzyma wyłącznie skrót SHA-256, co wystarcza,
 by być właścicielem wiersza w rankingu, i nie wystarcza, by być danymi osobowymi.
 
-Obsługę klucza zrobiliśmy właściwością testowalną, a nie obietnicą. Klucz do OpenRoutera mieszka w
-przeglądarce i jest wysyłany wyłącznie do OpenRoutera; test pilnuje, żeby nasz backend nigdy nie pojawił
+Obsługę klucza zrobiłem właściwością testowalną, a nie obietnicą. Klucz do OpenRoutera mieszka w
+przeglądarce i jest wysyłany wyłącznie do OpenRoutera; test pilnuje, żeby mój backend nigdy nie pojawił
 się jako adresat, więc deklaracja może się wywalić w CI, a nie w zgłoszeniu incydentu.
 
 To, co ta architektura potem potaniła, jest właśnie tym, po co ludzie wracają. Skoro każdy mecz jest
@@ -89,8 +89,8 @@ się w języku, w którym został skopiowany, a każdy mecz ma publiczny adres p
 Ryzyko szczątkowe jest opisane w repozytorium, a nie zamalowane: skoro gra toczy się w przeglądarce, nic
 nie powstrzyma kogoś przed zautomatyzowaniem gry lokalnie. Bronione jest to, że zgłoszony wynik musi być
 partią, która naprawdę mogła zostać rozegrana. Odróżnienie cierpliwego bota od cierpliwego człowieka nie
-jest rozwiązane, a twierdzenie inaczej byłoby teatrem bezpieczeństwa, który sami byśmy gdzie indziej
-skrytykowali.
+jest rozwiązane, a twierdzenie inaczej byłoby teatrem bezpieczeństwa, który sam bym gdzie indziej
+skrytykował.
 
 ## Wnioski
 

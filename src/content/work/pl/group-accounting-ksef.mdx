@@ -6,7 +6,7 @@ period: "2026"
 disclosure: "anonymised"
 metrics:
   - label: "Liczby z AI"
-    value: "Żadnych — każda kwota czytana z ustrukturyzowanego XML faktury"
+    value: "Żadnych: każda kwota czytana z ustrukturyzowanego XML faktury"
   - label: "Bramka zgodności"
     value: "Sprawdzenia deterministyczne przed trafieniem faktury do człowieka"
   - label: "Uwierzytelnianie"
@@ -56,7 +56,7 @@ automatyzacja może wynegocjować.
 
 ## Podejście
 
-Pierwszą decyzję sformułowaliśmy jako regułę o danych, a nie jako pryncypium. Model
+Pierwszą decyzję sformułowałem jako regułę o danych, a nie jako pryncypium. Model
 proponuje dekretację, kategorię, flagę podzielonej płatności albo streszczenie, a każda
 operacja skutkująca podatkowo wymaga akceptacji człowieka. Egzekucja stoi tam, gdzie nie
 da się jej ominąć: rekord propozycji niesie pole zatwierdzenia, które pozostaje puste do
@@ -64,7 +64,7 @@ czasu czyjejś decyzji, a wyzwalacz bazy blokuje księgowanie, dopóki jest pust
 polityki wyraziłby tę samą intencję, a przyszły termin prędzej czy później znalazłby na
 niego sposób.
 
-Liczby nigdy nie pochodzą z modelu. Kwoty, stawki i identyfikatory kontrahentów czytamy
+Liczby nigdy nie pochodzą z modelu. Kwoty, stawki i identyfikatory kontrahentów czytam
 z ustrukturyzowanego XML faktury, co likwiduje możliwość zhalucynowanej wartości,
 zamiast ją łagodzić. Tam, gdzie system odpowiada na pytania o przepisy, cytuje źródła, a
 wyszukiwanie działa pod zasadą najmniejszych uprawnień, żeby pytanie nie dosięgło
@@ -77,7 +77,7 @@ i kod sprawozdawczy liczą się bez udziału modelu, więc osoba otwierająca fa
 ryzyka już oznaczone. Ta kolejność stanowi różnicę między księgową przeglądającą fakturę
 a księgową prowadzącą w tej sprawie dochodzenie.
 
-Uwierzytelnianie do systemu krajowego zbudowaliśmy od początku dwutorowo.
+Uwierzytelnianie do systemu krajowego zbudowałem od początku dwutorowo.
 Uwierzytelnianie tokenem działa do końca 2026 roku, a uwierzytelnianie certyfikatem z
 podpisem XAdES-BES jest wymagane od początku 2027, więc zbudowanie wyłącznie pierwszej
 ścieżki gwarantowałoby migrację w pośpiechu wobec sztywnego, publicznego terminu. Klucz
@@ -95,7 +95,7 @@ Pozycjonowanie wobec aktu o sztucznej inteligencji było wyborem świadomym, a n
 refleksją po fakcie. Utrzymanie modelu poza decyzjami trzyma system w klasie
 ograniczonego ryzyka, poza załącznikiem III, więc obowiązki sprowadzają się do
 transparentności i zwykłych powinności deployera. System zarządzania sztuczną
-inteligencją przyjęliśmy ponad to dobrowolnie, jako dowód należytej staranności.
+inteligencją przyjąłem ponad to dobrowolnie, jako dowód należytej staranności.
 
 ## Rezultat
 

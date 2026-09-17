@@ -22,15 +22,14 @@ Scenariusz powtarza się w tej samej formie. Pojawia się wymaganie, którego se
 wprost: logowanie podpisem kryptograficznym, nietypowy drugi czynnik, powiązanie konta z zewnętrznym rejestrem,
 własna reguła weryfikacji. W kalendarzu jest sprint, a w Keycloaku nie ma pola do zaznaczenia.
 
-Powstaje wtedy mała usługa obok: przyjmuje podpis, sprawdza go, wystawia własny token. Działa w tydzień. Problem
+Powstaje wtedy mała usługa obok: przyjmuje podpis, sprawdza go, wystawia własny token. Taka usługa działa w ciągu tygodnia. Problem
 w tym, że od tej chwili organizacja ma dwa źródła prawdy o tym, kim jest użytkownik, a wszystko, co serwer
-tożsamości dawał za darmo, trzeba zbudować drugi raz. Wygaszanie sesji. Wymuszenie drugiego składnika. Reset
-poświadczeń. Blokada konta. Rejestr zdarzeń dla audytora. Federacja z katalogiem korporacyjnym. Mapowanie ról.
+tożsamości dawał za darmo, trzeba zbudować drugi raz: wygaszanie sesji, wymuszenie drugiego składnika, reset poświadczeń, blokadę konta, rejestr zdarzeń dla audytora, federację z katalogiem korporacyjnym i mapowanie ról.
 Każda z tych rzeczy z osobna jest wykonalna; razem stanowią produkt, którego nikt nie planował utrzymywać.
 
 ## Co realnie oznacza własne SPI
 
-Znacznie mniej, niż sugeruje nazwa. Napisaliśmy dla Keycloaka 26 rozszerzenia obsługujące logowanie podpisem
+Jest tego znacznie mniej, niż sugeruje nazwa. Napisałem dla Keycloaka 26 rozszerzenia obsługujące logowanie podpisem
 kryptograficznym w standardzie EIP-191 i sprowadza się to do kilku dobrze określonych elementów: authenticatora,
 który prowadzi przepływ uwierzytelnienia, credential providera, który wie, jak przechowywać i weryfikować dany
 rodzaj poświadczenia, modelu danych dla tego poświadczenia oraz kilku szablonów ekranów.
@@ -55,12 +54,11 @@ jednak własny cykl życia: bywa dodane, odwołane, zastąpione, może istnieć 
 nie wyraża i po roku nikt nie umie odpowiedzieć, kiedy klucz został powiązany z kontem ani przez kogo.
 
 **Klient publiczny bez PKCE.** W aplikacji mobilnej nie da się bezpiecznie przechowywać sekretu klienta, więc
-jedyną poprawną konstrukcją jest Authorization Code z PKCE i magazyn kluczy systemu operacyjnego. To nie jest
-zalecenie stylistyczne, tylko warunek, przy którym przechwycenie odpowiedzi przeglądarki nie wystarcza do
+jedyną poprawną konstrukcją jest Authorization Code z PKCE i magazyn kluczy systemu operacyjnego. To warunek, przy którym przechwycenie odpowiedzi przeglądarki nie wystarcza do
 przejęcia sesji.
 
 **Jedna instancja dla wszystkiego.** Współdzielenie serwera tożsamości między systemami o różnych profilach
-ryzyka bywa oszczędnością pozorną. W jednym z naszych produktów granicą bezpieczeństwa jest osobna instancja
+ryzyka bywa oszczędnością pozorną. W jednym z moich produktów granicą bezpieczeństwa jest osobna instancja
 i odizolowana sieć, po to, żeby backend jednego systemu nie widział zasobów drugiego nawet w razie pomyłki
 w konfiguracji. Koszt: jeden dodatkowy kontener i trochę dyscypliny. Alternatywny koszt: incydent, w którym
 zasięg naruszenia obejmuje oba systemy.
@@ -72,5 +70,5 @@ albo istniejącym dostawcą federacji. Kiedy zespół nie ma nikogo, kto zbuduje
 w kolejnych wersjach, bo rozszerzenie trzeba utrzymywać przy każdej większej aktualizacji. Kiedy problem jest
 w istocie procesowy: brak procedury odzyskiwania konta rzadko udaje się naprawić kodem.
 
-Reguła, którą stosujemy, jest jednozdaniowa: rozszerzenie piszemy wtedy, gdy alternatywą jest rozproszenie
+Reguła, którą stosuję, jest jednozdaniowa: rozszerzenie piszę wtedy, gdy alternatywą jest rozproszenie
 decyzji o tożsamości po aplikacjach. Wszystko inne to konfiguracja, i lepiej, żeby nią pozostało.

@@ -28,7 +28,7 @@ order: 1
 ## Context
 
 A state development bank, an IT organisation of more than 300 people, and an application portfolio that
-had grown for two decades around a single core system. We ran the enterprise architecture practice there
+had grown for two decades around a single core system. I ran the enterprise architecture practice there
 and chaired the Architecture Review Board, through which every material technology decision passed.
 During that period the bank committed to replacing its core banking platform: the largest technology
 transformation in its history.
@@ -59,14 +59,14 @@ dependencies and a narrow set of decisions that were not open to local negotiati
 contracts, the reference data model, and the boundary of responsibility between the core and its
 satellites. Everything outside that set stayed with the teams.
 
-An Architecture Review Board becomes a bottleneck very easily, every project waits for Thursday. We
+An Architecture Review Board becomes a bottleneck very easily, every project waits for Thursday. I
 handled that with three rules. Reversible decisions do not need the board; they need a record. The board
 takes what is expensive to reverse or what crosses a team boundary. An incomplete submission is not
 rejected in session but returned earlier, with a statement of what is missing. A board that mostly says
 no stops receiving submissions within a quarter, projects stop asking, and the architectural decisions
 happen anyway, outside the register.
 
-We treated data migration as a work stream with its own cadence rather than a final implementation phase:
+I treated data migration as a work stream with its own cadence rather than a final implementation phase:
 trial runs at production volumes from an early stage, reconciliation figures signed off by the business
 rather than by IT, and an explicit decision about what would not be migrated into the new core but left
 in a read-only archive. That last decision was the hardest politically and the most profitable
@@ -79,12 +79,10 @@ than ten teams and multiple vendors, in an IT organisation of over 300 people. M
 implementation itself was that the architecture decision register and the integration contracts outlived
 the programme and became the entry point for subsequent change.
 
-## What it taught us
+## What it taught me
 
 Replacing a core is an organisational problem with a technical symptom. It is settled not by the choice of
 vendor but by whether the organisation can keep decisions coherent when a dozen groups are making them at
 the same time.
 
-Architecture governance works only while it is faster than the route around it. A board with a two-week
-queue is not a control; it is an incentive to decide without it. And if a transformation plan gives data
-migration less attention than platform selection, it is not a plan, it is a spending sequence.
+Architecture governance works only while it is faster than the route around it. A board with a two-week queue stops being a control and becomes an incentive to decide without it. And a transformation plan that gives data migration less attention than platform selection amounts to a sequence of spending.

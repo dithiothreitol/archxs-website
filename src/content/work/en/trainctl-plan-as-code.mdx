@@ -33,7 +33,7 @@ trainctl is a running coach that lives in a terminal. A training plan is a YAML
 file in a git repository, every session can be asked why it exists, and the same
 engine is exposed to an agent as MCP tools. There is no account, no database and
 no backend: the files in the working directory are the whole system, so the
-history of someone's training is their git history. Published on npm under MIT.
+history of someone's training is their git history. It is published on npm under the MIT licence.
 
 ## Problem
 
@@ -47,8 +47,7 @@ to ship a number that users expect or to say plainly that it cannot be computed.
 The second problem is what happens when a language model is added to a domain
 like this. A model asked about a training week will produce paces, volumes and
 justifications with complete fluency, and no way for the reader to tell which of
-them came from anywhere. That is not a coaching product, it is a product that
-sounds like one.
+them came from anywhere. The result sounds like a coaching product without doing the work of one.
 
 ## Approach
 
@@ -99,9 +98,9 @@ comparison. The position taken here is that a number nobody can defend is worse
 than an absence, and the absence is documented so a user can disagree with the
 reasoning rather than with the omission.
 
-## What it taught us
+## What it taught me
 
-This is the same pattern we apply in regulated systems, arriving from the
+This is the same pattern I apply in regulated systems, arriving from the
 opposite direction. The model handles intent and context; anything a reader might
 act on is produced by deterministic code and carries a citation. That the domain
 here is a training week rather than a tax filing changes the consequences, not

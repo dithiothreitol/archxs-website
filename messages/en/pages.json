@@ -3,18 +3,18 @@
     "work": {
       "kicker": "Work",
       "title": "Engagements that show how the work is done.",
-      "lead": "Some projects are public by their nature, a national blockchain product, or a platform you can click. Others are described by sector, without names or identifying detail. That is the ordinary price of working inside organisations that do not publish their architectures, and we would rather pay it than work around it with hints."
+      "lead": "Some projects are public by their nature, a national blockchain product, or a platform you can click. Others are described by sector, without names or identifying detail. That is the ordinary price of working inside organisations that do not publish their architectures, and I would rather pay it than work around it with hints."
     },
     "insights": {
       "kicker": "Writing",
-      "title": "We give the thinking away and charge for the doing.",
-      "lead": "Written from inside the systems we build and maintain, with the numbers, the costs and the parts that did not work. No sign-up, no email gate, no paid continuation.",
+      "title": "I give the thinking away and charge for the doing.",
+      "lead": "Written from inside the systems I build and maintain, with the numbers, the costs and the parts that did not work. No sign-up, no email gate, no paid continuation.",
       "empty": "This piece has not been written in this language yet."
     },
     "method": {
       "kicker": "Method",
       "title": "Architecture on demand.",
-      "lead": "This practice's method is older than this website and simpler than it sounds: architectural effort is a cost, so we spend it only where it reduces a risk the organisation cannot afford to carry. The rest of the effort goes into building the working system. Its continuous variant, architecture as a service, means architectural oversight bought when a decision worth overseeing appears, instead of a staff position that has to justify itself.",
+      "lead": "This practice's method is older than this website and simpler than it sounds: architectural effort is a cost, so I spend it only where it reduces a risk the organisation cannot afford to carry. The rest of the effort goes into building the working system. Its continuous variant, architecture as a service, means architectural oversight bought when a decision worth overseeing appears, instead of a staff position that has to justify itself.",
       "doctrineTitle": "Four rules of dosage",
       "doctrine": [
         {
@@ -23,31 +23,31 @@
         },
         {
           "title": "The last responsible moment",
-          "body": "We defer a decision until further delay would start removing options, because the most expensive architectures are built from answers to questions nobody has asked yet. In practice: foundations that cannot be added cheaply later go in from the first migration; features wait for proof of need; and every deferred decision has a written retreat path, down to fallback versions of dependencies."
+          "body": "I defer a decision until further delay would start removing options, because the most expensive architectures are built from answers to questions nobody has asked yet. In practice: foundations that cannot be added cheaply later go in from the first migration; features wait for proof of need; and every deferred decision has a written retreat path, down to fallback versions of dependencies."
         },
         {
           "title": "Executable architecture",
-          "body": "A standard no machine checks is an opinion with good meeting attendance. The architecture model lives in the repository, validation returns an exit code and works as a pipeline gate, and deviations exist only as dispensations with expiry dates. This is what evolutionary architecture calls fitness functions, except ours actually stops the build."
+          "body": "A standard no machine checks is an opinion with good meeting attendance. The architecture model lives in the repository, validation returns an exit code and works as a pipeline gate, and deviations exist only as dispensations with expiry dates. This is what evolutionary architecture calls fitness functions, except mine actually stops the build."
         },
         {
           "title": "The minimal artifact: a decision",
-          "body": "If one thing is to survive out of all architecture documentation, let it be the decision log: context, options considered, why the others were rejected. We also keep build-vs-buy tables with a verdict on every rejected option. Diagrams go stale; the reasons for decisions do not."
+          "body": "If one thing is to survive out of all architecture documentation, let it be the decision log: context, options considered, why the others were rejected. I also keep build-vs-buy tables with a verdict on every rejected option. Diagrams go stale; the reasons for decisions do not."
         }
       ],
       "lineageTitle": "Lineage",
-      "lineageBody": "We did not invent these rules, we assembled them from things others tested and named. Proportionality to risk is the thesis of George Fairbanks's Just Enough Software Architecture. Executable architecture is the fitness functions of Neal Ford and Rebecca Parsons's Building Evolutionary Architectures. The decision log in this form was described by Michael Nygard. The last responsible moment comes from Mary and Tom Poppendieck's lean software development, and the figure of the architect who writes code rather than judging it from above, from Martin Fowler's essay on architectus oryzus. Our contribution is elsewhere: in the discipline of applying these rules in environments that usually consider them too light, a bank, a regulated fintech, a plant floor.",
+      "lineageBody": "I did not invent these rules, I assembled them from things others tested and named. Proportionality to risk is the thesis of George Fairbanks's Just Enough Software Architecture. Executable architecture is the fitness functions of Neal Ford and Rebecca Parsons's Building Evolutionary Architectures. The decision log in this form was described by Michael Nygard. The last responsible moment comes from Mary and Tom Poppendieck's lean software development, and the figure of the architect who writes code rather than judging it from above, from Martin Fowler's essay on architectus oryzus. My contribution is elsewhere: in the discipline of applying these rules in environments that usually consider them too light, a bank, a regulated fintech, a plant floor.",
       "processTitle": "How it runs",
       "processLead": "No two engagements are identical, but the order is usually the same.",
       "process": [
         {
           "step": "01",
           "title": "Conversation",
-          "body": "No deck and no commitment. What interests us is what specifically hurts and what happens if nothing changes. If that conversation shows we are not the right address, we say so immediately."
+          "body": "No deck and no commitment. What interests me is what specifically hurts and what happens if nothing changes. If that conversation shows I am not the right address, I say so immediately."
         },
         {
           "step": "02",
           "title": "Reconnaissance",
-          "body": "A few days spent seeing the actual state of things: the architecture, the process or the code, depending on the problem. We talk to the people who maintain the system, not only to those who commissioned it."
+          "body": "A few days spent seeing the actual state of things: the architecture, the process or the code, depending on the problem. I talk to the people who maintain the system, not only to those who commissioned it."
         },
         {
           "step": "03",
@@ -57,21 +57,21 @@
         {
           "step": "04",
           "title": "Delivery or oversight",
-          "body": "Either we build, or we steer decisions alongside the client's team. In both cases documentation and decision records are written with the work, not after it."
+          "body": "Either I build, or I steer decisions alongside the client's team. In both cases documentation and decision records are written with the work, not after it."
         },
         {
           "step": "05",
           "title": "Handover",
-          "body": "Runbooks, an environment reproducible from the repository, and a walkthrough with the team taking over. We consider an engagement successful when it can be ended without harming the client."
+          "body": "Runbooks, an environment reproducible from the repository, and a walkthrough with the team taking over. I consider an engagement successful when it can be ended without harming the client."
         }
       ],
-      "aiTitle": "AI in our own work",
-      "aiBody": "We use AI agents in day-to-day software delivery, one reason a small practice can keep more than a dozen production repositories moving at once. Exactly the same rule applies as with clients: the model proposes, tests and deterministic validation rule, a person answers for the result. Specifications and decision records are the source of truth; the code is their consequence."
+      "aiTitle": "AI in my own work",
+      "aiBody": "I use AI agents in day-to-day software delivery, one reason a small practice can keep more than a dozen production repositories moving at once. Exactly the same rule applies as with clients: the model proposes, tests and deterministic validation rule, a person answers for the result. Specifications and decision records are the source of truth; the code is their consequence."
     },
     "engage": {
       "kicker": "Engage",
       "title": "How an engagement usually starts.",
-      "lead": "There are no packages or price lists on this site, not out of mystery, but because a sensible scope can only be set after a conversation about the problem. The shapes of engagement follow directly from the method: architecture on demand is effort sized to a single decision, architecture as a service is the same discipline sustained over time. Both are described below, alongside diagnostics and delivery.",
+      "lead": "There are no packages or price lists on this site, because a sensible scope can only be set after a conversation about the problem. The shapes of engagement follow directly from the method: architecture on demand is effort sized to a single decision, architecture as a service is the same discipline sustained over time. Both are described below, alongside diagnostics and delivery.",
       "formsTitle": "Shapes of engagement",
       "forms": [
         {
@@ -96,7 +96,7 @@
         }
       ],
       "selectivityTitle": "How many engagements at once",
-      "selectivityBody": "A few. This practice does not scale by hiring, it scales through method and tooling. That means sometimes you wait for a slot, and sometimes we say we cannot take a project in a given quarter. We consider that more honest than putting forward a team we do not know.",
+      "selectivityBody": "A few. This practice scales through method and tooling instead of hiring. That means sometimes you wait for a slot, and sometimes I say I cannot take a project in a given quarter. I consider that more honest than putting forward a team I do not know.",
       "pricingTitle": "And the price?",
       "pricingBody": "Agreed in conversation, once the scope is understood. Publishing ranges without context either underprices a badly defined problem or filters out conversations that were worth having."
     },
@@ -106,7 +106,7 @@
       "lead": "ArchXS exists around one method: architecture on demand. Architectural effort is sized to the risk of a specific decision, and in its continuous variant, architecture as a service, it replaces a staff architect where a staff position would not hold its own. The method's precondition is a combination that usually drifts apart with seniority: architecture at scale and uninterrupted hands-on delivery.",
       "paragraphs": [
         "The practice grew out of two decades in organisations where an architectural mistake is expensive: eight years in global card payments under PCI-DSS, enterprise architecture at a state development bank and on a core banking replacement, technology leadership at a regulated fintech, a national-scale blockchain product, and most recently technology in manufacturing, from the plant floor to e-commerce.",
-        "Code is written in parallel. More than a dozen active production repositories, backend systems in two independent ecosystems, web and mobile applications, industrial integrations, custom identity-server extensions, open-source tooling. This is not a portfolio, it is how recommendations get tested before they are handed to someone else.",
+        "Code is written in parallel. More than a dozen active production repositories, backend systems in two independent ecosystems, web and mobile applications, industrial integrations, custom identity-server extensions, open-source tooling. That body of work is how recommendations get tested before they are handed to someone else.",
         "That is where the scope of this site comes from. You will not find a biography or conference photographs, because they are not the subject of the work. You will find positions, evidence and writing from which a way of thinking can be judged, and that is the only thing anyone really buys in advisory work."
       ],
       "credentialsLabel": "Credentials",
@@ -156,14 +156,14 @@
     "contact": {
       "kicker": "Contact",
       "title": "Contact.",
-      "lead": "Two routes: email and a form. We reply within two working days. If we are not the right address, we say so plainly and, where we can, point somewhere better.",
+      "lead": "Two routes: email and a form. I reply within two working days. If I am not the right address, I say so plainly and, where I can, point somewhere better.",
       "bookTitle": "Calendar",
       "bookBody": "For matters easier to discuss than to write down: thirty minutes, no deck.",
       "book": "Calendar",
       "emailTitle": "Email",
       "emailBody": "Usually the fastest route. Two or three sentences about the problem are enough.",
       "formTitle": "Form",
-      "formNote": "The form is handled by an external provider; details in the privacy notice. We do not collect addresses for a newsletter, there is no newsletter.",
+      "formNote": "The form is handled by an external provider; details in the privacy notice. I do not collect addresses for a newsletter, there is no newsletter.",
       "form": {
         "name": "Name",
         "email": "Email address",
@@ -172,7 +172,7 @@
         "messagePlaceholder": "Two or three sentences are enough.",
         "submit": "Send",
         "sending": "Sending…",
-        "success": "Thank you, we will reply within two working days.",
+        "success": "Thank you, I will reply within two working days.",
         "error": "That did not send. Please write directly to contact@archxs.com.",
         "fallback": "The form is not configured right now. Please write to contact@archxs.com."
       }
@@ -186,7 +186,7 @@
           "body": "The controller of personal data submitted through this site is Dariusz Tyszka, running an advisory practice under the ArchXS name. Contact for data protection matters: contact@archxs.com."
         },
         {
-          "heading": "What we collect",
+          "heading": "What I collect",
           "body": "Only what you provide yourself: name, email address, optionally an organisation name, and the content of your message. The site does not use cookies for marketing or profiling. Visit statistics, where collected, are aggregated and do not identify individuals."
         },
         {
@@ -195,7 +195,7 @@
         },
         {
           "heading": "Recipients",
-          "body": "The contact form and call booking are operated by external service providers who process the data solely on our behalf. Email is handled by a mail hosting provider. We do not sell or share data for marketing purposes."
+          "body": "The contact form and call booking are operated by external service providers who process the data solely on my behalf. Email is handled by a mail hosting provider. I do not sell or share data for marketing purposes."
         },
         {
           "heading": "Retention",

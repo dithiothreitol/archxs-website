@@ -3,12 +3,12 @@
     "hero": {
       "kicker": "Advisory and engineering practice",
       "title": "Exactly as much architecture as needed.",
-      "lead": "ArchXS works by an architecture-on-demand method: architectural effort is limited to the decisions that cannot be cheaply reversed, and the time recovered goes into building the working system. This is how we advised on a bank's core system replacement. It is also how we now run a platform of around ten production systems, from production planning to document flow.",
+      "lead": "ArchXS works by an architecture-on-demand method: architectural effort is limited to the decisions that cannot be cheaply reversed, and the time recovered goes into building the working system. This is how I advised on a bank's core system replacement. It is also how I now run a platform of around ten production systems, from production planning to document flow.",
       "figureCaption": "System layers: infrastructure, processes, decisions",
       "proof": [
         {
           "value": "300+ IT staff",
-          "label": "the scale at which we led an enterprise architecture practice and the architecture of a core banking replacement"
+          "label": "the scale at which I led an enterprise architecture practice and the architecture of a core banking replacement"
         },
         {
           "value": "237 migrations",
@@ -27,7 +27,7 @@
       "items": [
         {
           "claim": "There should be exactly as much architecture as reduces risk.",
-          "body": "A full-time architecture practice tends to produce artifacts that justify its own existence. We spend the effort where a decision is expensive to reverse, system boundaries, the data model, identity, and leave the rest to code and a decision log. The method has a pedigree, and it has hard limits; we write about both.",
+          "body": "A full-time architecture practice tends to produce artifacts that justify its own existence. I spend the effort where a decision is expensive to reverse, system boundaries, the data model, identity, and leave the rest to code and a decision log. The method has a pedigree, and it has hard limits; I write about both.",
           "href": "/insights/architecture-on-demand"
         },
         {
@@ -37,7 +37,7 @@
         },
         {
           "claim": "AI proposes, humans decide.",
-          "body": "Not as a cautious platitude but as an architectural pattern: deterministic gates alongside the model, personal data redacted before anything leaves the organisation, a decision trail that cannot be overwritten. We apply it in every system we build, and we know what it costs.",
+          "body": "An architectural pattern with a concrete shape: deterministic gates alongside the model, personal data redacted before anything leaves the organisation, a decision trail that cannot be overwritten. I apply it in every system I build, and I know what it costs.",
           "href": "/insights/ai-proposes-human-decides"
         },
         {
@@ -47,21 +47,21 @@
         },
         {
           "claim": "Identity is not a login screen.",
-          "body": "It is the security boundary of the whole system. Sometimes that leads to writing your own identity-server extension, in our case, signature-based authentication with a single-use nonce against replay, and it still costs less than losing a single source of truth about the user.",
+          "body": "It is the security boundary of the whole system. Sometimes that leads to writing your own identity-server extension, in my case, signature-based authentication with a single-use nonce against replay, and it still costs less than losing a single source of truth about the user.",
           "href": "/insights/keycloak-beyond-configuration"
         }
       ]
     },
     "practiceIntro": {
       "label": "Practice areas",
-      "title": "Seven kinds of problem we have stayed with long enough to know their usual breaking points.",
-      "lead": "There is no service catalogue here. Each area is described the same way: how we look at it, what we have actually built, and what follows, with named standards and numbers, because generalities carry no accountability.",
+      "title": "Seven kinds of problem I have stayed with long enough to know their usual breaking points.",
+      "lead": "There is no service catalogue here. Each area is described the same way: how I look at it, what I have actually built, and what follows, with named standards and numbers, because generalities carry no accountability.",
       "evidenceLabel": "Evidence"
     },
     "method": {
       "label": "Method",
       "title": "The principles cost more upfront and pay for themselves the first time the team changes.",
-      "link": "How we work",
+      "link": "How I work",
       "items": [
         {
           "title": "As much architecture as reduces risk",
@@ -69,7 +69,7 @@
         },
         {
           "title": "Decisions written down, not remembered",
-          "body": "Every significant decision gets an entry: context, options considered, why the others were rejected. We also keep build-vs-buy tables with a verdict for each rejected option, a year later, that is the only way to understand a system without archaeology."
+          "body": "Every significant decision gets an entry: context, options considered, why the others were rejected. I also keep build-vs-buy tables with a verdict for each rejected option, a year later, that is the only way to understand a system without archaeology."
         },
         {
           "title": "Proof instead of assertion",
@@ -83,7 +83,7 @@
     },
     "work": {
       "label": "Work",
-      "title": "Six engagements that show how the work is done.",
+      "title": "Three engagements that show how the work is done.",
       "lead": "Some are public by the nature of the project. Others are described by sector, without names, the ordinary price of working inside organisations that do not publish their architectures.",
       "link": "All work"
     },
@@ -159,30 +159,30 @@
         },
         {
           "q": "Do you run training or workshops?",
-          "a": "No. We do not run training, workshops or webinars, and we do not plan to. Knowledge worth passing on goes into the writing on this site and into open tooling, no fee and no sign-up. You pay for a problem being solved, not for time in a room."
+          "a": "No. I do not run training, workshops or webinars, and I do not plan to. Knowledge worth passing on goes into the writing on this site and into open tooling, no fee and no sign-up. You pay for a problem being solved, not for time in a room."
         },
         {
           "q": "Do you work with regulated organisations?",
-          "a": "That is most of our experience: state banking, fintech under financial-market supervision, card payments under PCI-DSS, healthcare, the public sector, food manufacturing. Concretely it means working knowledge of GDPR and DPIAs, eIDAS, the EU AI Act, Polish e-invoicing and tax reporting, ISA-95 and industry standards, at implementation depth, not as a bullet in a proposal."
+          "a": "That is most of my experience: state banking, fintech under financial-market supervision, card payments under PCI-DSS, healthcare, the public sector, food manufacturing. Concretely it means working knowledge of GDPR and DPIAs, eIDAS, the EU AI Act, Polish e-invoicing and tax reporting, ISA-95 and industry standards, at implementation depth, not as a bullet in a proposal."
         },
         {
           "q": "How do you use AI in client projects?",
-          "a": "As something that proposes, never as the deciding authority. The model suggests, deterministic code rules, and a person approves every action that leaves the organisation. Personal data is redacted before it reaches a model, query cost is measured per request, and decisions leave an audit trail. The same rule applies to the AI we use to write code ourselves."
+          "a": "As something that proposes, never as the deciding authority. The model suggests, deterministic code rules, and a person approves every action that leaves the organisation. Personal data is redacted before it reaches a model, query cost is measured per request, and decisions leave an audit trail. The same rule applies to the AI I use to write code myself."
         },
         {
           "q": "When is ArchXS the wrong address?",
-          "a": "When you need a large delivery team immediately, extra hands against an existing backlog, or a supplier chosen on lowest price in a tender. We do not do body leasing and we do not scale by hiring. If a conversation shows this is not our case, we will say so and point you in a direction where we can."
+          "a": "When you need a large delivery team immediately, extra hands against an existing backlog, or a supplier chosen on lowest price in a tender. I do not do body leasing and I do not scale by hiring. If a conversation shows this is not my case, I will say so and point you in a direction where I can."
         },
         {
           "q": "Which languages and markets do you work in?",
-          "a": "Polish and English, remotely, based in Poland. Clients are mainly the Polish mid-market and public-sector organisations, though we have delivered projects with partners across the EU. Documentation can be bilingual, in practice documentation in Polish, code and comments in English."
+          "a": "Polish and English, remotely, based in Poland. Clients are mainly the Polish mid-market and public-sector organisations, though I have delivered projects with partners across the EU. Documentation can be bilingual, in practice documentation in Polish, code and comments in English."
         }
       ]
     },
     "contact": {
       "label": "Contact",
       "title": "contact@archxs.com",
-      "body": "We reply within two working days. A contact form is on the contact page, for those who need it."
+      "body": "I reply within two working days. A contact form is on the contact page, for those who need it."
     }
   }
 }

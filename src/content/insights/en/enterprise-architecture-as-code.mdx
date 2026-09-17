@@ -13,7 +13,7 @@ readingMinutes: 6
 
 Enterprise architecture documentation is out of date on the day it is published, because it is a copy of
 the state rather than its source. Governance with no mechanism capable of refusing comes down to meetings
-and goodwill. The only way we know out of both problems at once is dull: the architecture model lives in
+and goodwill. The only way I know out of both problems at once is dull: the architecture model lives in
 a git repository, and its rules are executable and run in CI.
 
 ## Why documentation drifts from reality
@@ -25,16 +25,14 @@ yesterday. A slide cannot object when a new component connects to a database it 
 The drift is built into the construction, and no update procedure removes it, because the procedure
 competes with project deadlines and always loses.
 
-The same holds for governance. An Architecture Review Board without an artefact that can be checked by
-machine rules on the basis of whatever was presented at the meeting. The conclusions go into minutes. The
-minutes have no contact whatsoever with the pipeline in which the system is built. A year later the
-organisation holds a collection of sound decisions nobody can tell were carried out, and not out of bad
-faith, but for want of a place where non-execution would be visible.
+The same thing holds for governance. An Architecture Review Board without an artefact that can be checked by
+machine rules on the basis of whatever was presented at the meeting, and the conclusions go into minutes that have no contact whatsoever with the pipeline in which the system is built. A year later the
+organisation holds a collection of sound decisions nobody can tell were carried out, and the cause is usually the want of a place where non-execution would be visible.
 
 ## A model in the repository instead of a document
 
-The open toolchain we built rests on a single assumption: the model is code, so it is subject to the same
-rigours as code. We keep it in git, in a textual DSL that has pull requests, history, blame and review.
+The open toolchain I built rests on a single assumption: the model is code, so it is subject to the same
+rigours as code. I keep it in git, in a textual DSL that has pull requests, history, blame and review.
 The core is deterministic throughout, a three-layer validator, a compiler to ArchiMate 3.2 Open Exchange
 XML validated against the Open Group XSD, and an SVG view generator. It comprises 19 skills spanning the
 define → document → govern → maintain cycle, including the part drawing tools are silent about: what
@@ -42,12 +40,12 @@ happens to a model once it stops being new.
 
 Choosing ArchiMate 3.2 and validation against the official schema is not a declaration of attachment to
 standards. It has a concrete effect: the model can be exported into another tool, and it can be checked
-without our tool. A format whose correctness is confirmed only by the editor that produced it is a format
+without my tool. A format whose correctness is confirmed only by the editor that produced it is a format
 with no way out, and enterprise architecture outlives several generations of tooling.
 
 Documentation is generated from the model in the shape of clause 6 of ISO/IEC/IEEE 42010: a stakeholder
 register together with their concerns, an application portfolio with TIME quadrants, a capability map,
-change triage. The order matters here. The document is not an artefact to be maintained but a printout of
+change triage. The order of those two things matters here. The document is not an artefact to be maintained but a printout of
 the model's state at a given commit. Out-of-date documentation stops being possible, because there is
 nothing left to go stale, there is only a model that either passes validation or does not.
 
@@ -58,15 +56,14 @@ the rules. That is enough to run it as a step in CI, and that in turn changes th
 architectural principle. A principle that lives on reminders is a preference. A principle that can stop a
 merge is a gate.
 
-We built the decision register and the compliance records on the same mechanism. ADRs sit in the
+I built the decision register and the compliance records on the same mechanism. ADRs sit in the
 repository next to the model, so a decision and its consequence share one location and one history. A
 compliance record is not a yes/no field but a verdict on a six-point scale, because in architectural
 practice compliant and non-compliant are not enough: things turn out to be partially compliant, compliant
 with a waiver, unassessed, out of date. A scale that distinguishes those is the only one on which a
 health report says anything useful.
 
-We keep the model in two zones, `staging` and `approved`, with gated promotion between them. The reason
-is practical. Without that separation every proposed change has to pretend it is already approved, so
+I keep the model in two zones, `staging` and `approved`, with gated promotion between them. The reason for that split is practical. Without that separation every proposed change has to pretend it is already approved, so
 either governance blocks exploration or exploration dilutes governance. Two zones allow variants to be
 modelled freely while still leaving one state that may be cited in decisions.
 
@@ -77,10 +74,8 @@ standards do not end. A rule is written, applies, stops making sense, and formal
 teams learn to work around it, and lose respect for the rules that do make sense along the way. A
 standard without a status and a review date does more harm over time than no standard at all.
 
-Waivers we treat more carefully still: each one has an expiry date and cannot be recorded without it. It
-is a single line in the data schema and one of the most consequential decisions in the whole tool. An
-open-ended waiver is not a waiver, it is a quiet amendment to the standard, made without a conversation
-about its cost. An expiry date forces that conversation at a point when it is still cheap, and gives
+Waivers I treat more carefully still: each one has an expiry date and cannot be recorded without it. It
+is a single line in the data schema and one of the most consequential decisions in the whole tool. A waiver without an expiry date amounts to a quiet amendment to the standard, made without a conversation about its cost. An expiry date forces that conversation at a point when it is still cheap, and gives
 architectural debt a deadline rather than only an owner.
 
 ## The architect who works with agents
@@ -94,7 +89,7 @@ cite an ArchiMate relationship that does not exist in the metamodel, or attribut
 the source does not contain. The second error is the more dangerous, because it sounds plausible and gets
 quoted onwards. Hence the rule in this tool: the model supplies judgement, the tooling supplies evidence.
 Every claim about ArchiMate semantics or about the content of a source passes through an oracle that
-checks it in code against vendored primary sources, with the quotation located in the document. We keep a
+checks it in code against vendored primary sources, with the quotation located in the document. I keep a
 fact register and measure its coverage, so what is visible is not only what has been confirmed but also
 what nobody has confirmed.
 

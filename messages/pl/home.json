@@ -3,12 +3,12 @@
     "hero": {
       "kicker": "Praktyka doradczo-inżynierska",
       "title": "Dokładnie tyle architektury, ile trzeba.",
-      "lead": "ArchXS pracuje metodą architektury na żądanie: nakład architektoniczny ograniczamy do decyzji, których nie da się tanio odwrócić, a odzyskany czas oddajemy budowie działającego systemu. Tą metodą doradzaliśmy przy wymianie systemu centralnego banku rozwoju. Nią utrzymujemy dziś platformę, na której działa około dziesięciu systemów produkcyjnych, od planowania produkcji po obieg dokumentów.",
+      "lead": "ArchXS pracuje metodą architektury na żądanie: nakład architektoniczny ograniczam do decyzji, których nie da się tanio odwrócić, a odzyskany czas oddaję budowie działającego systemu. Tą metodą doradzałem przy wymianie systemu centralnego banku rozwoju. Nią utrzymuję dziś platformę, na której działa około dziesięciu systemów produkcyjnych, od planowania produkcji po obieg dokumentów.",
       "figureCaption": "Warstwy systemu: infrastruktura, procesy, decyzje",
       "proof": [
         {
           "value": "300+ osób IT",
-          "label": "skala, w której prowadziliśmy praktykę architektury korporacyjnej i architekturę wymiany systemu centralnego banku"
+          "label": "skala, w której prowadziłem praktykę architektury korporacyjnej i architekturę wymiany systemu centralnego banku"
         },
         {
           "value": "237 migracji",
@@ -27,7 +27,7 @@
       "items": [
         {
           "claim": "Architektury powinno być dokładnie tyle, ile redukuje ryzyko.",
-          "body": "Etatowa praktyka architektoniczna ma skłonność do wytwarzania artefaktów na własne usprawiedliwienie. Wysiłek kierujemy tam, gdzie decyzja jest droga w odwróceniu, granice systemów, model danych, tożsamość, a resztę oddajemy kodowi i rejestrowi decyzji. Ta metoda ma rodowód i ma też twarde granice; piszemy o jednym i drugim.",
+          "body": "Etatowa praktyka architektoniczna ma skłonność do wytwarzania artefaktów na własne usprawiedliwienie. Wysiłek kieruję tam, gdzie decyzja jest droga w odwróceniu, granice systemów, model danych, tożsamość, a resztę oddaję kodowi i rejestrowi decyzji. Ta metoda ma rodowód i ma też twarde granice; piszę o jednym i drugim.",
           "href": "/insights/architecture-on-demand"
         },
         {
@@ -37,31 +37,31 @@
         },
         {
           "claim": "AI proponuje, człowiek decyduje.",
-          "body": "Nie jako ostrożnościowy frazes, ale jako wzorzec architektoniczny: deterministyczne bramki obok modelu, redakcja danych osobowych przed wysłaniem czegokolwiek na zewnątrz, ślad decyzji, którego nie można nadpisać. Stosujemy go w każdym systemie, który budujemy, i znamy jego koszt.",
+          "body": "Wzorzec architektoniczny o konkretnej postaci: deterministyczne bramki obok modelu, redakcja danych osobowych przed wysłaniem czegokolwiek na zewnątrz, ślad decyzji, którego nie można nadpisać. Stosuję go w każdym systemie, który buduję, i znam jego koszt.",
           "href": "/insights/ai-proposes-human-decides"
         },
         {
           "claim": "Architektura, której nie ma w CI, nie istnieje.",
-          "body": "Model architektury trzymamy w repozytorium, a walidator zwraca kod błędu, zmiana łamiąca standard zatrzymuje się w pipeline, nie na przeglądzie sześć tygodni później. Odstępstwa istnieją, ale jako dyspensy z datą wygaśnięcia, nie jako milcząca zgoda.",
+          "body": "Model architektury trzymam w repozytorium, a walidator zwraca kod błędu, zmiana łamiąca standard zatrzymuje się w pipeline, nie na przeglądzie sześć tygodni później. Odstępstwa istnieją, ale jako dyspensy z datą wygaśnięcia, nie jako milcząca zgoda.",
           "href": "/insights/enterprise-architecture-as-code"
         },
         {
           "claim": "Tożsamość to nie ekran logowania.",
-          "body": "To granica bezpieczeństwa całego systemu. Czasem prowadzi to do napisania własnego rozszerzenia serwera tożsamości, u nas skończyło się na obsłudze podpisu kryptograficznego z jednorazowym nonce przeciw powtórzeniom, i wychodzi taniej niż utrata jednego punktu prawdy o użytkowniku.",
+          "body": "To granica bezpieczeństwa całego systemu. Czasem prowadzi to do napisania własnego rozszerzenia serwera tożsamości, u mnie skończyło się na obsłudze podpisu kryptograficznego z jednorazowym nonce przeciw powtórzeniom, i wychodzi taniej niż utrata jednego punktu prawdy o użytkowniku.",
           "href": "/insights/keycloak-beyond-configuration"
         }
       ]
     },
     "practiceIntro": {
       "label": "Obszary praktyki",
-      "title": "Siedem rodzajów problemów, przy których byliśmy wystarczająco długo, żeby znać ich zwyczajowe miejsca pęknięć.",
-      "lead": "Nie prowadzimy katalogu usług. Każdy obszar opisujemy tak samo: jak na niego patrzymy, co konkretnie zbudowaliśmy i co z tego wynika, z nazwami standardów i liczbami, bo ogólniki nie niosą odpowiedzialności.",
+      "title": "Siedem rodzajów problemów, przy których byłem wystarczająco długo, żeby znać ich zwyczajowe miejsca pęknięć.",
+      "lead": "Nie prowadzę katalogu usług. Każdy obszar opisuję tak samo: jak na niego patrzę, co konkretnie zbudowałem i co z tego wynika, z nazwami standardów i liczbami, bo ogólniki nie niosą odpowiedzialności.",
       "evidenceLabel": "Dowód"
     },
     "method": {
       "label": "Metoda",
       "title": "Zasady kosztują na starcie i zwracają się przy pierwszej zmianie zespołu.",
-      "link": "Jak pracujemy",
+      "link": "Jak pracuję",
       "items": [
         {
           "title": "Tyle architektury, ile redukuje ryzyko",
@@ -69,7 +69,7 @@
         },
         {
           "title": "Decyzje zapisane, nie zapamiętane",
-          "body": "Każda istotna decyzja dostaje wpis: kontekst, rozważane opcje, powód odrzucenia pozostałych. Prowadzimy też tabele build-vs-buy z werdyktem dla każdej odrzuconej opcji, po roku to jedyny sposób, żeby zrozumieć system bez archeologii."
+          "body": "Każda istotna decyzja dostaje wpis: kontekst, rozważane opcje, powód odrzucenia pozostałych. Prowadzę też tabele build-vs-buy z werdyktem dla każdej odrzuconej opcji, po roku to jedyny sposób, żeby zrozumieć system bez archeologii."
         },
         {
           "title": "Dowód zamiast deklaracji",
@@ -83,8 +83,8 @@
     },
     "work": {
       "label": "Realizacje",
-      "title": "Sześć realizacji, w których widać sposób pracy.",
-      "lead": "Część jest publiczna z natury projektu. Część opisujemy sektorowo, bez nazw, to normalna cena za pracę w organizacjach, które nie publikują swoich architektur.",
+      "title": "Trzy realizacje, w których widać sposób pracy.",
+      "lead": "Część jest publiczna z natury projektu. Część opisuję sektorowo, bez nazw, to normalna cena za pracę w organizacjach, które nie publikują swoich architektur.",
       "link": "Wszystkie realizacje"
     },
     "proof": {
@@ -151,38 +151,38 @@
         },
         {
           "q": "Jak wygląda początek współpracy?",
-          "a": "Rozmową o problemie, bez zobowiązań i bez prezentacji. Z rozmowy zwykle wynika jedna z pięciu form: diagnoza kończąca się raportem i roadmapą, architektura na żądanie przy pojedynczej decyzji, architektura jako usługa, czyli stały nadzór bez etatu architekta, doradztwo ciągłe na poziomie zarządczo-technicznym albo wytworzenie systemu end-to-end. Zakres i warunki ustalamy w rozmowie, nie z cennika."
+          "a": "Rozmową o problemie, bez zobowiązań i bez prezentacji. Z rozmowy zwykle wynika jedna z pięciu form: diagnoza kończąca się raportem i roadmapą, architektura na żądanie przy pojedynczej decyzji, architektura jako usługa, czyli stały nadzór bez etatu architekta, doradztwo ciągłe na poziomie zarządczo-technicznym albo wytworzenie systemu end-to-end. Zakres i warunki ustalam w rozmowie, nie z cennika."
         },
         {
           "q": "Czy doradztwo obejmuje też wykonanie?",
           "a": "Tak, i to jest sedno tej praktyki. Rekomendacje powstają u kogoś, kto następnie musi je wdrożyć, co skutecznie eliminuje pomysły dobre na slajdzie i niewykonalne w produkcji. Można też korzystać wyłącznie z warstwy doradczej i zostawić wykonanie własnemu zespołowi lub innemu dostawcy."
         },
         {
-          "q": "Czy prowadzicie szkolenia albo warsztaty?",
-          "a": "Nie. Nie prowadzimy szkoleń, warsztatów ani webinarów i nie planujemy tego zmieniać. Wiedza, którą warto przekazać, trafia do tekstów na tej stronie i do otwartych narzędzi, bez opłaty i bez zapisów. Płaci się za rozwiązanie problemu, nie za obecność na sali."
+          "q": "Czy prowadzisz szkolenia albo warsztaty?",
+          "a": "Nie. Nie prowadzę szkoleń, warsztatów ani webinarów i nie planuję tego zmieniać. Wiedza, którą warto przekazać, trafia do tekstów na tej stronie i do otwartych narzędzi, bez opłaty i bez zapisów. Płaci się za rozwiązanie problemu, nie za obecność na sali."
         },
         {
-          "q": "Czy pracujecie z organizacjami w reżimie regulacyjnym?",
-          "a": "To większość naszego doświadczenia: bankowość państwowa, fintech pod nadzorem KNF, płatności kartowe w reżimie PCI-DSS, ochrona zdrowia, sektor publiczny, produkcja żywności. Praktycznie oznacza to znajomość RODO i DPIA, eIDAS, EU AI Act, KSeF i JPK, ISA-95 oraz norm branżowych, na poziomie wdrożenia, nie hasła w ofercie."
+          "q": "Czy pracujesz z organizacjami w reżimie regulacyjnym?",
+          "a": "To większość mojego doświadczenia: bankowość państwowa, fintech pod nadzorem KNF, płatności kartowe w reżimie PCI-DSS, ochrona zdrowia, sektor publiczny, produkcja żywności. Praktycznie oznacza to znajomość RODO i DPIA, eIDAS, EU AI Act, KSeF i JPK, ISA-95 oraz norm branżowych, na poziomie wdrożenia, nie hasła w ofercie."
         },
         {
-          "q": "Jak wykorzystujecie AI w projektach klientów?",
-          "a": "Jako narzędzie, które proponuje, nigdy jako instancję decyzyjną. Model sugeruje, deterministyczny kod orzeka, człowiek zatwierdza każdą akcję wychodzącą poza organizację. Dane osobowe są redagowane przed wysłaniem do modelu, koszt zapytań jest mierzony per zapytanie, a decyzje mają ślad audytowy. Ta sama zasada obowiązuje w AI, którego sami używamy do wytwarzania kodu."
+          "q": "Jak wykorzystujesz AI w projektach klientów?",
+          "a": "Jako narzędzie, które proponuje, nigdy jako instancję decyzyjną. Model sugeruje, deterministyczny kod orzeka, człowiek zatwierdza każdą akcję wychodzącą poza organizację. Dane osobowe są redagowane przed wysłaniem do modelu, koszt zapytań jest mierzony per zapytanie, a decyzje mają ślad audytowy. Ta sama zasada obowiązuje w AI, którego sam używam do wytwarzania kodu."
         },
         {
           "q": "Kiedy ArchXS nie jest właściwym adresem?",
-          "a": "Gdy potrzebny jest duży zespół wykonawczy na już, ręce do istniejącego backlogu albo dostawca wybierany w przetargu po najniższej cenie. Nie prowadzimy body leasingu i nie skalujemy się rekrutacją. Jeśli po rozmowie okaże się, że to nie nasz przypadek, powiemy to wprost i w miarę możliwości wskażemy kierunek."
+          "a": "Gdy potrzebny jest duży zespół wykonawczy na już, ręce do istniejącego backlogu albo dostawca wybierany w przetargu po najniższej cenie. Nie prowadzę body leasingu i nie skaluję się rekrutacją. Jeśli po rozmowie okaże się, że to nie mój przypadek, powiem to wprost i w miarę możliwości wskażę kierunek."
         },
         {
-          "q": "W jakich językach i na jakich rynkach pracujecie?",
-          "a": "Po polsku i po angielsku, zdalnie, z bazą w Polsce. Klienci to głównie polski mid-market i organizacje sektora publicznego, ale realizowaliśmy też projekty z partnerami w całej Unii. Dokumentacja może być prowadzona dwujęzycznie, w praktyce dokumentacja po polsku, kod i komentarze po angielsku."
+          "q": "W jakich językach i na jakich rynkach pracujesz?",
+          "a": "Po polsku i po angielsku, zdalnie, z bazą w Polsce. Klienci to głównie polski mid-market i organizacje sektora publicznego, ale realizowałem też projekty z partnerami w całej Unii. Dokumentacja może być prowadzona dwujęzycznie, w praktyce dokumentacja po polsku, kod i komentarze po angielsku."
         }
       ]
     },
     "contact": {
       "label": "Kontakt",
       "title": "contact@archxs.com",
-      "body": "Odpowiadamy w ciągu dwóch dni roboczych. Formularz kontaktowy jest na stronie kontaktu, dla tych, którzy go potrzebują."
+      "body": "Odpowiadam w ciągu dwóch dni roboczych. Formularz kontaktowy jest na stronie kontaktu, dla tych, którzy go potrzebują."
     }
   }
 }

@@ -31,18 +31,15 @@ order: 10
 
 Praktyka architektury korporacyjnej wytwarza artefakty, które starzeją się szybciej, niż powstają:
 diagramy w narzędziu graficznym, decyzje w protokołach spotkań, standardy w dokumentach, których nikt
-nie egzekwuje. Zbudowaliśmy toolchain, który traktuje model architektury jak kod, trzyma go w git
+nie egzekwuje. Zbudowałem toolchain, który traktuje model architektury jak kod, trzyma go w git
 i sprawdza maszynowo.
 
 ## Problem
 
 Dwie awarie są typowe i niezależne od wybranego narzędzia. Pierwsza: dokumentacja jest nieaktualna
 w dniu publikacji, bo jej aktualizacja nie należy do żadnego przepływu pracy, jest osobnym zadaniem
-dla osobnej roli. Druga: governance nie zostawia dowodu. Rada architektury podejmuje decyzję, decyzja
-trafia do notatki, a pół roku później nikt nie umie odpowiedzieć, czy dany system jest z nią zgodny.
-Poza opinią.
-
-Oczywiste rozwiązanie, czyli repozytorium architektury z porządnym interfejsem, adresuje
+dla osobnej roli. Druga: governance nie zostawia po sobie dowodu. Rada architektury podejmuje decyzję, decyzja
+trafia do notatki, a pół roku później nikt nie umie odpowiedzieć, czy dany system jest z nią zgodny, poza wyrażeniem opinii. Oczywiste rozwiązanie, czyli repozytorium architektury z porządnym interfejsem, adresuje
 przechowywanie, nie egzekwowanie. Model może być wewnętrznie spójny w bazie narzędzia i całkowicie
 rozjechany z rzeczywistością, ponieważ nic go nie sprawdza w momencie zmiany.
 
@@ -52,9 +49,9 @@ i gdy nie jest.
 
 ## Podejście
 
-Rdzeń jest deterministyczny. Architektura zapisywana jest we własnym DSL, przechodzi trójwarstwowy
+Rdzeń toolchainu jest w całości deterministyczny. Architektura zapisywana jest we własnym DSL, przechodzi trójwarstwowy
 walidator, a potem kompiluje się do ArchiMate 3.2 w formacie Open Exchange XML, walidowanym wobec XSD
-Open Group. To nie estetyka: format wymienialny oznacza, że model da się otworzyć w narzędziu, którego
+Open Group. Powód jest praktyczny, a nie estetyczny: format wymienialny oznacza, że model da się otworzyć w narzędziu, którego
 jeszcze nie kupiono, a wyjście da się sprawdzić maszyną zamiast oglądaniem. Widoki SVG są generowane
 z modelu, więc diagram nie może opisywać czegoś innego niż model.
 
@@ -72,7 +69,7 @@ czynności, przy których naturalnie sięga się po model językowy. Obowiązuje
 dostarcza sądu, narzędzie dostarcza dowodu. Każde twierdzenie o semantyce ArchiMate albo o treści źródła
 jest weryfikowane kodem wobec cytatu zlokalizowanego w tym źródle; powstaje z tego rejestr faktów
 i mierzalne pokrycie. Osobny komponent, „oracle", sprawdza dopuszczalność relacji wobec zawendorowanych
-źródeł pierwotnych. Nie zakazujemy modelowi twierdzić, odbieramy mu prawo bycia ostatnią instancją.
+źródeł pierwotnych. Nie zakazuję modelowi twierdzić, odbieram mu prawo bycia ostatnią instancją.
 
 Dokumentacja generuje się w kształcie klauzuli 6 normy ISO/IEC/IEEE 42010: rejestr interesariuszy i ich
 trosk, portfel aplikacyjny z kwadrantami TIME, mapa zdolności, triage zmian.
@@ -83,7 +80,7 @@ Model architektury żyje w tym samym repozytorium i tym samym rytmie pull reques
 standardem jest rekordem z werdyktem, a nie zdaniem; wyjątek ma termin; decyzja ma numer i uzasadnienie.
 Sprawdzenie, czy model jest poprawny, trwa tyle, ile trwa build.
 
-Ograniczenia są realne. Toolchain wymusza dyscyplinę zapisu, więc zespół, który nie chce pisać modelu
+Ograniczenia tej metody są całkiem realne. Toolchain wymusza dyscyplinę zapisu, więc zespół, który nie chce pisać modelu
 w tekście, nie zacznie go pisać dzięki narzędziu. I dalej nie odpowiada na pytanie, czy model opisuje
 rzeczywistość, pilnuje spójności modelu, nie prawdziwości wobec produkcji. To osobny problem, którego
 nie rozwiązuje żadna walidacja składni.

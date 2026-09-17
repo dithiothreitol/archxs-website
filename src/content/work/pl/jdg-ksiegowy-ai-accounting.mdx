@@ -60,12 +60,12 @@ deterministyczne: XML FA(3) buduje builder związany ze schematem, JPK_V7M i JPK
 opublikowanych struktur, ZUS i ryczałt wychodzą z tabeli stawek na dany rok, a nie z promptu. Jeśli
 wartość da się sprawdzić schematem albo urzędową stawką, model jej nie tworzy.
 
-Wysyłkę potraktowaliśmy jako pełnoprawną zdolność, a nie jako przycisk eksportu. Wysłanie do KSeF to
+Wysyłkę potraktowałem jako pełnoprawną zdolność, a nie jako przycisk eksportu. Wysłanie do KSeF to
 sesja online, wysyłka, oczekiwanie i pobranie UPO; złożenie przez bramkę Ministerstwa to implementacja
 jej hybrydowego szyfrowania AES plus RSA i odebranie potwierdzenia. Obie ścieżki przeszły test end to end
 na sandboxie, bo system, który generuje plik do ręcznego wgrania, zautomatyzował łatwiejszą połowę.
 
-Koszty obsłużyliśmy tam, gdzie papier faktycznie się zacina: faktury zakupowe przychodzą jako zdjęcia i
+Koszty obsłużyłem tam, gdzie papier faktycznie się zacina: faktury zakupowe przychodzą jako zdjęcia i
 PDF-y. OCR działa na modelu multimodalnym lokalnie, na CPU, z hostowanym małym modelem jako zapasem, a
 wynik zasila rejestr wydatków z procentem odliczenia VAT per pozycja, więc odliczenie częściowe, znajome
 pięćdziesiąt procent od auta używanego także prywatnie, trafia do właściwego pola JPK, a nie do notatki.
@@ -84,7 +84,7 @@ Repozytorium: [github.com/dithiothreitol/jdg-ksiegowy](https://github.com/dithio
 rdzeń płatnej subskrypcji SaaS w przypadku, pod który powstał, przy czym dane zostają na maszynie
 użytkownika, a model może być lokalny.
 
-Granice warto nazwać. To beta, celuje w ryczałt, a nie w każdą formę opodatkowania, jaką JDG może wybrać,
+Granice tego projektu warto nazwać wprost. To beta, celuje w ryczałt, a nie w każdą formę opodatkowania, jaką JDG może wybrać,
 a powierzchnia regulacyjna się rusza: schematy KSeF, struktury JPK i stawki ZUS zmieniają się w cudzym
 kalendarzu, więc utrzymanie nie jest opcjonalne, a uczciwą miarą projektu jest to, jak szybko za tymi
 zmianami nadąża.
@@ -96,6 +96,6 @@ niejednoznaczność, deterministyczny kod produkuje wszystko, co ktoś inny będ
 której model tworzy wartość sprawdzaną przez schemat albo urząd, powstaje system pewnie mylący się w
 nieprzewidywalnych momentach.
 
-Drugi wniosek dotyczy uczciwego statusu. Tabela funkcji, która wymienia braki, ze ścieżkami możliwymi do
+Drugi wniosek dotyczy uczciwego opisu statusu. Tabela funkcji, która wymienia braki, ze ścieżkami możliwymi do
 sprawdzenia, jest dla potencjalnego użytkownika warta więcej niż dowolna ilość opisu, i jest to ta sama
 dyscyplina, która czyni dokument architektury wiarygodnym.

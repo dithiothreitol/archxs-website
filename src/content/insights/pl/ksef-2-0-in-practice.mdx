@@ -2,9 +2,9 @@
 title: "Czego nie widać w planach wdrożenia KSeF"
 description: "Integracja z KSeF 2.0 rozstrzyga się nie na schemie FA(3), a na deduplikacji, idempotencji i uznaniu, że faktura jest zdarzeniem prawnym, nie plikiem."
 takeaways:
-  - "Dokument odebrany z KSeF ma numer i datę nadane poza naszym systemem, więc aplikacja księgowa jest jego odbiorcą, nie właścicielem."
+  - "Dokument odebrany z KSeF ma numer i datę nadane poza moim systemem, więc aplikacja księgowa jest jego odbiorcą, nie właścicielem."
   - "Deduplikacja i idempotencja nie są optymalizacją wydajności: bez nich ten sam dokument trafia do ksiąg dwa razy i nie da się tego wycofać erratą."
-  - "Parser XML czytający dokumenty ze źródła, którego nie kontrolujemy, jest powierzchnią ataku, więc XXE wyłącza się na poziomie biblioteki, nie polityki."
+  - "Parser XML czytający dokumenty ze źródła, którego nie kontroluję, jest powierzchnią ataku, więc XXE wyłącza się na poziomie biblioteki, nie polityki."
   - "Dekretacja wykonana przez model jest propozycją do zatwierdzenia, bo odpowiedzialności podatkowej nie da się przenieść na coś, co jej nie poniesie."
 date: "2026-07-08"
 topic: "Compliance"
@@ -12,23 +12,23 @@ readingMinutes: 6
 ---
 
 Wdrożenie KSeF przestaje być projektem integracyjnym w momencie, w którym faktura okazuje się nie plikiem,
-a zdarzeniem prawnym z numerem i datą nadanymi poza naszym systemem. Schema FA(3) jest najłatwiejszą
-częścią pracy. Trudne jest to, co następuje po odebraniu dokumentu: ustalenie, czy widzieliśmy go już
+a zdarzeniem prawnym z numerem i datą nadanymi poza moim systemem. Schema FA(3) jest najłatwiejszą
+częścią pracy. Trudne jest to, co następuje po odebraniu dokumentu: ustalenie, czy widziałem go już
 wcześniej, czy wolno go zaksięgować i kto odpowiada za skutek tej decyzji.
 
 ## Faktura jest zdarzeniem, nie plikiem
 
-Plany wdrożenia opisują KSeF jako kanał wymiany: wystawiamy XML, wysyłamy, odbieramy. Opis jest poprawny
+Plany wdrożenia opisują KSeF jako kanał wymiany: wystawiam XML, wysyłam, odbieram. Opis jest poprawny
 i prawie bezużyteczny, bo pomija to, co zmienia się w modelu danych. Dokument potwierdzony przez system
-centralny istnieje w obiegu prawnym niezależnie od stanu naszej aplikacji. Nie ma wersji roboczej,
-nie ma cofnięcia, nie ma „poprawimy przy zamknięciu miesiąca". System księgowy przestaje być właścicielem
+centralny istnieje w obiegu prawnym niezależnie od stanu mojej aplikacji. Nie ma wersji roboczej,
+nie ma cofnięcia, nie ma „poprawię przy zamknięciu miesiąca". System księgowy przestaje być właścicielem
 faktury i staje się jej odbiorcą, który musi umieć udowodnić, co z nią zrobił i kiedy.
 
-To zmienia trzy rzeczy naraz. Pobieranie przestaje być jednym zadaniem cyklicznym, bo strumień jest per
-NIP, każdy podmiot ma własny stan, własny znacznik postępu i własny zakres uprawnień; u nas obsługa
+Ta zmiana dotyka trzech rzeczy naraz. Pobieranie przestaje być jednym zadaniem cyklicznym, bo strumień jest per
+NIP, każdy podmiot ma własny stan, własny znacznik postępu i własny zakres uprawnień; u mnie obsługa
 wielu podmiotów opiera się na Row-Level Security w PostgreSQL i regułach ABAC per NIP, a nie na filtrze
 w zapytaniu aplikacyjnym. Model dokumentu przestaje być wewnętrzną sprawą, bo jego kształt narzuca XSD,
-którego nie negocjujemy. A ślad audytowy przestaje być logiem diagnostycznym: prowadzimy go jako
+którego nie negocjuję. A ślad audytowy przestaje być logiem diagnostycznym: prowadzę go jako
 łańcuch skrótów SHA-256 tylko do dopisywania, z triggerem bazodanowym blokującym UPDATE i DELETE,
 bo w sporze z organem znaczenie ma nie to, co system pokazuje dziś, lecz to, czego nie mógł zmienić.
 
@@ -38,16 +38,15 @@ W typowej integracji deduplikacja pojawia się w backlogu jako usprawnienie: mni
 Przy fakturach ustrukturyzowanych jest odwrotnie, to warunek poprawności księgi. Pobieranie z systemu
 centralnego jest operacją sieciową, więc będzie się powtarzać: po timeoucie, po restarcie procesu,
 po ręcznym ponowieniu przez operatora, po zmianie zakresu dat. Jeśli ta sama faktura wejdzie dwukrotnie,
-efektem nie jest zdublowany rekord w tabeli, ale zdublowany koszt w rozliczeniu i deklaracja, której
+efektem jest zdublowany koszt w rozliczeniu i deklaracja, której
 nie da się obronić.
 
-Dlatego przyjmujemy, że pobranie jest idempotentne z założenia, a nie w wyniku ostrożności operatora.
+Dlatego przyjmuję, że pobranie jest idempotentne z założenia, a nie w wyniku ostrożności operatora.
 Tożsamość dokumentu bierze się z numeru KSeF, nie z nazwy pliku ani z pary numer plus kontrahent.
 Ponowne przetworzenie tego samego dokumentu jest legalną, oczekiwaną operacją bez efektu ubocznego.
 Import jest transakcyjny: dokument albo istnieje w księgach w całości, albo nie istnieje wcale, bo stan
 częściowy jest tu gorszy niż brak stanu. Ta sama zasada dotyczy generowania JPK_V7M(3), deklaracja
-odtworzona z tych samych danych musi być identyczna, inaczej nie mamy generatora, tylko kolejne
-źródło rozbieżności.
+odtworzona z tych samych danych musi być identyczna, inaczej zamiast generatora powstaje kolejne źródło rozbieżności.
 
 Idempotencja jest też jedynym mechanizmem, który pozwala bezpiecznie ponawiać komunikację z bramką MF.
 Kanał REST z szyfrowaniem AES i RSA zachowuje się jak każdy inny kanał zdalny: czasem odpowiada wolno,
@@ -56,7 +55,7 @@ tego nie zakłada, na produkcji rozstrzyga tę niepewność ręcznie, w piątek 
 
 ## Co robi bramka zgodności i dlaczego parser jest jej częścią
 
-Między odebraniem dokumentu a jego zaksięgowaniem umieściliśmy bramkę, przez którą nic nie przechodzi
+Między odebraniem dokumentu a jego zaksięgowaniem umieściłem bramkę, przez którą nic nie przechodzi
 bez sprawdzenia. Wykonuje walidację XSD wobec schemy FA(3), kontrolę sumy kontrolnej NIP (mod 11),
 sprawdzenie kontrahenta na białej liście KAS, rozpoznanie przypadków mechanizmu podzielonej płatności
 i deduplikację. Każde z tych sprawdzeń istnieje, bo jego brak ma konkretny koszt: odliczenie zakwestionowane
@@ -64,11 +63,11 @@ z powodu numeru rachunku spoza wykazu, płatność wykonana bez MPP tam, gdzie b
 deklaracji z powodu dokumentu policzonego dwa razy.
 
 Parser XML jest częścią tej samej bramki, nie warstwą poniżej. Dokument przychodzi ze źródła, którego
-nie kontrolujemy, a XML jest formatem z historią: encje zewnętrzne, rozwijanie encji, odwołania do
+nie kontroluję, a XML jest formatem z historią: encje zewnętrzne, rozwijanie encji, odwołania do
 zasobów lokalnych. Parser skonfigurowany domyślnie potrafi przy odpowiednio przygotowanym pliku
-przeczytać plik z dysku serwera albo wykonać żądanie sieciowe z jego wnętrza. Używamy więc parsera
+przeczytać plik z dysku serwera albo wykonać żądanie sieciowe z jego wnętrza. Używam więc parsera
 odpornego na XXE na poziomie biblioteki (defusedxml), a nie zapisu w polityce bezpieczeństwa, że
-„nie przetwarzamy niezaufanych plików". Ta sama logika dotyczy załączników: skan antywirusowy
+„nie przetwarzam niezaufanych plików". Ta sama logika dotyczy załączników: skan antywirusowy
 działa fail-closed, więc plik nieprzeskanowany jest plikiem odrzuconym, a nie plikiem
 przyjętym warunkowo. Typy MIME są na liście dozwolonych, nie na liście zakazanych.
 
@@ -79,7 +78,7 @@ przed ponowieniem po awarii, przed uploadem z komputera, którego nikt nie spraw
 ## Gdzie kończy się rola modelu
 
 Dekretacja to najbardziej oczywisty kandydat na automatyzację i najgorsze miejsce na pełną automatyzację.
-W obiegu dokumentów, który utrzymujemy, model podpowiada konto, wymiar kosztowy i przypisanie do
+W obiegu dokumentów, który utrzymuję, model podpowiada konto, wymiar kosztowy i przypisanie do
 projektu, ale wynik jest propozycją, którą zatwierdza człowiek. Nie z powodu ostrożności, lecz
 z powodu podziału odpowiedzialności: skutek błędnej dekretacji jest podatkowy i ponosi go podatnik,
 a nie dostawca modelu. Automat, który księguje samodzielnie, nie usuwa tej odpowiedzialności, usuwa
@@ -93,7 +92,7 @@ zostaje w tym samym łańcuchu audytowym, w którym leżą faktury.
 
 ## Czego nie da się dokupić
 
-Konektor kupuje się w tygodniach. To realna oszczędność i nie ma powodu jej lekceważyć: transport,
+Konektor kupuje się w tygodniach i jest to realna oszczędność, której nie ma powodu lekceważyć: transport,
 autoryzacja, obsługa schemy, ponawianie. Nie kupuje się natomiast trzech rzeczy, a to one decydują
 o powodzeniu wdrożenia.
 
@@ -102,7 +101,7 @@ a rzeczywistość firmy nie: rabaty, zaliczki, korekty wielopozycyjne, sprzedaż
 rozliczane w cyklach. Każda z tych rzeczy ma poprawne przedstawienie w schemie i kilka
 niepoprawnych, które przechodzą walidację.
 
-Druga to jakość danych podstawowych. Bramka zgodności nie naprawia rejestru kontrahentów, ona go
+Druga z nich to jakość danych podstawowych. Bramka zgodności nie naprawia rejestru kontrahentów, ona go
 ujawnia. Wdrożenia rozjeżdżają się nie na integracji, ale na kilkuset rekordach z błędnym NIP-em,
 zdublowanym kontrahentem i rachunkiem, którego nie ma w wykazie.
 

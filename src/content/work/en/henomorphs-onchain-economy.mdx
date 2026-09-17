@@ -31,7 +31,7 @@ order: 26
 
 ## Context
 
-Henomorphs is our own product: a collection of NFTs on Polygon with a game economy attached, and
+Henomorphs is my own product: a collection of NFTs on Polygon with a game economy attached, and
 CryptoColony42 is the front through which a player meets it. Under both sits HMS Protocol, the contract
 layer that holds the collections, the augment system, energy, evolution and the wars that colonies fight
 over territory. The founding collection, Genesis, is 2,300 tokens in four variants; later ones, Matrix,
@@ -53,7 +53,7 @@ has to special-case five contracts.
 
 ## Approach
 
-We built the collections on the Diamond pattern, EIP-2535: one proxy that routes calls by function
+I built the collections on the Diamond pattern, EIP-2535: one proxy that routes calls by function
 selector into facets, all of them sharing one storage layout. That gives a unit of change smaller than a
 contract. Battle mechanics live in one facet, alliances in another, energy and evolution in two more; a
 correction to combat maths ships as a facet replacement rather than as a migration that asks holders to
@@ -61,7 +61,7 @@ move to a new address. Twenty-one facets sit behind the diamond in the current p
 
 Composability was taken from standards rather than invented. Tokens are equippable, nestable and
 multi-asset per ERC-6220, ERC-7401 and ERC-5773, which is what lets an augment be a token that goes
-inside another token, and what lets a wallet or a marketplace we have never spoken to render the result
+inside another token, and what lets a wallet or a marketplace I have never spoken to render the result
 correctly.
 
 The economy was split into two tokens because one token cannot serve both purposes. Gameplay rewards
@@ -70,7 +70,7 @@ dilutes the people holding for the long term. So YLW is the utility token that t
 ZICO is fixed supply and buys governance, colony creation and premium access. Staking exists on top,
 including a receipt token for staked positions so a holder can exit liquidity without unstaking.
 
-Off-chain we kept the split honest: an indexer listens to events and fills a cache, the API reads that
+Off-chain I kept the split honest: an indexer listens to events and fills a cache, the API reads that
 cache, and the applications, web and React Native, read the API. Nothing that decides an outcome lives
 there. If the API disappears, the state is still on Polygon and still verifiable; what disappears is
 convenience.
@@ -86,12 +86,12 @@ venues, and the ecosystem now has several collections that share one protocol ra
 each. The upgrade path has been exercised in practice, which is the only test that counts for a diamond.
 The ecosystem is live at [cryptocolony42.com](https://cryptocolony42.com/).
 
-Two costs were accepted knowingly. Upgradeability means holders trust an admin key, and pretending
+Two of the costs here were accepted knowingly. Upgradeability means holders trust an admin key, and pretending
 otherwise would be dishonest; the mitigation is that the boundary is documented rather than hidden.
 And shared storage across facets is unforgiving, a careless struct change corrupts state for every
 facet at once, so storage layout has to be reviewed with more discipline than ordinary contract code.
 
-## What it taught us
+## What it taught me
 
 The interesting question in an on-chain product is not what to put on the chain but what must never
 need changing. Everything that will need changing belongs behind an upgrade boundary you designed on
