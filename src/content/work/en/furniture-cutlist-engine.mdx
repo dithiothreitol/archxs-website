@@ -31,7 +31,7 @@ draft: true
 
 ## Context
 
-Formatka is our own product, in an early phase: a web and mobile application for designing
+Formatka is my own product, in an early phase: a web and mobile application for designing
 furniture out of board panels. Parametric modules are assembled into a fitted unit, the
 engine derives the panel sizes with edge banding and grain direction as Polish carpentry
 practice requires, the cutting is optimised for guillotine saws, and the output is a sheet a
@@ -54,7 +54,7 @@ from that moment the gate is decorative.
 
 ## Approach
 
-We made the expected output readable. Alongside the transform, every golden file records the
+I made the expected output readable. Alongside the transform, every golden file records the
 axis-aligned bounding box of each panel: x from 2 to 598, y from minus 18 to 0, z from 2 to
 718. A person checks that by eye in about five seconds, and knows immediately whether a panel
 just moved through the carcass. The machine compares the transform, the human reviews the
@@ -62,7 +62,7 @@ bounding box, and the same file serves both. Missing hardware and a machining op
 landed on the wrong side of the client-versus-workshop split are recorded in the same file,
 because they are errors of the same weight as a wrong dimension and must go red the same way.
 
-CI never regenerates golden files. Updating them is an explicit local command whose output a
+CI never regenerates the golden files, because updating them is an explicit local command whose output a
 person reviews, which is the only arrangement under which a golden test means anything;
 regeneration in CI turns the gate into a stamp that records whatever the code currently does.
 
@@ -92,7 +92,7 @@ The cost of the intent-only contract is honest to state: every open of a project
 recomputation, and a change to the engine changes old projects. That is the intended
 behaviour, and it means engine changes need the same review discipline as a migration.
 
-## What it taught us
+## What it taught me
 
 A test gate is only as good as a reviewer's ability to disagree with it. If the expected
 values are unreadable, the review degenerates into approving whatever the code produced, and

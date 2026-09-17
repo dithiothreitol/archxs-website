@@ -28,8 +28,8 @@ order: 1
 ## Kontekst
 
 Państwowy bank rozwoju, organizacja IT liczona w setkach osób, ponad 300, i portfel systemów rosnący
-przez dwie dekady wokół jednego systemu centralnego. Prowadziliśmy w tej organizacji praktykę
-architektury korporacyjnej i przewodniczyliśmy Architecture Review Board, przez który przechodziły
+przez dwie dekady wokół jednego systemu centralnego. Prowadziłem w tej organizacji praktykę
+architektury korporacyjnej i przewodniczyłem Architecture Review Board, przez który przechodziły
 wszystkie istotne decyzje technologiczne. W tym czasie bank zdecydował się na wymianę core bankingu:
 największą transformację technologiczną w swojej historii.
 
@@ -53,21 +53,19 @@ i bezużyteczne merytorycznie.
 
 ## Podejście
 
-Rolą architektury nie było projektowanie za zespoły, lecz utrzymanie jednej, wspólnej mapy zależności
+Rolą architektury było utrzymanie jednej, wspólnej mapy zależności
 i wąskiego zestawu decyzji, które nie podlegają negocjacji lokalnej: kontrakty integracyjne, model
 danych referencyjnych, granice odpowiedzialności między systemem centralnym a satelitami. Wszystko poza
-tym zestawem zostawaliśmy w zespołach.
+tym zestawem zostawałem w zespołach.
 
 Architecture Review Board bardzo łatwo staje się wąskim gardłem, każdy projekt czeka na czwartkowe
-posiedzenie. Rozwiązaliśmy to trzema regułami. Decyzje odwracalne nie wymagają rady; wymagają zapisu.
-Do rady wchodzi to, co jest kosztowne do odwrócenia lub przekracza granicę między zespołami. Wniosek
-niekompletny nie jest odrzucany na posiedzeniu, lecz zawracany wcześniej, wraz z informacją, czego
-brakuje. Rada, która głównie mówi „nie", w ciągu kwartału przestaje dostawać wnioski, projekty
+posiedzenie. Rozwiązałem to za pomocą trzech reguł. Decyzje odwracalne nie wymagają rady; wymagają zapisu.
+Do rady wchodzi to, co jest kosztowne do odwrócenia lub przekracza granicę między zespołami. Wniosek niekompletny wraca do wnioskodawcy przed posiedzeniem, wraz z informacją, czego brakuje. Rada, która głównie mówi „nie", w ciągu kwartału przestaje dostawać wnioski, projekty
 przestają pytać, a decyzje architektoniczne dzieją się i tak, tylko poza rejestrem.
 
-Migrację danych potraktowaliśmy jako strumień prac z własnym cyklem, a nie jako etap końcowy wdrożenia:
+Migrację danych potraktowałem jako strumień prac z własnym cyklem, a nie jako etap końcowy wdrożenia:
 próbne przebiegi na produkcyjnych wolumenach od wczesnej fazy, uzgodnienia liczbowe podpisywane przez
-biznes, a nie przez IT, i jawna decyzja o tym, czego nie migrujemy do nowego core'u, lecz zostawiamy
+biznes, a nie przez IT, i jawna decyzja o tym, czego nie migruję do nowego core'u, lecz zostawiam
 w archiwum z dostępem do odczytu. Ta ostatnia decyzja była politycznie najtrudniejsza i technicznie
 najbardziej opłacalna.
 
@@ -84,7 +82,4 @@ Wymiana core'u jest problemem organizacyjnym, który ma techniczny objaw. Rozstr
 dostawcy, lecz na tym, czy organizacja potrafi utrzymać spójność decyzji podejmowanych równolegle
 w kilkunastu miejscach.
 
-Governance architektoniczne działa tylko wtedy, gdy jest szybsze niż obejście go. Rada, do której trzeba
-czekać dwa tygodnie, nie jest kontrolą, jest zachętą do podejmowania decyzji bez niej. I jeśli plan
-transformacji poświęca migracji danych mniej uwagi niż wyborowi platformy, to nie jest plan, tylko
-kolejność wydatków.
+Governance architektoniczne działa tylko wtedy, gdy jest szybsze niż obejście go. Rada, do której trzeba czekać dwa tygodnie, przestaje być kontrolą i staje się zachętą do podejmowania decyzji bez niej. A plan transformacji, który poświęca migracji danych mniej uwagi niż wyborowi platformy, sprowadza się do kolejności wydatków.

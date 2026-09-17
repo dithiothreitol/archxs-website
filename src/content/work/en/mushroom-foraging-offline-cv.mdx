@@ -29,7 +29,7 @@ order: 24
 
 ## Context
 
-Grzybiarz is our own product: a mobile application that helps a forager spot fruiting bodies
+Grzybiarz is my own product: a mobile application that helps a forager spot fruiting bodies
 in forest litter, and assists in identifying a species by comparing it against the toxic
 species it can be confused with. It is under development, with a launch targeted for autumn
 2027; several subsystems are finished and running, and the on-device vision pipeline is the
@@ -39,7 +39,7 @@ part still being closed.
 
 Two constraints shape everything, and both are unusual.
 
-The forest has no signal. Not "poor connectivity", none: the moment the product needs a
+The forest has no mobile signal at all, and the accurate word is none rather than poor: the moment the product needs a
 server to answer, it is useless exactly where it is used. So inference, the map, the species
 reference and the whole session record have to live on the phone.
 
@@ -49,8 +49,7 @@ even capture, and the difference matters. That rules out the ordinary shape of a
 feature, in which a model returns its best guess with a percentage next to it and the
 interface lets the percentage stand in for knowledge.
 
-There is a third constraint that only appears once foragers are involved. Nobody shares
-where they pick. A social feature that publishes locations is a feature nobody will switch
+There is a third constraint that only appears once foragers are involved. Nobody shares where they pick mushrooms. A social feature that publishes locations is a feature nobody will switch
 on, and one that quietly publishes them is a betrayal.
 
 ## Approach
@@ -98,13 +97,13 @@ decided, and the frame-rate acceptance measurement on physical hardware is still
 A vision feature that has not been measured on a real phone in real light is a plan, not a
 capability.
 
-## What it taught us
+## What it taught me
 
 In a domain where the user makes the final call, the useful question is not how to raise
 accuracy but what the system does when it is unsure. An abstention that is designed,
 calibrated and visible is worth more than several points of top-1 accuracy, because the
 user's decision is the one that matters and the interface either supports it or replaces it.
 
-The second lesson is narrower and cost us time: quantisation is not a setting. It is a
-numerical decision about a specific graph, and it has to be measured on that graph. Ours
-failed for a reason nothing in the documentation would have warned us about.
+The second lesson is narrower and cost me time: quantisation is not a setting. It is a
+numerical decision about a specific graph, and it has to be measured on that graph. Mine
+failed for a reason nothing in the documentation would have warned me about.

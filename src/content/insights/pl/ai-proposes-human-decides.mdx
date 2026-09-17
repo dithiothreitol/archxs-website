@@ -13,10 +13,10 @@ readingMinutes: 6
 
 W systemie produkcyjnym model językowy ma prawo proponować. Decyzję podejmuje człowiek albo
 deterministyczny kod obok modelu. Nie jest to zastrzeżenie prawne dopisane na końcu projektu, a wzorzec
-architektoniczny: rozdzielamy wygenerowanie hipotezy od jej zatwierdzenia, bo tylko wtedy da się wskazać,
+architektoniczny: rozdzielam wygenerowanie hipotezy od jej zatwierdzenia, bo tylko wtedy da się wskazać,
 kto odpowiada za skutek, i odtworzyć po fakcie, dlaczego decyzja wyglądała tak, a nie inaczej.
 
-Ta zasada przechodzi konsekwentnie przez około osiem systemów, które utrzymujemy w produkcji. Poniżej
+Ta zasada przechodzi konsekwentnie przez około osiem systemów, które utrzymuję w produkcji. Poniżej
 jest to, co z niej wynika w kodzie, i ile kosztuje.
 
 ## Co właściwie znaczy „decyduje”
@@ -27,8 +27,8 @@ nie brzmi „czy używać modelu”, a „który komponent wykonuje tę zmianę 
 
 W weryfikatorze etykiet paszowych, zgodność z FEDIAF i rozporządzeniem UE 767/2009, model czyta
 etykietę i proponuje odczyt. Progi, na których opiera się werdykt, liczy Python: deterministycznie, na
-liczbach, które są potem widoczne w logu. Nie pytamy modelu, czy zawartość białka mieści się w
-tolerancji. Pytamy, ile tam jest napisane, a tolerancję liczymy sami.
+liczbach, które są potem widoczne w logu. Nie pytam modelu, czy zawartość białka mieści się w
+tolerancji. Pytam, ile tam jest napisane, a tolerancję liczę sam.
 
 W planowaniu produkcji decydentem jest solver OR-Tools CP-SAT. Model językowy jest copilotem: tłumaczy
 ograniczenia z języka planisty, wyjaśnia, dlaczego wariant jest gorszy, przygotowuje porównanie.
@@ -36,15 +36,14 @@ Harmonogram wychodzi jednak z solvera, a zatwierdza go człowiek. Solver ma dwie
 ma i mieć nie będzie: przy tych samych danych daje ten sam wynik i potrafi powiedzieć, że rozwiązania
 nie ma.
 
-To jest sedno podziału pracy. Model jest dobry w czytaniu wejścia, którego nikt nie ustandaryzował. Jest
-zły w gwarantowaniu, że jutro z tego samego wejścia wyjdzie to samo. Deterministyczny komponent obok
+Na tym polega sedno podziału pracy. Model jest dobry w czytaniu wejścia, którego nikt nie ustandaryzował, i zły w gwarantowaniu, że jutro z tego samego wejścia wyjdzie to samo. Deterministyczny komponent obok
 modelu jest odpowiedzią na drugą część tego zdania.
 
 ## Skąd wiadomo, że propozycja nie jest zmyślona
 
 Weryfikator etykiet ma pięć warstw kontroli rzetelności i żadna z nich nie jest kosmetyczna. Confidence
 scoring HIGH/MED/LOW rozstrzyga o dalszej ścieżce. Liczby są odczytywane drugi raz, niezależnie, i
-porównywane krzyżowo, rozjazd jest sygnałem, nie danymi do uśrednienia. Progi liczy kod, nie model.
+porównywane krzyżowo, rozjazd jest sygnałem, a nie danymi do uśrednienia, i to kod liczy progi, a nie model.
 Human-in-the-loop ma auto-eskalację, więc niska pewność nie ląduje w ciszy. Na końcu jest zestaw testowy
 na ręcznie zweryfikowanych etykietach, jedyny sposób, żeby po zmianie promptu albo modelu stwierdzić, że
 nic się nie zepsuło.
@@ -58,16 +57,15 @@ wygląda dokładnie jak praca wykonana dobrze.
 Publiczna arena ewaluacji modeli, [ticbottoe.lol](https://ticbottoe.lol), doprowadza to do końca. Modele
 i ludzie grają w gry turowe na jednym rankingu Elo, a każda gra rankingowa jest odtwarzana i walidowana
 serwerowo wspólnym silnikiem: odrzucane są nielegalne ruchy, fałszywi zwycięzcy, niemożliwe czasy i
-duplikaty. Nawet zdania „wygrałem” nie przyjmujemy od modelu na słowo.
+duplikaty. Nawet zdania „wygrałem” nie przyjmuję od modelu na słowo.
 
 ## Gdzie stoi człowiek
 
-Bramka człowieka nie stoi wszędzie. Stoi tam, gdzie działanie wychodzi na zewnątrz organizacji albo
-dotyczy pojedynczej osoby.
+Bramkę człowieka stawiam tam, gdzie działanie wychodzi na zewnątrz organizacji albo dotyczy pojedynczej osoby.
 
 W systemie obiegu dokumentów dekretacja faktury jest AI-suggested, nigdy auto-applied. Zanim cokolwiek
 pójdzie do modelu, następuje redakcja PII, bo pytanie „czy model jest dokładny” jest osobne od pytania
-„co właściwie wysłaliśmy poza firmę”. W silniku ekspansji eksportowej człowiek zatwierdza każdą wysyłkę
+„co właściwie wysłałem poza firmę”. W silniku ekspansji eksportowej człowiek zatwierdza każdą wysyłkę
 zewnętrzną; AI nie wysyła korespondencji do urzędu i nie orzeka o zgodności.
 
 W systemie rekrutacyjnym zakaz automatycznych odrzuceń jest wpisany w architekturę, nie w regulamin.
@@ -93,14 +91,13 @@ XML walidowany wobec XSD. Swobodny tekst jest wygodny w demie i drogi w integrac
 
 Kosztuje realnie i warto powiedzieć to wprost.
 
-Jest wolniej. Każda bramka to praca projektowa: co eskaluje, do kogo, w jakim czasie, co się dzieje, gdy
+Ten układ działa wolniej, bo każda bramka to praca projektowa: co eskaluje, do kogo, w jakim czasie, co się dzieje, gdy
 nikt nie odpowie. Bramka bez właściciela i bez czasu reakcji jest kolejką, która cicho rośnie.
 
-Jest drożej w projektowaniu, choć nie w inferencji. Model jest tanią częścią budżetu. Drogie są warstwy
-weryfikacji, zestawy testowe, redakcja PII, audit log i observability kosztu, czyli wszystko, czego nie
+Jest drożej w projektowaniu, choć nie w inferencji. Model jest tanią częścią budżetu, a drogie są warstwy weryfikacji, zestawy testowe, redakcja PII, audit log i observability kosztu, czyli wszystko, czego nie
 widać na ekranie.
 
-Jest mniej efektownie. „AI proponuje, ty zatwierdzasz” wygląda w demie słabiej niż pełna automatyzacja, a
+Wypada też mniej efektownie, bo „AI proponuje, ty zatwierdzasz” wygląda w demie słabiej niż pełna automatyzacja, a
 różnica ujawnia się dopiero przy pierwszym błędzie, którego nikt nie umie wytłumaczyć.
 
 Zasada ma też własny tryb awarii: bramka, przez którą wszyscy klikają odruchowo, jest gorsza niż jej

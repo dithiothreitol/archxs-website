@@ -28,7 +28,7 @@ order: 4
 ## Context
 
 StockAmbit S.A. is a regulated fintech operating under the supervision of the Polish Financial Supervision
-Authority (KNF). We held the CTO role there, accountable for technology strategy, architecture, building
+Authority (KNF). I held the CTO role there, accountable for technology strategy, architecture, building
 and developing the team, DevOps culture and regulatory compliance. The starting point was an empty
 repository: the crowdfunding platform was built from zero and had to reach production on Azure.
 
@@ -48,29 +48,27 @@ reversing either grows faster, week by week, than the cost of doing it properly 
 
 ## Approach
 
-We inverted the usual sequence of work. We began with the elements that are most expensive to change later
+I inverted the usual sequence of work. I began with the elements that are most expensive to change later
 rather than those that demonstrate best: identity and access control, accountability of operations, the
 data model and the lawful basis for processing it, and only then product features, built on a foundation
 that already existed.
 
 Choosing public cloud inside a supervised entity is not an infrastructure decision but a compliance
-decision. We designed the Azure architecture against the supervisory requirements for processing
+decision. I designed the Azure architecture against the supervisory requirements for processing
 information in the cloud: information classification before service selection, explicit data location and
-encryption, a defined exit scenario. That narrowed the catalogue of services available to us, deliberately
+encryption, a defined exit scenario. That narrowed the catalogue of services available to me, deliberately
 at the cost of some of the convenience managed cloud offers.
 
-We treated DevOps as an evidential mechanism, not as culture in the declarative sense. A deployment that
+I treated DevOps as an evidential mechanism, not as culture in the declarative sense. A deployment that
 passes through a CI/CD pipeline, with a record of what reached production, when, and on whose approval, is
-simultaneously an engineering practice and material that can be presented. In an organisation like this, a
-manual production deployment is not a convenient shortcut, it is a gap in the record.
+simultaneously an engineering practice and material that can be presented. In an organisation like this, a manual production deployment leaves a gap in the record, whatever convenience it buys on the day.
 
-We treated hiring as part of the architecture, because in a small team the distribution of skills
+I treated hiring as part of the architecture, because in a small team the distribution of skills
 determines directly which designs are maintainable. A team with nobody accountable for security will
 always build a system in which security is a configuration option.
 
 The cost of this ordering was real: the first visible product features arrived later than they would have
-without a regulatory regime. That is not a price open to negotiation, it is the condition of entry to
-this market.
+without a regulatory regime. That price is the condition of entry to this market, and it is not open to negotiation.
 
 ## Outcome
 
@@ -78,10 +76,10 @@ The crowdfunding platform went from zero to production on Azure under KNF requir
 the delivery practice built over the same period. Compliance was a property of the architecture rather
 than a separate project running alongside development.
 
-## What it taught us
+## What it taught me
 
 Compliance by design only means something when it describes the order of work rather than a paragraph in a
-document. In practice it reduces to one question asked at every decision: a year from now, will we be able
+document. In practice it reduces to one question asked at every decision: a year from now, will I be able
 to demonstrate how this worked, from records that are being created today.
 
 The second lesson is less obvious: a supervisory regime can be an advantage for a young organisation. It

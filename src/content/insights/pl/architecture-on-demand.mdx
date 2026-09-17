@@ -17,7 +17,7 @@ dostają analizę, zapis i przegląd. Pozostałe podejmuje zespół i odnotowuje
 Zgodność ze standardami sprawdza pipeline, nie komitet. Tak rozumiana architektura jest usługą
 dostępną wtedy, gdy jest potrzebna, a nie etatem, który musi się czymś wykazać.
 
-Pracujemy tą metodą od początku istnienia praktyki i stosowaliśmy ją w środowiskach, które zwykle
+Pracuję tą metodą od początku istnienia praktyki i stosowałem ją w środowiskach, które zwykle
 uważają ją za zbyt lekką: w banku państwowym, w regulowanym fintechu, w firmie produkcyjnej.
 Ten tekst opisuje, skąd się wzięła, jak wygląda w praktyce i gdzie przestaje działać.
 
@@ -27,11 +27,10 @@ Pełnowymiarowa praktyka architektoniczna ma wbudowaną skłonność do przerost
 złej woli. Metodyki ramowe, z TOGAF na czele, definiują katalogi artefaktów, a etatowy zespół
 architektury ma naturalną potrzebę wykazania pracy. W efekcie powstają dokumenty, które niczego
 nie chronią: modele nieaktualne w dniu publikacji, macierze śladowości, których nikt nie czyta,
-standardy bez mechanizmu egzekwowania. Sami mamy certyfikaty z tych metodyk i traktujemy je jak
-bibliotekę, z której bierze się tyle, ile potrzeba. Problemem nie jest TOGAF, tylko czytanie go
-jak listy obowiązków zamiast jak menu.
+standardy bez mechanizmu egzekwowania. Sam mam certyfikaty z tych metodyk i traktuję je jak
+bibliotekę, z której bierze się tyle, ile potrzeba. Problem leży w czytaniu TOGAF-a jak listy obowiązków zamiast jak menu.
 
-Koszt przerostu jest podwójny. Pierwszy jest oczywisty: czas ludzi. Drugi jest gorszy: organizacja
+Koszt przerostu architektury jest zawsze podwójny. Pierwszy z nich jest oczywisty i sprowadza się do czasu ludzi, a drugi jest gorszy: organizacja
 uczy się, że architektura to biurokracja, i zaczyna ją omijać. Wtedy realne decyzje architektoniczne
 zapadają w kodzie, bez zapisu i bez przeglądu, a oficjalny model opisuje system, którego nie ma.
 
@@ -40,40 +39,40 @@ zapadają w kodzie, bez zapisu i bez przeglądu, a oficjalny model opisuje syste
 George Fairbanks nazwał to podejście just enough architecture: nakład architektoniczny jest
 uzasadniony tylko tam, gdzie redukuje ryzyko, którego organizacja nie może sobie pozwolić ponieść.
 Martin Fowler ujął to samo krócej, definiując architekturę jako te decyzje, które trudno później
-zmienić. Z obu definicji wynika praktyczne kryterium: zanim poświęcimy czemuś tydzień analizy,
-pytamy, ile kosztowałoby odwrócenie tej decyzji za rok.
+zmienić. Z obu definicji wynika praktyczne kryterium: zanim poświęcę czemuś tydzień analizy,
+pytam, ile kosztowałoby odwrócenie tej decyzji za rok.
 
 Granice systemów, model danych, sposób obsługi tożsamości, wzorzec integracji: to są decyzje drogie
 w odwróceniu i one dostają pełny rytuał. Wybór biblioteki do formatowania dat nie jest taką decyzją
-i nie powinien przechodzić przez komitet. Brzmi banalnie, ale większość znanych nam procesów
+i nie powinien przechodzić przez komitet. Brzmi banalnie, ale większość znanych mi procesów
 architektonicznych nie odróżnia jednego od drugiego i traktuje obie decyzje tym samym formularzem.
 
-W praktyce wygląda to tak. Projektując system magazynowy, przeanalizowaliśmy opcje w tabeli
+W praktyce wygląda to tak, że projektując system magazynowy, przeanalizowałem opcje w tabeli
 build-vs-buy z werdyktem przy każdej odrzuconej pozycji, a do pierwszej migracji bazy weszły
 fundamenty, których nie da się tanio dołożyć później: identyfikator magazynu na każdym agregacie,
 lokalizacja jako osobna encja, wzorzec outbox dla integracji. Cała reszta systemu czeka na dowód,
-że jest potrzebna. Odwrotny przykład skali: nasz najdłużej żyjący system ma 237 ponumerowanych
+że jest potrzebna. Odwrotny przykład skali: mój najdłużej żyjący system ma 237 ponumerowanych
 migracji schematu. Nie powstał z wielkiego modelu danych zaprojektowanego z góry; powstał z dyscypliny,
 w której każda zmiana jest mała, zapisana i odtwarzalna. To też jest architektura, tylko wykonywalna.
 
 ## Ostatni odpowiedzialny moment
 
-Drugą regułę zawdzięczamy lean software development Mary i Toma Poppendiecków: decyzję odracza się
+Drugą regułę zawdzięczam lean software development Mary i Toma Poppendiecków: decyzję odracza się
 do momentu, w którym dalsza zwłoka zaczęłaby odbierać opcje. Najdroższe architektury, jakie
-widzieliśmy, powstały z odpowiedzi na pytania, których nikt jeszcze nie zadał: warstwy abstrakcji
+widziałem, powstały z odpowiedzi na pytania, których nikt jeszcze nie zadał: warstwy abstrakcji
 nad bazą, której nigdy nie wymieniono, konfigurowalność, której nikt nie skonfigurował, mikroserwisy
 w systemie obsługiwanym przez trzy osoby.
 
-Odraczanie nie jest jednak dryfem. Każda odroczona decyzja ma u nas zapisaną ścieżkę odwrotu:
-skoro odkładamy wybór, notujemy, co musiałoby się stać, żeby go wymusić, i którędy się wtedy
-wycofamy, łącznie z zapasowymi wersjami zależności. Różnica między odroczeniem a zaniechaniem
+Odraczanie nie sprowadza się jednak do dryfu, bo każda odroczona decyzja ma u mnie zapisaną ścieżkę odwrotu:
+skoro odkładam wybór, notuję, co musiałoby się stać, żeby go wymusić, i którędy się wtedy
+wycofam, łącznie z zapasowymi wersjami zależności. Różnica między odroczeniem a zaniechaniem
 polega na tym, że odroczenie jest zapisane.
 
 ## Architektura, która sama się sprawdza
 
 Trzecia reguła jest najmniej wygodna i najbardziej skuteczna: standard, którego nie sprawdza
 maszyna, jest opinią z dobrą frekwencją na spotkaniach. Architektura ewolucyjna Neala Forda
-i Rebekki Parsons nazywa mechanizm kontrolny fitness functions. U nas przybrał on postać otwartego
+i Rebekki Parsons nazywa mechanizm kontrolny fitness functions. U mnie przybrał on postać otwartego
 toolchainu, w którym model architektury żyje w repozytorium git: własny język opisu kompilowany do
 ArchiMate 3.2 w formacie Open Exchange i walidowany wobec schematów Open Group, opis architektury
 generowany w kształcie ISO/IEC/IEEE 42010, portfel aplikacyjny, standardy z cyklem życia. Polecenie
@@ -85,13 +84,12 @@ Zespół może odstąpić od standardu, ale odstępstwo istnieje jako dyspensa z
 po której walidacja znów zacznie krzyczeć. To zamienia wieczne wyjątki w decyzje z terminem
 i zdejmuje z architekta rolę strażnika, którego trzeba przekonywać.
 
-Z rejestru decyzji, opisanego przez Michaela Nygarda jako architecture decision record, zostawiamy
-minimum: kontekst, rozważane opcje, powody odrzucenia pozostałych. Diagramy się dezaktualizują.
-Powody decyzji nie.
+Z rejestru decyzji, opisanego przez Michaela Nygarda jako architecture decision record, zostawiam
+minimum: kontekst, rozważane opcje, powody odrzucenia pozostałych. Diagramy się dezaktualizują, a powody decyzji zachowują wartość.
 
 ## Architektura jako usługa
 
-Wariant ciągły tej metody nazywamy architecture as a service. Organizacja, która nie ma i nie
+Wariant ciągły tej metody nazywam architecture as a service. Organizacja, która nie ma i nie
 potrzebuje etatowego architekta, utrzymuje architekturę tak, jak utrzymuje obsługę prawną: nadzór
 jest dostępny, standardy i bramki działają same, a człowiek pojawia się wtedy, gdy pojawia się
 decyzja warta człowieka. W praktyce oznacza to przegląd zmian o skutkach architektonicznych,
@@ -101,15 +99,14 @@ swojego istnienia produkcją artefaktów.
 
 ## Gdzie ta metoda przestaje działać
 
-Uczciwość wymaga wskazania granic. Architektura na żądanie nie znaczy architektura nigdy; znaczy:
+Uczciwość wymaga wskazania granic tej metody. Architektura na żądanie nie znaczy architektura nigdy; znaczy:
 dawka proporcjonalna do ryzyka. Są sytuacje, w których proporcjonalna dawka to pełnoetatowa praktyka.
-Prowadziliśmy architekturę wymiany systemu centralnego w banku, gdzie ponad dziesięć zespołów
+Prowadziłem architekturę wymiany systemu centralnego w banku, gdzie ponad dziesięć zespołów
 zmieniało równolegle fundament, na którym stoi wszystko inne. Tam działał stały komitet
 architektury z przewodniczącym, cotygodniowym rytmem i mandatem do zatrzymywania projektów,
 i była to dawka właściwa, bo koszt błędnej decyzji liczono w latach i setkach milionów.
 Podobnie program pod nadzorem regulatora: część artefaktów po prostu musi istnieć, niezależnie
-od naszego zdania o ich użyteczności.
+od mojego zdania o ich użyteczności.
 
-Reguła pozostaje jednak ta sama w obu światach. Nie pytamy, co przewiduje metodyka. Pytamy,
-co się stanie, jeśli ta decyzja okaże się błędna, i ile będzie kosztował odwrót. Architektura
-jest po to, żeby ta odpowiedź nigdy nie brzmiała: nie wiemy.
+Reguła pozostaje jednak ta sama w obu światach. Zamiast pytać, co przewiduje metodyka, pytam, co się stanie, jeśli ta decyzja okaże się błędna, i ile będzie kosztował odwrót. Architektura
+jest po to, żeby ta odpowiedź nigdy nie brzmiała: nikt nie wie.

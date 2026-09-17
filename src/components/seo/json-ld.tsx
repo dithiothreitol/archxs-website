@@ -46,7 +46,7 @@ export function OrganizationJsonLd({ locale }: { locale: string }) {
         description:
           locale === "pl"
             ? "Zwinna praktyka doradczo-inżynierska pracująca metodą architektury na żądanie: architektura korporacyjna, procesy biznesowe, cyberbezpieczeństwo, applied AI i wytwarzanie oprogramowania, weryfikowane własnym kodem produkcyjnym."
-            : "A boutique advisory and engineering practice built on an architecture-on-demand method: enterprise architecture, business processes, cybersecurity, applied AI and software delivery, validated with our own production code.",
+            : "A boutique advisory and engineering practice built on an architecture-on-demand method: enterprise architecture, business processes, cybersecurity, applied AI and software delivery, validated with my own production code.",
         knowsAbout: KNOWS_ABOUT,
         knowsLanguage: ["pl", "en"],
         areaServed: [

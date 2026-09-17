@@ -4,7 +4,7 @@ description: "Dokumentacja architektury korporacyjnej jest nieaktualna w dniu pu
 takeaways:
   - "Dokumentacja architektury dezaktualizuje się w dniu publikacji, bo jest kopią stanu, a nie jego źródłem."
   - "Governance bez mechanizmu, który potrafi odmówić, jest zapisem preferencji: dopiero walidacja zwracająca kod wyjścia 1 czyni z zasady bramkę."
-  - "Odstępstwo od standardu bez daty wygaśnięcia nie jest odstępstwem, tylko cichą zmianą standardu."
+  - "Odstępstwo od standardu bez daty wygaśnięcia sprowadza się do cichej zmiany standardu."
   - "Gdy architekt pracuje z agentami, deterministyczna walidacja przestaje być wygodą i staje się warunkiem, bo tempo produkcji treści rośnie szybciej niż zdolność jej czytania."
 date: "2026-04-22"
 topic: "Architektura"
@@ -13,7 +13,7 @@ readingMinutes: 6
 
 Dokumentacja architektury korporacyjnej jest nieaktualna w dniu publikacji, ponieważ jest kopią stanu,
 a nie jego źródłem. Governance, który nie ma mechanizmu potrafiącego odmówić, sprowadza się do spotkań
-i dobrej woli. Jedyne znane nam wyjście z obu tych problemów naraz jest nudne: model architektury żyje
+i dobrej woli. Jedyne znane mi wyjście z obu tych problemów naraz jest nudne: model architektury żyje
 w repozytorium git, a jego reguły są wykonywalne i uruchamiane w CI.
 
 ## Dlaczego dokumentacja rozjeżdża się z rzeczywistością
@@ -25,29 +25,26 @@ zaprotestować, gdy nowy komponent podłączy się do bazy, do której nie powin
 jest w tej konstrukcji wbudowany i żadna procedura aktualizacji go nie usunie, bo procedura konkuruje
 z terminami projektowymi i zawsze przegrywa.
 
-Podobnie z governance. Architecture Review Board bez artefaktu, który da się sprawdzić maszynowo,
-rozstrzyga na podstawie tego, co przedstawiono na spotkaniu. Ustalenia lądują w notatce. Notatka nie ma
-żadnego kontaktu z pipeline'em, w którym powstaje system. Po roku organizacja ma zbiór trafnych decyzji,
-o których nikt nie wie, czy zostały wykonane, i to nie z powodu złej woli, lecz z braku miejsca, w którym
-niewykonanie byłoby widoczne.
+Podobnie rzecz ma się z governance. Architecture Review Board bez artefaktu, który da się sprawdzić maszynowo,
+rozstrzyga na podstawie tego, co przedstawiono na spotkaniu, a ustalenia lądują w notatce, która nie ma żadnego kontaktu z pipeline'em, w którym powstaje system. Po roku organizacja ma zbiór trafnych decyzji,
+o których nikt nie wie, czy zostały wykonane, a przyczyną bywa zwykle brak miejsca, w którym niewykonanie byłoby widoczne.
 
 ## Model w repozytorium zamiast dokumentu
 
-Otwarty toolchain, który zbudowaliśmy, opiera się na jednym założeniu: model jest kodem, więc podlega
-tym samym rygorom co kod. Trzymamy go w git, w tekstowym DSL-u, który ma pull requesty, historię, blame
+Otwarty toolchain, który zbudowałem, opiera się na jednym założeniu: model jest kodem, więc podlega
+tym samym rygorom co kod. Trzymam go w git, w tekstowym DSL-u, który ma pull requesty, historię, blame
 i review. Rdzeń jest w całości deterministyczny, trójwarstwowy walidator, kompilator do formatu
 ArchiMate 3.2 Open Exchange XML walidowanego wobec XSD Open Group oraz generator widoków SVG.
 Całość obejmuje 19 „skills" pokrywających cykl define → document → govern → maintain, czyli także tę
 część, o której narzędzia do rysowania milczą: co się dzieje z modelem po tym, jak przestaje być nowy.
 
 Wybór ArchiMate 3.2 i walidacji wobec oficjalnej schemy nie jest deklaracją przywiązania do standardu.
-Ma konkretny skutek: model daje się wyeksportować do innego narzędzia i daje się sprawdzić bez naszego
+Ma konkretny skutek: model daje się wyeksportować do innego narzędzia i daje się sprawdzić bez mojego
 narzędzia. Format, którego poprawność potwierdza tylko edytor, w którym powstał, jest formatem, z którego
 nie ma wyjścia, a architektura korporacyjna przetrwa kilka generacji narzędzi.
 
-Dokumentację generujemy z modelu w kształcie klauzuli 6 normy ISO/IEC/IEEE 42010: rejestr interesariuszy
-wraz z ich troskami, portfel aplikacyjny z kwadrantami TIME, mapa zdolności, triage zmian. Kolejność jest
-tu istotna. Dokument nie jest artefaktem, który się utrzymuje, lecz wydrukiem stanu modelu na dany commit.
+Dokumentację generuję z modelu w kształcie klauzuli 6 normy ISO/IEC/IEEE 42010: rejestr interesariuszy
+wraz z ich troskami, portfel aplikacyjny z kwadrantami TIME, mapa zdolności, triage zmian. Kolejność tych dwóch rzeczy jest tu istotna. Dokument stanowi wydruk stanu modelu na dany commit i nie wymaga osobnego utrzymania.
 Nieaktualna dokumentacja przestaje być możliwa, bo nie ma czego dezaktualizować, jest tylko model,
 który albo przechodzi walidację, albo nie.
 
@@ -58,14 +55,12 @@ narusza reguły. To wystarcza, żeby uruchomić je jako krok w CI, a to z kolei 
 architektonicznej. Zasada, która żywi się przypomnieniami, jest preferencją. Zasada, która potrafi
 zatrzymać merge, jest bramką.
 
-Na tym samym mechanizmie oparliśmy rejestr decyzji i rekordy zgodności. ADR-y leżą w repozytorium obok
-modelu, więc decyzja i jej skutek są w jednym miejscu i w jednej historii. Rekord zgodności nie jest
-polem tak/nie, ale werdyktem w sześciostopniowej skali, bo w praktyce architektonicznej „zgodne"
+Na tym samym mechanizmie oparłem rejestr decyzji i rekordy zgodności. ADR-y leżą w repozytorium obok
+modelu, więc decyzja i jej skutek są w jednym miejscu i w jednej historii. Rekord zgodności przyjmuje postać werdyktu w sześciostopniowej skali, bo w praktyce architektonicznej „zgodne"
 i „niezgodne" nie wystarczają: bywa zgodne w części, zgodne z odstępstwem, nieocenione, nieaktualne.
 Skala, która to rozróżnia, jest jedyną, na której raport zdrowia mówi coś użytecznego.
 
-Model utrzymujemy w dwóch strefach: `staging` i `approved`, z bramkowaną promocją między nimi. Powód jest
-praktyczny. Bez tego rozdzielenia każda propozycja zmiany musi udawać, że jest już zatwierdzona, więc albo
+Model utrzymuję w dwóch strefach: `staging` i `approved`, z bramkowaną promocją między nimi. Powód tego rozdzielenia jest czysto praktyczny. Bez tego rozdzielenia każda propozycja zmiany musi udawać, że jest już zatwierdzona, więc albo
 governance blokuje eksplorację, albo eksploracja rozmywa governance. Dwie strefy pozwalają modelować
 warianty swobodnie i wciąż mieć jeden stan, na który wolno się powoływać w decyzjach.
 
@@ -76,10 +71,9 @@ nierozpoznany: standardy się nie kończą. Zapis powstaje, obowiązuje, przesta
 nadal obowiązuje, więc zespoły uczą się go obchodzić, a przy okazji tracą szacunek do tych zapisów,
 które sens mają. Standard bez statusu i daty przeglądu z czasem szkodzi bardziej niż jego brak.
 
-Odstępstwa traktujemy jeszcze ostrożniej: każde ma datę wygaśnięcia i nie da się go zapisać bez niej.
+Odstępstwa traktuję jeszcze ostrożniej: każde ma datę wygaśnięcia i nie da się go zapisać bez niej.
 To jedna linijka w schemacie danych i jedna z najbardziej brzemiennych decyzji w całym narzędziu.
-Odstępstwo bezterminowe nie jest odstępstwem, jest cichą zmianą standardu, dokonaną bez rozmowy
-o jej kosztach. Data wygaśnięcia wymusza tę rozmowę w momencie, w którym jest jeszcze tania,
+Odstępstwo bez daty wygaśnięcia sprowadza się do cichej zmiany standardu, dokonanej bez rozmowy o jej kosztach. Data wygaśnięcia wymusza tę rozmowę w momencie, w którym jest jeszcze tania,
 i sprawia, że dług architektoniczny ma termin, a nie tylko właściciela.
 
 ## Architekt, który pracuje z agentami
@@ -93,10 +87,10 @@ poda relację ArchiMate, która nie istnieje w metamodelu, albo przypisze źród
 ma. Ten drugi błąd jest groźniejszy, bo brzmi wiarygodnie i bywa cytowany dalej. Dlatego w tym narzędziu
 obowiązuje zasada: model dostarcza sądu, narzędzie dostarcza dowodu. Każde twierdzenie o semantyce
 ArchiMate lub o treści źródła przechodzi przez oracle, który sprawdza je kodem wobec zawendorowanych
-źródeł pierwotnych, z cytatem zlokalizowanym w dokumencie. Prowadzimy rejestr faktów i mierzymy jego
+źródeł pierwotnych, z cytatem zlokalizowanym w dokumencie. Prowadzę rejestr faktów i mierzę jego
 pokrycie, więc widać nie tylko to, co potwierdzono, ale i to, czego nikt nie potwierdził.
 
-Zmienia się też ekonomia przeglądu. Agent potrafi wyprodukować spójny, dobrze sformatowany model
+Zmienia się przy tym także ekonomia przeglądu. Agent potrafi wyprodukować spójny, dobrze sformatowany model
 większy niż ten, który architekt zdąży przeczytać w tym samym czasie. Przy pracy ręcznej wolne tempo
 tworzenia było ukrytym mechanizmem kontroli jakości; teraz tego mechanizmu nie ma. Deterministyczna
 walidacja przestaje więc być wygodą i staje się jedynym miejscem, w którym uwaga człowieka skaluje się

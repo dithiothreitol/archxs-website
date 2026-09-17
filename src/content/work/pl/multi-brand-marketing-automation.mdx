@@ -60,7 +60,7 @@ pojedyncza.
 Dostęp do modeli idzie przez jedną bramę dla całego majątku, z cache odpowiedzi i pełnym
 śledzeniem kosztów, dzięki czemu zmiana modelu albo limit zapytań obsługuje się w jednym
 miejscu, a koszt kampanii jest przypisywalny, a nie szacowany. Warstwa tracingu niesie
-wywołania na potrzeby obserwowalności, a prompty trzymamy jako szablony z symbolami
+wywołania na potrzeby obserwowalności, a prompty trzymam jako szablony z symbolami
 zastępczymi, zamiast zaszywać je w węzłach workflowu, co utrzymuje je w stanie
 przeglądalnym i wersjonowanym jako tekst.
 
@@ -100,5 +100,5 @@ workflowu.
 Drugi wniosek dotyczy sposobu izolowania agenta. Instrukcje w promptcie są najsłabszą
 dostępną kontrolą i najłatwiejszą do napisania. Danie każdej marce własnego kontenera
 wyłącznie z jej poświadczeniami przenosi gwarancję z czegoś, o czego poszanowanie
-prosimy model, w coś, co egzekwuje środowisko, a to rozróżnienie stanowi całą postawę
+proszę model, w coś, co egzekwuje środowisko, a to rozróżnienie stanowi całą postawę
 bezpieczeństwa.

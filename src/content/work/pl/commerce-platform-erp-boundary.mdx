@@ -59,14 +59,14 @@ którą niewielki zespół utrzymuje następnie dwa razy.
 
 ## Podejście
 
-Decyzję o współdzieleniu podjęliśmy osobno dla każdego komponentu, a nie jako jedną
+Decyzję o współdzieleniu podjąłem osobno dla każdego komponentu, a nie jako jedną
 politykę, i odpowiedzi się różnią.
 
-Tożsamości nie współdzielimy w ogóle, więc marketplace ma dedykowaną instancję dostawcy
+Tożsamości nie współdzielę w ogóle, więc marketplace ma dedykowaną instancję dostawcy
 i własny realm, na własnej nazwie hosta, z własnymi klientami. Kompromitacja tożsamości
 wewnętrznej i publicznej pozostają osobnymi incydentami.
 
-Bazy również nie współdzielimy, a marketplace prowadzi własną instancję trzymającą jego
+Bazy również nie współdzielę, a marketplace prowadzi własną instancję trzymającą jego
 bazę aplikacyjną i bazę tożsamości, zamiast brać schemat na współdzielonym klastrze,
 więc obciążenie publiczne nie wyczerpie połączeń ani miejsca, od których zależą operacje
 wewnętrzne.

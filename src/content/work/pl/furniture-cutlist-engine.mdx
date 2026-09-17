@@ -31,7 +31,7 @@ draft: true
 
 ## Kontekst
 
-Formatka to nasz własny produkt we wczesnej fazie: aplikacja web i mobile do projektowania
+Formatka to mój własny produkt we wczesnej fazie: aplikacja web i mobile do projektowania
 mebli z płyt meblowych. Parametryczne moduły składa się w zabudowę, silnik wyprowadza wymiary
 formatek z okleiną i usłojeniem według polskiej praktyki stolarskiej, rozkrój jest
 optymalizowany pod cięcie gilotynowe, a wyjściem jest zestawienie, z którego stolarnia
@@ -39,7 +39,7 @@ wyceni, plus instrukcja montażu.
 
 ## Problem
 
-Widocznym produktem jest edytor. Prawdziwym produktem jest silnik: na wejściu opis modułu, na
+Widocznym produktem jest edytor, a prawdziwym produktem silnik: na wejściu opis modułu, na
 wyjściu formatki z wymiarami, okleiną, usłojeniem, połączeniami, okuciami i operacjami
 obróbki. Wszystko, za co użytkownik ostatecznie płaci, zamówione płyty, wykonane cięcia,
 nawiercone otwory, wynika z tego obliczenia, a błąd w nim nie jest usterką renderowania. Jest
@@ -54,7 +54,7 @@ jest ozdobą.
 
 ## Podejście
 
-Zrobiliśmy oczekiwany wynik czytelnym. Obok transformu każdy plik złotego testu zapisuje
+Zrobiłem oczekiwany wynik czytelnym dla człowieka. Obok transformu każdy plik złotego testu zapisuje
 prostopadłościan otaczający każdą formatkę: x od 2 do 598, y od minus 18 do 0, z od 2 do 718.
 Człowiek sprawdza to wzrokiem w jakieś pięć sekund i od razu wie, czy formatka nie przejechała
 przez korpus. Maszyna porównuje transform, człowiek recenzuje prostopadłościan, a służy im ten
@@ -66,9 +66,8 @@ CI nigdy nie regeneruje plików złotych testów. Ich aktualizacja to świadome 
 lokalne, którego wynik ktoś recenzuje, i jest to jedyny układ, w którym złoty test cokolwiek
 znaczy; regeneracja w CI zamienia bramkę w pieczątkę utrwalającą to, co kod akurat robi.
 
-Kontrakt danych rozstrzygnęliśmy wcześnie i zapisali jako rejestr decyzji. Plik projektu
-przechowuje wyłącznie intencję, układy i moduły, plus snapshoty użytych katalogów. Formatki i
-cechy nie są zapisywane nigdy, są wynikiem silnika, liczonym za każdym razem od nowa. To
+Kontrakt danych rozstrzygnąłem wcześnie i zapisali jako rejestr decyzji. Plik projektu
+przechowuje wyłącznie intencję, układy i moduły, plus snapshoty użytych katalogów. Formatki i cechy nigdy nie są zapisywane, bo stanowią wynik silnika, liczony za każdym razem od nowa. To
 usuwa całą klasę błędów, bo geometria zapisana i geometria policzona nie mogą się rozjechać,
 i sprawia, że stary projekt korzysta z poprawki w silniku, zamiast konserwować błąd, z którym
 został zapisany. Typy dziedzinowe mieszkają w jednym schemacie Zod dzielonym przez aplikację

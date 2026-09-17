@@ -30,7 +30,7 @@ order: 12
 
 ## Context
 
-Several of our own products shared one requirement: users sign in with an EVM wallet, by cryptographic
+Several of my own products shared one requirement: users sign in with an EVM wallet, by cryptographic
 signature, without a password. Those same products also need everything an enterprise-grade identity
 provider gives you, roles, a second factor, login audit, federation with external IdPs, and one place
 where access can be revoked.
@@ -43,14 +43,14 @@ administers. The two cannot be stitched together by configuration, because Keycl
 “the holder of an address who has proven control of a private key”.
 
 The obvious workaround is a separate authorisation service alongside Keycloak: it verifies signatures
-and issues its own tokens, Keycloak handles the rest. We rejected it. Two services issuing identity mean
+and issues its own tokens, Keycloak handles the rest. I rejected that option, because two services issuing identity mean
 two user registers, two audit trails and two places where access has to be withdrawn, and during an
 incident what matters is that there is exactly one. The price of that decision was writing Java inside
 Keycloak instead of configuring an off-the-shelf provider.
 
 ## Approach
 
-We extended Keycloak 26.x with custom SPIs so that a signature is simply one more authentication method
+I extended Keycloak 26.x with custom SPIs so that a signature is simply one more authentication method
 in the same realm. `Web3Authenticator` runs the challenge-response flow per EIP-191;
 `Web3CredentialProvider` holds the binding between account and address. The nonce carries a TTL,
 without it, one intercepted signature stays a permanent entry ticket.
@@ -68,7 +68,7 @@ package `@archxs/keycloak-wagmi` under MIT: a wagmi v3 connector that looks like
 the application while using the Keycloak session underneath. It also covers ERC-4337, that is accounts
 implemented as smart contracts.
 
-In the mobile app we took no shortcuts: Authorization Code with PKCE S256 via `expo-auth-session`,
+In the mobile app I took no shortcuts: Authorization Code with PKCE S256 via `expo-auth-session`,
 tokens in `expo-secure-store`, a dedicated public client, return by deep link.
 
 Security boundaries were a separate decision. One product received a dedicated Keycloak instance and an
@@ -86,10 +86,9 @@ The limitation deserves stating plainly: custom SPI is coupled to the Keycloak v
 a compatibility test, not an image swap. The most recent one, to 26.7, confirmed this is a recurring
 cost rather than a single payment.
 
-## What it taught us
+## What it taught me
 
-When a new authentication method appears, signature, passkey, whatever comes next, the question is not
-whether it can be supported, but where identity is going to live. Standing up a second service next to
+When a new authentication method appears, signature, passkey, whatever comes next, the question is where identity is going to live. Standing up a second service next to
 the IdP is weeks faster, and the bill arrives at the first audit or the first access revocation.
 
 The second lesson concerns choosing an identity platform at all. Its extensibility is the criterion

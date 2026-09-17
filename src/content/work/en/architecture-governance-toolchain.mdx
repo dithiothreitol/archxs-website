@@ -30,17 +30,15 @@ order: 10
 ## Context
 
 Enterprise architecture practice produces artefacts that age faster than they are written: diagrams in a
-drawing tool, decisions in meeting minutes, standards in documents nobody enforces. We built a toolchain
+drawing tool, decisions in meeting minutes, standards in documents nobody enforces. I built a toolchain
 that treats the architecture model as code, kept in git and checked by machine.
 
 ## Problem
 
 Two failure modes are typical and independent of the tool chosen. First, documentation is out of date on
 the day it is published, because updating it belongs to no workflow, it is a separate task for a separate
-role. Second, governance leaves no evidence. A review board takes a decision, the decision goes into a
-note, and six months later nobody can say whether a given system conforms to it. Beyond an opinion.
-
-The obvious answer, an architecture repository with a decent interface, addresses storage, not
+role. Second, governance leaves no evidence of itself. A review board takes a decision, the decision goes into a
+note, and six months later nobody can say whether a given system conforms to it, beyond offering an opinion. The obvious answer, an architecture repository with a decent interface, addresses storage, not
 enforcement. A model can be internally consistent inside the tool's database and completely detached from
 reality, because nothing checks it at the moment of change.
 
@@ -50,9 +48,8 @@ identically whether it is true or not.
 
 ## Approach
 
-The core is deterministic. Architecture is authored in a custom DSL, passes a three-layer validator, then
-compiles to ArchiMate 3.2 in Open Exchange XML, validated against the Open Group XSD. This is not an
-aesthetic choice: an interchange format means the model can be opened in a tool that has not been bought
+The core of the toolchain is deterministic. Architecture is authored in a custom DSL, passes a three-layer validator, then
+compiles to ArchiMate 3.2 in Open Exchange XML, validated against the Open Group XSD. The reason is practical rather than aesthetic: an interchange format means the model can be opened in a tool that has not been bought
 yet, and the output can be checked by a machine rather than by inspection. SVG views are generated from
 the model, so a diagram cannot describe anything other than the model.
 
@@ -69,8 +66,8 @@ Nineteen skills cover the define → document → govern → maintain cycle, whi
 for a language model is natural. One rule holds: the model supplies judgement, the tool supplies
 evidence. Every claim about ArchiMate semantics or about the content of a source is verified in code
 against a quotation located in that source, which yields a fact register and measurable coverage. A
-separate component, the oracle, checks relationship legality against vendored primary sources. We do not
-forbid the model from asserting things, we remove its right to be the final authority.
+separate component, the oracle, checks relationship legality against vendored primary sources. I do not
+forbid the model from asserting things, I remove its right to be the final authority.
 
 Documentation is generated in the shape of ISO/IEC/IEEE 42010 clause 6: a register of stakeholders and
 their concerns, an application portfolio with TIME quadrants, a capability map, change triage.
@@ -81,12 +78,11 @@ The architecture model lives in the same repository and the same pull-request rh
 to a standard is a record with a verdict rather than a sentence; an exception has a deadline; a decision
 has a number and a rationale. Checking whether the model is valid takes as long as a build takes.
 
-The limits are real. The toolchain enforces textual authoring, so a team unwilling to write its model as
-text will not start because a tool exists. And it still does not answer whether the model describes
-reality, it guards internal consistency, not truthfulness against production. That is a separate problem
+The limits of this approach are real. The toolchain enforces textual authoring, so a team unwilling to write its model as
+text will not start because a tool exists. And it still leaves open whether the model describes reality, because what it guards is internal consistency. That is a separate problem
 which no amount of syntax validation solves.
 
-## What it taught us
+## What it taught me
 
 Governance without a machine-checkable artefact degenerates into ritual, and not through bad faith:
 nobody can hold several hundred elements consistent by hand. A rule that cannot be executed in CI is a

@@ -32,7 +32,7 @@ order: 13
 ## Context
 
 A warehouse ships several hundred orders a day, and until this project the choice of
-carton was made by whoever was packing. The two questions put to us were whether
+carton was made by whoever was packing. The two questions put to me were whether
 software could propose the carton, and whether the cartons actually used could be
 recorded well enough to reconcile consumption against stock.
 
@@ -64,7 +64,7 @@ independently: boundaries, collisions between items, permitted orientations, sup
 beneath each item, load transmitted through the stack, and the mass of each finished
 parcel including its packaging. Soft products provide no support for anything above
 them, and trays lie flat on their thin edge. Units are handled so that rounding always
-works against acceptance — input arrives in centimetres and kilograms, the model and the
+works against acceptance: input arrives in centimetres and kilograms, the model and the
 validator work in whole millimetres and grams, product dimensions and masses round up,
 carton interiors round down.
 
@@ -74,7 +74,7 @@ optimality. Two statuses describe what a human has to supply, one for review and
 missing measurements. The remaining three separate a demonstrated physical constraint
 from an exhausted search and from a timeout, and keeping them apart matters because only
 one of the three gets better when the solver gets better. Collapsing them into a single
-failure would hide the distinction between a box that cannot work and a box we stopped
+failure would hide the distinction between a box that cannot work and a box I stopped
 looking for.
 
 Approval runs over WhatsApp, where the operator receives the proposal with a link to an
@@ -115,7 +115,7 @@ owner's agreement. The reports state processing times and status distributions, 
 stop there. A figure for money saved will exist once the measurements are accepted, and
 not before.
 
-## What it taught us
+## What it taught me
 
 The status a system returns is part of its interface, and a vocabulary that
 distinguishes causes gives an operations team something to act on. Knowing that a plan

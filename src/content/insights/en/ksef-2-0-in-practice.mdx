@@ -2,9 +2,9 @@
 title: "What KSeF rollout plans do not show"
 description: "Integrating KSeF 2.0 is decided not by the FA(3) schema but by deduplication, idempotency and accepting that an invoice is a legal event rather than a file."
 takeaways:
-  - "A document retrieved from KSeF carries a number and a date issued outside our system, which makes the accounting application its recipient rather than its owner."
+  - "A document retrieved from KSeF carries a number and a date issued outside my system, which makes the accounting application its recipient rather than its owner."
   - "Deduplication and idempotency are not throughput optimisations: without them the same document lands in the ledger twice, and no correction note undoes that."
-  - "An XML parser reading documents from a source we do not control is an attack surface, so XXE is disabled at library level rather than in a security policy."
+  - "An XML parser reading documents from a source I do not control is an attack surface, so XXE is disabled at library level rather than in a security policy."
   - "Coding an invoice with a model produces a proposal for approval, because tax liability cannot be transferred to something that will not bear it."
 date: "2026-07-08"
 topic: "Compliance"
@@ -20,16 +20,16 @@ it may be posted to the ledger, and who answers for the consequences of that dec
 
 Rollout plans describe KSeF as an exchange channel: produce XML, send it, receive it. The description is
 accurate and nearly useless, because it omits what changes in the data model. A document confirmed by the
-central system exists in legal circulation regardless of the state of our application. There is no draft
+central system exists in legal circulation regardless of the state of my application. There is no draft
 version, no rollback, no fixing it at month-end close. The accounting system stops being the owner of the
 invoice and becomes its recipient, obliged to prove what it did with it and when.
 
-Three things change at once. Retrieval is no longer one scheduled job, because the stream is per tax
+That change affects three things at once. Retrieval is no longer one scheduled job, because the stream is per tax
 identification number, each entity has its own state, its own progress marker and its own scope of
-authorisation. In our implementation multi-entity separation rests on Row-Level Security in PostgreSQL
+authorisation. In my implementation multi-entity separation rests on Row-Level Security in PostgreSQL
 and ABAC rules per NIP, not on a filter in an application query. The document model stops being an
-internal matter, because its shape is imposed by an XSD we do not negotiate. And the audit trail stops
-being a diagnostic log: we keep it as an append-only SHA-256 hash chain with a database trigger that
+internal matter, because its shape is imposed by an XSD I do not negotiate. And the audit trail stops
+being a diagnostic log: I keep it as an append-only SHA-256 hash chain with a database trigger that
 blocks UPDATE and DELETE, because in a dispute with a tax authority what matters is not what the system
 displays today but what it could not have altered.
 
@@ -42,12 +42,12 @@ process restart, after an operator retries by hand, after someone widens the dat
 invoice enters twice, the result is not a duplicated row in a table but a duplicated cost in the
 settlement and a return that cannot be defended.
 
-So we treat retrieval as idempotent by design rather than by operator caution. Document identity comes
+So I treat retrieval as idempotent by design rather than by operator caution. Document identity comes
 from the KSeF number, not from a filename and not from a number-plus-counterparty pair. Reprocessing the
 same document is a legitimate, expected operation with no side effect. Import is transactional: the
 document either exists in the ledger in full or does not exist at all, because a partial state here is
 worse than no state. The same rule governs JPK_V7M(3) generation, a return regenerated from the same
-data has to be byte-identical, otherwise what we have is not a generator but another source of
+data has to be byte-identical, otherwise what I have is not a generator but another source of
 discrepancy.
 
 Idempotency is also the only mechanism that makes retrying against the ministry gateway safe. A REST
@@ -57,17 +57,17 @@ built without that assumption resolves the ambiguity manually, in production, on
 
 ## What the compliance gate does, and why the parser belongs to it
 
-Between receiving a document and posting it we placed a gate that nothing passes unchecked. It performs
+Between receiving a document and posting it I placed a gate that nothing passes unchecked. It performs
 XSD validation against the FA(3) schema, a mod-11 checksum test on the tax identification number, a
 lookup of the counterparty against the tax administration whitelist, detection of split-payment cases,
 and deduplication. Each check exists because its absence has a specific price: a deduction challenged
 over a bank account missing from the register, a payment made without the split-payment mechanism where
 it was mandatory, an amended return caused by a document counted twice.
 
-The XML parser is part of the same gate, not a layer beneath it. The document arrives from a source we do
+The XML parser is part of the same gate, not a layer beneath it. The document arrives from a source I do
 not control, and XML is a format with history: external entities, entity expansion, references to local
 resources. A parser left at its defaults can, given a suitably prepared file, read a file from the server
-disk or issue a network request from inside the parse. We therefore use a parser hardened against XXE at
+disk or issue a network request from inside the parse. I therefore use a parser hardened against XXE at
 library level (defusedxml) rather than a line in a security policy stating that untrusted files are not
 processed. The same logic applies to attachments: antivirus scanning is fail-closed, so an unscanned file
 is a rejected file rather than a conditionally accepted one, and MIME types sit on an allowlist rather
@@ -80,11 +80,10 @@ outage, an upload from a machine nobody has inspected.
 ## Where the model's role ends
 
 Assigning accounts and cost dimensions is the most obvious candidate for automation and the worst place
-for full automation. In the document workflow we operate, the model proposes the account, the cost
+for full automation. In the document workflow I operate, the model proposes the account, the cost
 dimension and the project allocation, but the output is a proposal a person approves. Not out of
 caution; out of allocation of responsibility. The consequence of a wrong posting is fiscal, and it falls
-on the taxpayer rather than on a model vendor. An automaton that posts on its own does not remove that
-liability, it only removes the moment when somebody knowingly accepted it.
+on the taxpayer rather than on a model vendor. An automaton that posts on its own leaves that liability in place and removes only the moment when somebody knowingly accepted it.
 
 The rest of the construction follows from the same principle. Personal data is redacted before anything
 goes to a model, because an accounting document contains more than amounts. OCR routing escalates from a

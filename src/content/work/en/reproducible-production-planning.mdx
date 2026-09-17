@@ -85,7 +85,7 @@ belongs to.
 
 Two limits are documented rather than quietly left out. Plans generated before
 canonicalisation cannot be reproduced, and the reason is ordering instead of missing
-data — the inputs are all there, but the same inputs yielded different plans. Snapshot
+data: the inputs are all there, but the same inputs yielded different plans. Snapshot
 hashes written before that date embed a random identifier, which makes them incomparable
 with anything at all, including each other.
 
@@ -112,7 +112,7 @@ including property-based tests for the solver and container-backed integration t
 Solver inputs have been persisted since the spring of 2026, canonicalisation arrived
 that summer, and reproducibility holds forward from it.
 
-## What it taught us
+## What it taught me
 
 Reproducibility is a property of the whole pipeline and not of the solver. The solver
 was deterministic from the first day; what was missing was a guarantee that the same

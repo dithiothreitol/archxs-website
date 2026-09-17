@@ -48,7 +48,7 @@ niewygodne, bo każde wykluczenie jest sporem z osobą, która o daną rzecz pop
 
 ## Podejście
 
-Dotychczasowy produkt zbenchmarkowaliśmy obszar po obszarze, a każdy wiersz tabeli
+Dotychczasowy produkt zbenchmarkowałem obszar po obszarze, a każdy wiersz tabeli
 dostał jedną z trzech odpowiedzi: w pierwszym wydaniu, w późniejszym albo nigdy. To
 trzecia kolumna uczyniła ten projekt wykonalnym.
 
@@ -57,19 +57,19 @@ narzędzie projektowe dokładające czwarte miejsce do pisania wiadomości utrud
 odnajdywanie rozmów, zamiast je ułatwiać. Zarządzanie nieobecnościami jest wykluczone na
 stałe, ponieważ należy do dziedziny kadrowej i mieszka w systemie będącym właścicielem
 danych o zatrudnieniu. Ticketing klienta i wiki stoją w kolumnie późniejszej z
-zapisanymi warunkami powrotu do tematu. Pola własne odrzuciliśmy w pierwszym wydaniu, z
+zapisanymi warunkami powrotu do tematu. Pola własne odrzuciłem w pierwszym wydaniu, z
 kolumną JSON jako jawną furtką awaryjną, co jest uczciwą wersją tej decyzji: potrzeba
 jest realna, edytor kosztowny, a furtka mówi to wprost, zamiast udawać, że potrzeby nie
 ma.
 
-Zbudowaliśmy zadania z konfigurowalnymi stanami, tablice i osie czasu, cykle,
+Zbudowałem zadania z konfigurowalnymi stanami, tablice i osie czasu, cykle,
 rejestrację czasu timerem i ręcznie, budżety oraz rentowność liczone z zarejestrowanego
 czasu wobec stawek, widok dostępności zbudowany z faktów, a nie z szacunków, lekki CRM
 kontrahentów, kontaktów, deali i aktywności, silnik reguł workflow oraz szablony
 projektów.
 
-Mierniki procesu są tą częścią, którą trudno byłoby kupić. Tranzycje stanów zapisujemy
-do append-only logu, a flow metrics liczymy z niego, zamiast próbkować, dzięki czemu
+Mierniki procesu są tą częścią, którą trudno byłoby kupić. Tranzycje stanów zapisuję
+do append-only logu, a flow metrics liczę z niego, zamiast próbkować, dzięki czemu
 czas cyklu i przepustowość opisują to, co się wydarzyło, a nie to, jak wyglądała tablica
 w chwili, gdy ktoś zrobił eksport. Ten log reużywa wzorca audytu z hash-chainem
 ustalonego już w całym majątku aplikacyjnym.

@@ -1,6 +1,6 @@
 ---
 title: "Ewidencja floty, której przypomnienia nie odpuszczają"
-summary: "Jak zbudować obsługę pojazdów wokół powiadomienia ponawianego do czasu, aż odczyt naprawdę dotrze, i dlaczego granicę audytu poprowadziliśmy tak, żeby celowo wykluczyć z niej mechanikę powiadomień."
+summary: "Jak zbudować obsługę pojazdów wokół powiadomienia ponawianego do czasu, aż odczyt naprawdę dotrze, i dlaczego granicę audytu poprowadziłem tak, żeby celowo wykluczyć z niej mechanikę powiadomień."
 sector: "Grupa produkcyjna, flota pojazdów"
 period: "2026"
 disclosure: "anonymised"
@@ -59,9 +59,9 @@ exactly-once i wyprowadza wysyłkę ze ścieżki żądania. Request HTTP wysyła
 bezpośrednio prędzej czy później wyśle dwa, a żadna staranność w handlerze tego nie
 powstrzyma.
 
-Terminy skanujemy na progach trzydziestu, czternastu i siedmiu dni, z zapisanym per
+Terminy skanuję na progach trzydziestu, czternastu i siedmiu dni, z zapisanym per
 pozycja progiem już zgłoszonym, dzięki czemu skan jest idempotentny, a nie drugą falą
-tego samego ostrzeżenia. Terminy serwisu proponujemy wewnątrz okien interwałowych
+tego samego ostrzeżenia. Terminy serwisu proponuję wewnątrz okien interwałowych
 producenta, a zgłoszenie usterki wraca do kierowcy automatyczną odpowiedzią
 potwierdzającą przyjęcie oraz to, kiedy i gdzie naprawa jest umówiona.
 
@@ -73,14 +73,14 @@ audytowane, ponieważ źródłem prawdy o tym, co faktycznie poszło, są outbox
 powiadomień ze swoimi statusami i kluczami idempotencji. Audytowanie obu wyprodukowałoby
 dwie relacje z tego samego zdarzenia, które z czasem się rozjadą, a uzasadnienie jest
 wpisane do rekordu decyzyjnego, zamiast czekać, aż ktoś odkryje je ponownie. Mutacje
-wykonane przez samą automatyzację audytujemy pod aktorem systemowym, więc zmiana
+wykonane przez samą automatyzację audytuję pod aktorem systemowym, więc zmiana
 automatyczna jest przypisywalna tak samo jak ludzka.
 
 System proponuje i nigdy nie konkluduje. Przypomina, sugeruje termin i redaguje treść, a
 nie zamyka zgłoszenia, nie kasuje danych i nie wysyła niczego wiążącego bez człowieka.
 Automatyczna odpowiedź do kierowcy potwierdza fakt, zamiast podejmować decyzję.
 
-Panel kierowcy projektowaliśmy najpierw na telefon, trzymany w jednej ręce, w ostrym
+Panel kierowcy projektowałem najpierw na telefon, trzymany w jednej ręce, w ostrym
 słońcu, przy słabym zasięgu, ze zdjęciami licznika i usterek robionymi wprost z aparatu.
 Natywna aplikacja androidowa doszła później z jednego tylko powodu, jakim jest to, że
 powiadomienia push nie docierają do panelu webowego, i dubluje ten panel, zamiast go

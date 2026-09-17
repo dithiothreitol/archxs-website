@@ -77,7 +77,7 @@ docierają do kandydata, oraz informacje o zmianie etapu, generowane jako szkice
 wysyłane automatycznie wyłącznie tam, gdzie rekruter włączył to dla konkretnego
 ogłoszenia.
 
-Ugruntowanie egzekwujemy mechanicznie, bo każde kryterium w ocenie niesie uzasadnienie i
+Ugruntowanie egzekwuję mechanicznie, bo każde kryterium w ocenie niesie uzasadnienie i
 cytat dowodowy, a ten cytat musi być dosłownym fragmentem sparsowanego CV. Kwalifikacja
 wymyślona przez model nie przechodzi więc sprawdzenia zawierania się łańcucha znaków
 wewnątrz serwisu, zanim trafi do człowieka, który musiałby ją wychwycić. Sam parser
@@ -94,7 +94,7 @@ działanie zakazane wygodnym, prędzej czy później doczeka się jego wykonania
 Audit log jest append-only w Postgresie, z hash-chainem, i rejestruje każdą inferencję
 razem z hashem wejścia, wersją promptu, modelem, wyjściem oraz tym, co rekruter z nim
 następnie zrobił. Retencja sięga co najmniej sześciu miesięcy zgodnie z artykułem 12, a
-sam log celowo trzymamy wolny od nadmiarowych danych osobowych, żeby zapis nie stał się
+sam log celowo trzymam wolny od nadmiarowych danych osobowych, żeby zapis nie stał się
 osobnym ryzykiem.
 
 Monitoring biasu jest kwartalny, idempotentny w obrębie kwartału, a jego progi ustalono,
@@ -122,7 +122,7 @@ najwyżej dwudziestu czterech miesięcy i odnawia zgodę automatycznie.
 System pracuje na współdzielonej infrastrukturze obok pozostałych aplikacji wewnętrznych
 grupy, z własnymi klientami w realmie, własnym schematem i tym samym wzorcem wdrożenia,
 który zespół utrzymania już zna. Oceny skutków wymagane przed produkcją, zarówno ta
-dotycząca ochrony danych, jak i ta dotycząca praw podstawowych, traktujemy jako warunek
+dotycząca ochrony danych, jak i ta dotycząca praw podstawowych, traktuję jako warunek
 uruchomienia, nie jako dokument wytwarzany po fakcie.
 
 Koszt tego wszystkiego warto nazwać wprost. System obsługuje się wolniej niż taki, który

@@ -3,7 +3,7 @@ title: "An AI plan that survives production"
 description: "Six questions a board can use to test its own AI rollout plan, or a vendor's proposal, before signing anything. A real plan has answers to all of them."
 takeaways:
   - "A pilot always looks cheap, because unit cost only becomes visible at real volume, work it out before you decide."
-  - "The important question is not how good the model is, but who bears the consequence when it is wrong."
+  - "The important question is who bears the consequence when the model is wrong."
   - "A plan that leaves the process untouched and merely adds an assistant beside it usually leaves the outcome untouched as well."
   - "A model vendor will reprice or retire a version within the year, so a plan with no exit path is a plan for one season."
 date: "2026-06-24"
@@ -24,7 +24,7 @@ them takes less time than the rollout and costs incomparably less.
 A pilot is always cheap, because it processes a few dozen cases. The cost surfaces once you multiply it by
 a real month, and at that point it can move the business case by an order of magnitude.
 
-In one of our systems, reproducing a single analytical artefact, turning 2,827 photographs into 26,864
+In one of my systems, reproducing a single analytical artefact, turning 2,827 photographs into 26,864
 product observations, cost roughly 16 million tokens. That is a figure you need **before** deciding to run
 such a process on a schedule, not after the first invoice. Knowing it changes the architecture: a cascade of
 models pays off, with a cheap model classifying and filtering while an expensive one only synthesises the
@@ -45,7 +45,7 @@ start clicking approve. Sensible verification is cheaper than the task: the mode
 from, marks the uncertain places, and escalates cases below the threshold itself instead of handing
 everything back in the same format.
 
-In a system checking label conformance against industry requirements we built five layers: confidence
+In a system checking label conformance against industry requirements I built five layers: confidence
 scoring, an independent second reading of the figures with a cross-comparison, thresholds computed
 deterministically in code, automatic escalation to a person, and a fixed test set of manually verified
 examples. Four of those five layers are not the model, and that is the substance of the matter.
@@ -56,7 +56,7 @@ If the only check on a model's output is another model, the whole construction r
 uncertainty. A gate that is meant to guarantee something has to be code: schema validation, a numeric rule,
 a test on a known set, a checksum.
 
-Reversing the roles is good practice. In the production planning we built, the decision-maker is an
+Reversing the roles is good practice. In the production planning I built, the decision-maker is an
 optimisation solver, deterministic, repeatable, explainable, and the language model acts as a copilot: it
 translates what the user is asking and explains the result. The opposite arrangement, where the model takes
 the decision and the solver only checks it, looks much the same on a diagram and behaves entirely
@@ -99,5 +99,5 @@ There is a seventh, and it is the most uncomfortable: does this plan change the 
 assistant beside the existing process? Rollouts of the second kind are easier to carry out and almost always
 disappoint, because the saving appears somewhere that was not the bottleneck.
 
-The best results we have seen came where automation removed a step rather than speeding it up. That requires
+The best results I have seen came where automation removed a step rather than speeding it up. That requires
 agreement to change the process, and that is a board decision, not a technical one.

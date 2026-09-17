@@ -32,7 +32,7 @@ order: 13
 ## Kontekst
 
 Magazyn wysyła kilkaset zamówień dziennie, a do tego projektu o wyborze kartonu
-decydowała osoba pakująca. Postawiono nam dwa pytania: czy oprogramowanie może
+decydowała osoba pakująca. Postawiono mi dwa pytania: czy oprogramowanie może
 zaproponować karton i czy rzeczywiście zużyte kartony da się zaewidencjonować na tyle
 dokładnie, żeby uzgodnić zużycie ze stanem magazynowym.
 
@@ -63,10 +63,10 @@ Walidator napisany osobno od solvera sprawdza następnie to ułożenie niezależ
 granice, kolizje między sztukami, dopuszczalne orientacje, podparcie pod każdą sztuką,
 obciążenie przenoszone przez stos oraz masę każdej gotowej paczki razem z opakowaniem.
 Produkty miękkie nie stanowią podpory dla niczego, co leży wyżej, a tacki układają się
-płasko na cienkim boku. Jednostki prowadzimy tak, żeby zaokrąglanie zawsze działało
+płasko na cienkim boku. Jednostki prowadzę tak, żeby zaokrąglanie zawsze działało
 przeciwko przyjęciu: wejście przychodzi w centymetrach i kilogramach, model oraz
 walidator pracują na całkowitych milimetrach i gramach, wymiary i masy produktu
-zaokrąglamy w górę, a wnętrze kartonu w dół.
+zaokrąglam w górę, a wnętrze kartonu w dół.
 
 Słownik statusów waży więcej, niż na to wygląda. Wynik oznaczony jako gotowy oznacza
 kompletny zwalidowany plan na zatwierdzonych danych i regułach, i nie mówi nic o
@@ -75,7 +75,7 @@ przegląd, drugi na brakujące pomiary. Pozostałe trzy oddzielają wykazane ogr
 fizyczne od wyczerpanego przeszukiwania i od przekroczenia czasu, a trzymanie ich osobno
 ma znaczenie, bo tylko jeden z tych trzech poprawia się razem z solverem. Zwinięcie ich
 w jedną porażkę ukryłoby różnicę między pudłem, które nie może zadziałać, a pudłem,
-którego przestaliśmy szukać.
+którego przestałem szukać.
 
 Zgoda przechodzi przez WhatsApp, gdzie operator dostaje propozycję z linkiem do
 interaktywnego podglądu na telefonie, który pokazuje ułożenie w trzech wymiarach obok
@@ -90,11 +90,11 @@ Zapis zwrotny do platformy zamówień jest domyślnie wyłączony, a jego włąc
 zgrania czterech rzeczy: jawnej flagi zatwierdzenia w poleceniu, ustawienia
 zezwalającego na tryb produkcyjny w konfiguracji, potwierdzonej flagi stronicowania
 dowodzącej, że odczyt widział kompletne strony, oraz poświadczenia z rolą zapisu.
-Poświadczenia odczytu i zapisu trzymamy osobno, odpowiedź HTTP 200 nie jest uznawana za
+Poświadczenia odczytu i zapisu trzymam osobno, odpowiedź HTTP 200 nie jest uznawana za
 sukces, dopóki nie zostanie odczytane pole statusu w treści, a ręczne i nierozpoznane
 wpisy w polu kartonu są chronione przed nadpisaniem. Kiedy odpowiedź przepadnie, kolejna
 próba uzgadnia stan z platformą, zanim cokolwiek zapisze, ponieważ utracona odpowiedź
-nie mówi nic o tym, czy zapis doszedł. Idempotencję kluczujemy sesją i paczką zamiast
+nie mówi nic o tym, czy zapis doszedł. Idempotencję kluczuję sesją i paczką zamiast
 kodem kartonu, bo dwie paczki w jednym zamówieniu zupełnie zasadnie używają tego samego
 pudła. Zamknięcie sesji, zapis zużycia i zakolejkowanie zadania wychodzącego dzieją się
 w jednej transakcji bazy, więc awaria sieci nie może wymazać faktu fizycznego.

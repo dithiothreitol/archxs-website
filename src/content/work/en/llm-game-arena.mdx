@@ -7,7 +7,7 @@ disclosure: "public"
 metrics:
   - label: "Trust boundary"
     value: "Every ranked match replayed server-side"
-  - label: "Inference cost to us"
+  - label: "Inference cost to me"
     value: "Zero, players bring their own key"
   - label: "Evidence"
     value: "~300 tests, unit to Playwright"
@@ -51,7 +51,7 @@ that accepts "I won" from an anonymous browser is a ranking of who can write a c
 
 ## Approach
 
-We drew the trust boundary in one place: the write to the leaderboard. Everything else, playing,
+I drew the trust boundary in one place: the write to the leaderboard. Everything else, playing,
 watching, analysing, experimenting, happens in the browser and is not defended, because it does not need
 to be.
 
@@ -69,7 +69,7 @@ local storage of which the server keeps only a SHA-256 hash, which is enough to 
 not enough to be personal data.
 
 The key handling was made a testable property, not a promise. The OpenRouter key lives in the browser
-and is sent only to OpenRouter; a test enforces that our backend never appears as a destination, so the
+and is sent only to OpenRouter; a test enforces that my backend never appears as a destination, so the
 claim can fail in CI rather than in a disclosure.
 
 What that architecture then made cheap is the part people actually come back for. Because every match is
@@ -89,9 +89,9 @@ link opens in the language it was copied in, and every match has a public replay
 The residual risk is stated in the repository rather than papered over: because the game runs in the
 browser, nothing stops someone automating play locally. What is defended is that a submitted result must
 be a game that could really have been played. Distinguishing a patient bot from a patient human is not
-solved, and claiming otherwise would be the kind of security theatre we would criticise elsewhere.
+solved, and claiming otherwise would be the kind of security theatre I would criticise elsewhere.
 
-## What it taught us
+## What it taught me
 
 Untrusted clients are a solved problem the moment you stop trying to secure the client and start
 identifying the one write that has to be true. Everything on the other side of that line gets cheaper,

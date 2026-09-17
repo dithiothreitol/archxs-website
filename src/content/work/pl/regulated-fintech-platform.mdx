@@ -27,7 +27,7 @@ order: 4
 
 ## Kontekst
 
-StockAmbit S.A. to regulowany fintech działający pod nadzorem KNF. Odpowiadaliśmy tam za technologię
+StockAmbit S.A. to regulowany fintech działający pod nadzorem KNF. Odpowiadałem tam za technologię
 w roli CTO: strategię technologiczną, architekturę, budowę i rozwój zespołu, kulturę DevOps oraz
 zgodność regulacyjną. Punktem wyjścia było puste repozytorium, platforma finansowania społecznościowego
 powstawała od zera i miała trafić na produkcję w chmurze Azure.
@@ -48,29 +48,26 @@ Koszt cofnięcia obu rośnie z każdym tygodniem szybciej niż koszt zrobienia i
 
 ## Podejście
 
-Odwróciliśmy typową kolejność prac. Zaczęliśmy od tych elementów, które są najdroższe do zmiany później,
+Odwróciłem typową kolejność prac w projekcie. Zacząłem od tych elementów, które są najdroższe do zmiany później,
 a nie od tych, które najlepiej wyglądają w demonstracji: tożsamość i kontrola dostępu, rozliczalność
 operacji, model danych i podstawy ich przetwarzania, a dopiero potem funkcje produktowe budowane na
 gotowym fundamencie.
 
-Wybór chmury publicznej w podmiocie nadzorowanym nie jest decyzją infrastrukturalną, lecz decyzją
-o zgodności. Architekturę na Azure projektowaliśmy wobec wymogów nadzorczych dotyczących przetwarzania
+Wybór chmury publicznej w podmiocie nadzorowanym jest przede wszystkim decyzją o zgodności, a dopiero potem infrastrukturalną. Architekturę na Azure projektowałem wobec wymogów nadzorczych dotyczących przetwarzania
 informacji w chmurze: klasyfikacja informacji przed wyborem usług, jawna lokalizacja i szyfrowanie
-danych, zdefiniowany scenariusz wyjścia. To zawężało katalog usług, z których mogliśmy korzystać,
+danych, zdefiniowany scenariusz wyjścia. To zawężało katalog usług, z których mogłem korzystać,
 świadomie kosztem części wygody, jaką daje chmura zarządzana.
 
-DevOps traktowaliśmy jako mechanizm dowodowy, nie jako kulturę pracy w sensie deklaratywnym. Wdrożenie
+DevOps traktowałem jako mechanizm dowodowy, nie jako kulturę pracy w sensie deklaratywnym. Wdrożenie
 przechodzące przez potok CI/CD z rejestrem tego, co, kiedy i za czyją zgodą trafiło na produkcję, jest
-jednocześnie praktyką inżynierską i materiałem, który da się przedstawić. Ręczne wdrożenie na produkcję
-nie jest w takiej organizacji wygodnym skrótem, jest luką w dokumentacji.
+jednocześnie praktyką inżynierską i materiałem, który da się przedstawić. Ręczne wdrożenie na produkcję zostawia w takiej organizacji lukę w dokumentacji, niezależnie od wygody, którą daje tego dnia.
 
-Rekrutację uznaliśmy za element architektury, bo w małym zespole rozkład kompetencji przekłada się
+Rekrutację uznałem za element architektury, bo w małym zespole rozkład kompetencji przekłada się
 bezpośrednio na to, jakie rozwiązania są utrzymywalne. Zespół, który nie ma nikogo od bezpieczeństwa,
 zawsze zbuduje system, w którym bezpieczeństwo jest opcją konfiguracyjną.
 
 Koszt tej kolejności był realny: pierwsze widoczne funkcje produktowe pojawiły się później, niż
-pojawiłyby się bez reżimu regulacyjnego. To nie jest cena, którą da się negocjować, to warunek wejścia
-na ten rynek.
+pojawiłyby się bez reżimu regulacyjnego. Ta cena jest warunkiem wejścia na ten rynek i nie podlega negocjacji.
 
 ## Rezultat
 
@@ -81,7 +78,7 @@ architektury, a nie osobnym projektem prowadzonym obok wytwarzania.
 ## Wnioski
 
 „Compliance by design" ma sens tylko wtedy, gdy oznacza kolejność prac, a nie deklarację w dokumencie.
-W praktyce sprowadza się do jednego pytania zadawanego przy każdej decyzji: czy za rok będziemy w stanie
+W praktyce sprowadza się do jednego pytania zadawanego przy każdej decyzji: czy za rok będę w stanie
 wykazać, jak to działało, na podstawie zapisów, które powstają dziś.
 
 Drugi wniosek jest mniej oczywisty: reżim nadzorczy bywa dla młodej organizacji korzystny. Wymusza
