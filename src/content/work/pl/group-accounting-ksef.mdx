@@ -1,0 +1,118 @@
+---
+title: "Automatyzacja księgowości, w której model nie podaje żadnej liczby"
+summary: "Jak zautomatyzować obieg faktur w grupie spółek pod obowiązkowym krajowym e-fakturowaniem, gdzie każda kwota pochodzi z ustrukturyzowanego XML, a nie z modelu, i gdzie niezaakceptowanemu księgowaniu zapobiega wyzwalacz bazy danych, a nie zapis w polityce."
+sector: "Grupa spółek, finanse i księgowość"
+period: "2026"
+disclosure: "anonymised"
+metrics:
+  - label: "Liczby z AI"
+    value: "Żadnych — każda kwota czytana z ustrukturyzowanego XML faktury"
+  - label: "Bramka zgodności"
+    value: "Sprawdzenia deterministyczne przed trafieniem faktury do człowieka"
+  - label: "Uwierzytelnianie"
+    value: "Dwie ścieżki budowane równolegle wobec znanej daty wygaśnięcia tokenów"
+  - label: "Izolacja"
+    value: "Wielodostępność per NIP z row-level security"
+capabilities:
+  - "Procesy biznesowe"
+  - "Applied AI"
+  - "Architektura korporacyjna"
+  - "Cyberbezpieczeństwo i tożsamość"
+stack:
+  - "FastAPI, Next.js 15"
+  - "Silnik workflow BPMN"
+  - "Repozytorium dokumentów i podpis elektroniczny"
+  - "API krajowego e-fakturowania, FA(3)"
+  - "Signing service z XAdES-BES"
+  - "PostgreSQL, row-level security"
+  - "Integracja z ERP"
+  - "Brama LLM z tracingiem"
+order: 6
+---
+
+## Kontekst
+
+Grupa spółek z ograniczoną odpowiedzialnością obsługuje faktury kosztowe i sprzedażowe
+na kilku numerach identyfikacji podatkowej, z transakcjami wewnątrz grupy. Krajowy
+system e-fakturowania stał się w opisywanym okresie obowiązkowy, wchodząc dla dużych
+podatników w lutym 2026, a dla pozostałych w kwietniu, przy czym karencja na kary
+kończyła się z końcem tego roku. Równolegle wchodziły fazami obowiązki sprawozdawcze, a
+ustawa o rachunkowości, mechanizm podzielonej płatności i biała lista podatników
+obowiązywały jak dotychczas.
+
+## Problem
+
+Automatyzacja faktur przyciąga produkt AI o charakterystycznym kształcie: model czyta
+dokument, proponuje dekretację, wyciąga kwoty i przy odpowiednio wysokiej pewności
+księguje. Wszystko poza ostatnim elementem jest rozsądne, a ostatni element psuje
+projekt z powodów, które nie mają nic wspólnego z jakością modelu.
+
+Kwot i identyfikatorów nie trzeba w ogóle wyciągać, skoro faktury przychodzą jako
+ustrukturyzowany XML, więc pytanie o nie modelu wprowadza klasę błędu, którą format już
+wyeliminował. Wyszukiwanie po korpusie przepisów podatkowych halucynuje w tempie znośnym
+w streszczeniu i nieakceptowalnym przy operacji podatkowej. Ustawa o rachunkowości
+nakłada zaś odpowiedzialność za zapis na człowieka, a to nie jest preferencja, którą
+automatyzacja może wynegocjować.
+
+## Podejście
+
+Pierwszą decyzję sformułowaliśmy jako regułę o danych, a nie jako pryncypium. Model
+proponuje dekretację, kategorię, flagę podzielonej płatności albo streszczenie, a każda
+operacja skutkująca podatkowo wymaga akceptacji człowieka. Egzekucja stoi tam, gdzie nie
+da się jej ominąć: rekord propozycji niesie pole zatwierdzenia, które pozostaje puste do
+czasu czyjejś decyzji, a wyzwalacz bazy blokuje księgowanie, dopóki jest puste. Dokument
+polityki wyraziłby tę samą intencję, a przyszły termin prędzej czy później znalazłby na
+niego sposób.
+
+Liczby nigdy nie pochodzą z modelu. Kwoty, stawki i identyfikatory kontrahentów czytamy
+z ustrukturyzowanego XML faktury, co likwiduje możliwość zhalucynowanej wartości,
+zamiast ją łagodzić. Tam, gdzie system odpowiada na pytania o przepisy, cytuje źródła, a
+wyszukiwanie działa pod zasadą najmniejszych uprawnień, żeby pytanie nie dosięgło
+dokumentów, których pytający widzieć nie powinien.
+
+Deterministyczna bramka zgodności odpala się, zanim faktura trafi do czyjejkolwiek
+kolejki. Walidacja sumy kontrolnej numeru podatkowego, biała lista, obowiązek
+podzielonej płatności, wykrycie duplikatu, walidacja schematu ustrukturyzowanej faktury
+i kod sprawozdawczy liczą się bez udziału modelu, więc osoba otwierająca fakturę widzi
+ryzyka już oznaczone. Ta kolejność stanowi różnicę między księgową przeglądającą fakturę
+a księgową prowadzącą w tej sprawie dochodzenie.
+
+Uwierzytelnianie do systemu krajowego zbudowaliśmy od początku dwutorowo.
+Uwierzytelnianie tokenem działa do końca 2026 roku, a uwierzytelnianie certyfikatem z
+podpisem XAdES-BES jest wymagane od początku 2027, więc zbudowanie wyłącznie pierwszej
+ścieżki gwarantowałoby migrację w pośpiechu wobec sztywnego, publicznego terminu. Klucz
+prywatny jest odizolowany w dedykowanym signing service, a ścieżka tokenowa ma
+zaplanowane usunięcie, zamiast zostać na miejscu.
+
+Pobieranie faktur działa pollingiem per numer podatkowy, ponieważ system krajowy nie
+udostępnia webhooków i pracuje wyłącznie w modelu pull, z outboxem i idempotencją
+kluczowaną numerem faktury, żeby powtórzone odpytanie nie zdublowało dokumentu.
+Wielodostępność stoi na numerze podatkowym, z row-level security w Postgresie i jednym
+silnikiem workflow zapewniającym izolację logiczną, co utrzymuje powierzchnię operacyjną
+przy jednym wdrożeniu, trzymając spółki osobno w danych.
+
+Pozycjonowanie wobec aktu o sztucznej inteligencji było wyborem świadomym, a nie
+refleksją po fakcie. Utrzymanie modelu poza decyzjami trzyma system w klasie
+ograniczonego ryzyka, poza załącznikiem III, więc obowiązki sprowadzają się do
+transparentności i zwykłych powinności deployera. System zarządzania sztuczną
+inteligencją przyjęliśmy ponad to dobrowolnie, jako dowód należytej staranności.
+
+## Rezultat
+
+Automatyzacja powstaje jako moduły wewnątrz istniejącej platformy obiegu dokumentów, a
+nie jako nowy system, reużywając jej repozytorium, silnika workflow, usługi podpisu,
+dostawcy tożsamości i bramy modelowej, przy czym signing service jest jedynym naprawdę
+nowym komponentem. Faktury kosztowe, faktury sprzedażowe, propozycje dekretacji,
+sprawozdawczość i proces windykacyjny idą tą samą, audytowaną ścieżką.
+
+## Wnioski
+
+Najcenniejszym ograniczeniem w tym projekcie była odmowa pozwolenia modelowi na
+wyprodukowanie liczby, którą ustrukturyzowany format już zawierał. O halucynacji mówi
+się jako o własności modeli, a w praktyce bywa ona własnością architektury, która
+zapytała model o coś, o co nie musiała pytać.
+
+Drugi wniosek dotyczy terminów należących do kogoś innego. Dwie ścieżki uwierzytelniania
+kosztują więcej niż jedna, a alternatywą była migracja wyznaczona przez organ publiczny
+na datę, której projekt nie mógł przesunąć. Budowanie pod późniejszy wymóg od samego
+początku zamieniło przyszłą awarię w zwykłą pracę.

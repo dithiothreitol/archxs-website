@@ -1,0 +1,114 @@
+---
+title: "Sklep, który dzieli budynek z zapleczem, ale nie dzieli zamka"
+summary: "Jak prowadzić publiczną platformę handlową obok kilkunastu systemów wewnętrznych na tej samej infrastrukturze, kiedy poprawna odpowiedź na pytanie o współdzielenie brzmi inaczej dla bazy danych, inaczej dla dostawcy tożsamości, a inaczej dla sieci."
+sector: "E-commerce konsumencki, opieka nad zwierzętami"
+period: "2026"
+disclosure: "anonymised"
+metrics:
+  - label: "Tożsamość"
+    value: "Dedykowany dostawca i realm, świadomie odrębne od wewnętrznego"
+  - label: "Sieć"
+    value: "Izolowana sieć Docker; API nie widzi sieci wewnętrznej"
+  - label: "Baza danych"
+    value: "Własna instancja zamiast schematu na współdzielonym klastrze"
+  - label: "Wyszukiwanie"
+    value: "Dedykowany indeks z jawną ścieżką awaryjną na wyszukiwanie pełnotekstowe"
+capabilities:
+  - "Architektura korporacyjna"
+  - "Cyberbezpieczeństwo i tożsamość"
+  - "Wytwarzanie oprogramowania"
+  - "Procesy biznesowe"
+stack:
+  - "Quarkus, Java 21"
+  - "Silnik commerce na Node"
+  - "Next.js 15, Expo"
+  - "PostgreSQL 18, dedykowana instancja"
+  - "Keycloak, dedykowana instancja"
+  - "Silnik wyszukiwania z fallbackiem"
+  - "Współdzielony cache na przydzielonym numerze bazy"
+  - "Integracja z ERP po REST"
+order: 11
+---
+
+## Kontekst
+
+Ten sam niewielki zespół, który prowadzi kilkanaście systemów wewnętrznych na
+współdzielonej infrastrukturze, prowadzi także marketplace konsumencki: sklep, aplikację
+natywną, konta, zamawianie, program lojalnościowy i zestaw funkcji społecznościowych,
+obsługujących publiczność, a nie pracowników.
+
+## Problem
+
+Współdzielona infrastruktura jest powodem, dla którego majątek wewnętrzny da się
+utrzymać. Jeden dostawca tożsamości, jeden klaster bazodanowy, jeden cache, jeden
+reverse proxy, jedna brama modelowa, a każdy nowy system wewnętrzny dostaje to jako
+wejście, zamiast budować od nowa.
+
+Rozciągnięcie tego układu na produkt publiczny jest miejscem, w którym rozumowanie
+przestaje się trzymać, i przestaje z powodów bezpieczeństwa, a nie pojemności. System
+wewnętrzny obsługuje pracowników, którzy są już wewnątrz perymetru tożsamości. Sklep
+obsługuje każdego, kto ma przeglądarkę, przyjmuje rejestracje od publiczności, a jego
+powierzchnia uwierzytelniania jest nieprzerwanie wystawiona do internetu. Współdzielenie
+realmu między tymi dwoma oznacza, że usterka w publicznej rejestracji jest usterką w
+systemie strzegącym również platformy planowania produkcji.
+
+Obie naiwne konkluzje są przy tym błędne, ponieważ współdzielenie wszystkiego czyni
+majątek wewnętrzny dokładnie tak bezpiecznym jak najbardziej wystawiony publiczny
+endpoint, a niewspółdzielenie niczego oznacza prowadzenie drugiej kopii infrastruktury,
+którą niewielki zespół utrzymuje następnie dwa razy.
+
+## Podejście
+
+Decyzję o współdzieleniu podjęliśmy osobno dla każdego komponentu, a nie jako jedną
+politykę, i odpowiedzi się różnią.
+
+Tożsamości nie współdzielimy w ogóle, więc marketplace ma dedykowaną instancję dostawcy
+i własny realm, na własnej nazwie hosta, z własnymi klientami. Kompromitacja tożsamości
+wewnętrznej i publicznej pozostają osobnymi incydentami.
+
+Bazy również nie współdzielimy, a marketplace prowadzi własną instancję trzymającą jego
+bazę aplikacyjną i bazę tożsamości, zamiast brać schemat na współdzielonym klastrze,
+więc obciążenie publiczne nie wyczerpie połączeń ani miejsca, od których zależą operacje
+wewnętrzne.
+
+Sieć jest miejscem, w którym separacja jest egzekwowana, a nie deklarowana. Marketplace
+działa we własnej sieci Docker, a usługa backendowa stoi wyłącznie w tej sieci, bez
+trasy do wewnętrznej. Tam, gdzie komponent naprawdę musi obsłużyć obie, trzyma interfejs
+w każdej z nich jawnie, a przejście jest widoczne w definicji kompozycji, zamiast
+pozostawać domyślne.
+
+Współdzielenie trwa tam, gdzie pozwala na to profil ryzyka. Cache jest współdzielony na
+przydzielonym numerze bazy, a reverse proxy jest współdzielony, ponieważ oba są
+bezstanowe względem najemcy i oba zyskują na tym, że utrzymuje się je raz.
+
+Sama architektura handlowa dzieli się wzdłuż podobnej linii. Silnik commerce obsługuje
+katalog, koszyki i zamówienia oraz niesie integrację z ERP, a osobna usługa trzyma
+logikę dziedzinową należącą do tego produktu, a nie do handlu w ogóle. Wyszukiwanie
+działa na dedykowanym indeksie z jawnym zejściem na wyszukiwanie pełnotekstowe
+platformy, kiedy indeks jest niedostępny, co jest wpisane w ścieżkę kodu, a nie
+zostawione jako założenie, że indeks będzie na miejscu.
+
+Frontendy współdzielą wszystko, co bezpiecznie mogą, z aplikacją webową i natywną
+zbudowanymi z jednej biblioteki komponentów, jednej warstwy API i jednego zestawu
+tłumaczeń, co jest tematem osobnego studium.
+
+## Rezultat
+
+Marketplace działa jako produkt publiczny na tej samej fizycznej infrastrukturze co
+majątek wewnętrzny, z rozdzielonymi tożsamością, bazą i siecią oraz współdzielonymi
+cache'em i wejściem. Rachunek za hosting pozostaje blisko kosztu jednego środowiska, a
+kompromitacja publicznej powierzchni uwierzytelniania nie sięga systemów prowadzących
+zakład.
+
+## Wnioski
+
+Współdzielona infrastruktura jest decyzją podejmowaną per komponent, a nie per majątek.
+Pytanie o to, czy współdzielić, ma zły kształt; pytanie o to, co kompromitacja jednej
+strony oznaczałaby dla drugiej, daje inną odpowiedź dla tożsamości niż dla reverse
+proxy, a obie odpowiedzi są poprawne.
+
+Drugi wniosek dotyczy tego, gdzie powinna mieszkać granica. Regułę mówiącą, że jedna
+usługa nie ma prawa sięgnąć drugiej, można zapisać w polityce, wyegzekwować w kodzie
+aplikacji albo wyrazić jako brak trasy sieciowej. Tylko to ostatnie wytrzymuje, kiedy
+ktoś dokłada funkcję w pośpiechu, a ustawienie tego na początku nie kosztuje więcej niż
+dwa pozostałe.

@@ -1,0 +1,114 @@
+---
+title: "Ewidencja floty, której przypomnienia nie odpuszczają"
+summary: "Jak zbudować obsługę pojazdów wokół powiadomienia ponawianego do czasu, aż odczyt naprawdę dotrze, i dlaczego granicę audytu poprowadziliśmy tak, żeby celowo wykluczyć z niej mechanikę powiadomień."
+sector: "Grupa produkcyjna, flota pojazdów"
+period: "2026"
+disclosure: "anonymised"
+metrics:
+  - label: "Monity o przebieg"
+    value: "Ponawiane, dopóki kierowca nie poda odczytu"
+  - label: "Skan terminów"
+    value: "Progi 30, 14 i 7 dni przed upływem"
+  - label: "Wysyłka"
+    value: "Outbox z dostarczeniem exactly-once, nigdy z requestu HTTP"
+  - label: "Granica audytu"
+    value: "Wyłącznie zmiany stanu domenowego, mechanika powiadomień świadomie poza"
+capabilities:
+  - "Procesy biznesowe"
+  - "Wytwarzanie oprogramowania"
+  - "Architektura korporacyjna"
+stack:
+  - "Python 3.12, FastAPI"
+  - "Next.js 15, panel admina i kierowcy"
+  - "Aplikacja kierowcy w Expo na Androida"
+  - "PostgreSQL, audyt z hash-chainem"
+  - "Orkiestracja w Prefect"
+  - "Keycloak, trzy role"
+  - "Magazyn obiektowy MinIO"
+order: 16
+---
+
+## Kontekst
+
+Grupa produkcyjna prowadzi flotę samochodów służbowych rozproszoną po lokalizacjach i
+kierowcach. Odnowienia ubezpieczeń, przeglądy techniczne, terminy leasingowe i okna
+serwisowe pilnowały się w kalendarzu tej osoby, której akurat przypadły, usterki
+zgłaszano telefonem albo mailem, a nikt nie potrafił powiedzieć, kto co zmienił.
+
+## Problem
+
+Ciekawa trudność w oprogramowaniu flotowym nie leży w modelu danych, który jest prosty,
+ani w przypomnieniach, które wyśle dowolny scheduler. Leży w tym, że wartość całego
+systemu opiera się na odczycie, który człowiek musi wpisać, stojąc przy samochodzie, a
+ten człowiek ma swoje zajęcia.
+
+Monit o przebieg wysłany raz i zapomniany produkuje ewidencję pewną siebie i błędną.
+Interwały serwisowe liczą się z przebiegu, więc brakujący odczyt nie zostawia po prostu
+luki; po cichu przesuwa każdą datę pochodną, a system dalej wystawia wiarygodnie
+wyglądające okna serwisowe oparte na liczbie sprzed sześciu tygodni.
+
+## Podejście
+
+Monity ponawiają się do skutku, a ta jedna decyzja kształtuje resztę architektury,
+ponieważ powiadomienie, które ponawia, potrzebuje miejsca na zapis, ile razy poszło i
+kiedy, oraz ścieżki wysyłki, która nie potrafi wysłać dwa razy.
+
+Wszystko, co ma efekt zewnętrzny, wychodzi przez outbox opróżniany przez zaplanowany
+proces pobierający wiersze z pominięciem zablokowanych, co daje dostarczenie
+exactly-once i wyprowadza wysyłkę ze ścieżki żądania. Request HTTP wysyłający maila
+bezpośrednio prędzej czy później wyśle dwa, a żadna staranność w handlerze tego nie
+powstrzyma.
+
+Terminy skanujemy na progach trzydziestu, czternastu i siedmiu dni, z zapisanym per
+pozycja progiem już zgłoszonym, dzięki czemu skan jest idempotentny, a nie drugą falą
+tego samego ostrzeżenia. Terminy serwisu proponujemy wewnątrz okien interwałowych
+producenta, a zgłoszenie usterki wraca do kierowcy automatyczną odpowiedzią
+potwierdzającą przyjęcie oraz to, kiedy i gdzie naprawa jest umówiona.
+
+Granica audytu to miejsce, w którym ten projekt podjął swoją najmniej oczywistą decyzję.
+Każda mutacja stanu domenowego pisze do append-only logu z hash-chainem per encja i nie
+istnieje ścieżka zapisu omijająca ten log. Mechanika powiadomień stoi świadomie poza tą
+granicą: liczniki ponowień, znaczniki ostatniej wysyłki i zgłoszone progi nie są
+audytowane, ponieważ źródłem prawdy o tym, co faktycznie poszło, są outbox i rekordy
+powiadomień ze swoimi statusami i kluczami idempotencji. Audytowanie obu wyprodukowałoby
+dwie relacje z tego samego zdarzenia, które z czasem się rozjadą, a uzasadnienie jest
+wpisane do rekordu decyzyjnego, zamiast czekać, aż ktoś odkryje je ponownie. Mutacje
+wykonane przez samą automatyzację audytujemy pod aktorem systemowym, więc zmiana
+automatyczna jest przypisywalna tak samo jak ludzka.
+
+System proponuje i nigdy nie konkluduje. Przypomina, sugeruje termin i redaguje treść, a
+nie zamyka zgłoszenia, nie kasuje danych i nie wysyła niczego wiążącego bez człowieka.
+Automatyczna odpowiedź do kierowcy potwierdza fakt, zamiast podejmować decyzję.
+
+Panel kierowcy projektowaliśmy najpierw na telefon, trzymany w jednej ręce, w ostrym
+słońcu, przy słabym zasięgu, ze zdjęciami licznika i usterek robionymi wprost z aparatu.
+Natywna aplikacja androidowa doszła później z jednego tylko powodu, jakim jest to, że
+powiadomienia push nie docierają do panelu webowego, i dubluje ten panel, zamiast go
+zastępować, więc trasy webowe pozostają pełnym zakresem, a zmiana w jednym oznacza
+sprawdzenie drugiego.
+
+Anty-cele są spisane wprost: magazyn, telematyka, integracja z ERP, SMS, raportowanie
+analityczne, wypożyczalnia i automatyczne faktury stoją poza zakresem, a zadanie
+dryfujące w którąkolwiek z tych stron zatrzymuje się po potwierdzenie. Kiedy natywna
+aplikacja przeszła z anty-celu do zakresu, ta zmiana została zapisana jako decyzja z
+uzasadnieniem, a nie wchłonięta po cichu.
+
+## Rezultat
+
+Flota staje się jednym źródłem prawdy o autach, ich terminach, przebiegach, historii
+serwisowej, szkodach, oponach i dokumentach, z panelem administracyjnym i panelem
+kierowcy w tej samej aplikacji oraz dostępem egzekwowanym w API, a nie w interfejsie,
+dzięki czemu kierowca widzi własne auto, a nie całą flotę.
+
+## Wnioski
+
+Decyzja o tym, czego nie audytować, jest aktem projektowym w takim samym stopniu jak
+decyzja o tym, co audytować. Dwa niezależne zapisy tego samego zdarzenia wyglądają na
+skrupulatność, a zachowują się jak usterka, bo kiedyś się rozejdą i nikt nie będzie
+wiedział, któremu wierzyć.
+
+Drugi wniosek dotyczy niezawodności na styku systemu i człowieka. Trudna część obsługi
+floty polega na wydobyciu liczby od kogoś, kto stoi na parkingu; policzenie daty serwisu
+jest przy tym drobiazgiem. Projekt traktujący to jako problem dostarczenia, z
+ponowieniami, idempotencją i zapisem tego, co poszło, wykonuje właściwą pracę tego
+produktu.

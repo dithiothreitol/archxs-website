@@ -1,0 +1,113 @@
+---
+title: "A fleet register whose reminders do not give up"
+summary: "How to build vehicle administration around a notification that repeats until the reading actually arrives, and why the audit boundary was drawn to exclude the notification machinery on purpose."
+sector: "Manufacturing group, vehicle fleet"
+period: "2026"
+disclosure: "anonymised"
+metrics:
+  - label: "Mileage prompts"
+    value: "Repeated until the driver supplies a reading"
+  - label: "Deadline scanning"
+    value: "Thresholds at 30, 14 and 7 days before expiry"
+  - label: "Dispatch"
+    value: "Outbox with exactly-once delivery, never from a web request"
+  - label: "Audit boundary"
+    value: "Domain state changes only, notification mechanics deliberately outside"
+capabilities:
+  - "Business processes"
+  - "Software delivery"
+  - "Enterprise architecture"
+stack:
+  - "Python 3.12, FastAPI"
+  - "Next.js 15 admin and driver panels"
+  - "Expo Android driver app"
+  - "PostgreSQL, hash-chained audit"
+  - "Prefect orchestration"
+  - "Keycloak, three roles"
+  - "MinIO object storage"
+order: 16
+---
+
+## Context
+
+A manufacturing group runs a fleet of company vehicles spread across sites and drivers.
+Insurance renewals, technical inspections, lease terms and service windows were tracked
+in whoever's calendar happened to hold them, faults were reported by telephone or email,
+and nobody could say who had changed what.
+
+## Problem
+
+The interesting difficulty in fleet software is not the data model, which is
+straightforward, and not the reminders, which any scheduler can send. It is that the
+value of the whole system rests on a reading that a person has to type in while standing
+next to a vehicle, and that person is busy.
+
+A mileage prompt sent once and forgotten produces a register that is confidently wrong.
+Service intervals are computed from mileage, so a missing reading does not merely leave
+a gap; it silently moves every derived date, and the system goes on issuing plausible
+service windows based on a number from six weeks ago.
+
+## Approach
+
+Prompts repeat until the reading arrives. That single decision shapes the rest of the
+architecture, because a notification that retries needs somewhere to record how many
+times it has gone out and when, and it needs a dispatch path that cannot send twice.
+
+Everything with an external effect leaves through an outbox drained by a scheduled
+worker taking rows with a locking skip, which gives exactly-once delivery and keeps
+sending out of the request path entirely. An HTTP request that sends an email directly
+will eventually send two, and no amount of care in the handler prevents it.
+
+Deadlines are scanned on thresholds at thirty, fourteen and seven days, with the
+threshold already notified recorded per item so that a scan is idempotent rather than a
+second wave of the same warning. Service appointments are proposed inside the
+manufacturer's interval windows, and a fault report comes back to the driver with an
+automatic reply confirming that it was received and when and where the repair is booked.
+
+The audit boundary is where this project made its least obvious decision. Every mutation
+of domain state writes to an append-only log with a hash chain per entity, and there is
+no path that saves while bypassing it. The notification machinery sits deliberately
+outside that boundary: retry counters, last-sent timestamps and notified thresholds are
+not audited, because the source of truth about what was actually sent is the outbox and
+the notification records with their statuses and idempotency keys. Auditing both would
+have produced two accounts of the same event that drift apart, and the reasoning is
+written into the decision record rather than left for somebody to rediscover. Mutations
+made by the automation itself are audited under a system actor, so an automatic change
+is attributable in the same way a human one is.
+
+The system proposes and never concludes. It reminds, suggests an appointment and drafts
+the wording, and it does not close a fault report, delete data or send anything binding
+without a person. The automatic reply to a driver confirms a fact rather than making a
+decision.
+
+The driver panel was designed for a phone first, held in one hand, in bright sunlight,
+on poor reception, with odometer and fault photographs taken straight from the camera. A
+native Android application was added later for one reason only, which is that push
+notifications do not reach a web panel, and it duplicates the web panel rather than
+replacing it, so the web routes remain the full scope and a change in one means checking
+the other.
+
+The anti-goals are written down explicitly: warehouse, telematics, ERP integration, SMS,
+business intelligence reporting, vehicle hire and automatic invoicing all sit outside
+the scope, and a task drifting toward any of them stops for confirmation. When the
+native application moved from anti-goal to scope, that change was recorded as a decision
+with its reasoning rather than absorbed quietly.
+
+## Outcome
+
+The fleet becomes one source of truth about vehicles, their deadlines, their mileage,
+their service history, damage, tyres and documents, with an admin panel and a driver
+panel in the same application and access enforced in the API rather than in the
+interface, so a driver sees their own vehicle instead of the fleet.
+
+## What it taught us
+
+Deciding what not to audit is as much a design act as deciding what to audit. Two
+independent records of the same event look like thoroughness and behave like a defect,
+because they will disagree eventually and nobody will know which one to believe.
+
+The second lesson is about reliability at the boundary of a system and a human. The hard
+part of fleet administration is not calculating a service date; it is getting a number
+out of somebody standing in a car park. A design that treats that as a delivery problem,
+with retries, idempotency and a record of what was sent, is doing the actual work of the
+product.

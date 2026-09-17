@@ -1,0 +1,107 @@
+---
+title: "Oprogramowanie dla handlowca, które zakłada brak zasięgu w sklepie"
+summary: "Jak zbudować aplikację wsparcia sprzedaży dla przedstawicieli pracujących wewnątrz punktów handlowych, gdzie najtrudniejszym pytaniem architektonicznym okazuje się to, który system jest właścicielem tożsamości konta klienta."
+sector: "Produkcja karm, sprzedaż B2B i dystrybucja"
+period: "2026"
+disclosure: "anonymised"
+metrics:
+  - label: "Offline first"
+    value: "Lokalna baza z synchronizacją, a nie widok webowy z cache"
+  - label: "Tożsamość konta"
+    value: "Kod kontrahenta z ERP w parze z referencją firmy z CRM"
+  - label: "Jeden kod"
+    value: "Handlowcy, sieć partnerska i tryb targowy rozdzielone rolą"
+  - label: "Ścieżka zamówienia"
+    value: "Złożone w aplikacji, wypchnięte do ERP jako systemu źródłowego"
+capabilities:
+  - "Procesy biznesowe"
+  - "Architektura korporacyjna"
+  - "Applied AI"
+  - "Wytwarzanie oprogramowania"
+stack:
+  - "Expo, React Native, Tamagui"
+  - "Lokalny SQLite z synchronizacją"
+  - "Quarkus, Java 21"
+  - "GraphQL i REST"
+  - "PostgreSQL, Flyway"
+  - "OIDC z PKCE"
+  - "Integracja z ERP i CRM"
+order: 15
+---
+
+## Kontekst
+
+Producent karm sprzedaje przez opiekunów kluczowych klientów odwiedzających sieci
+handlowe oraz przez sieć dystrybutorów i partnerów wykonujących zadania w terenie.
+Proces handlowy mieszkał w CRM po stronie rozwoju biznesu, w ERP po stronie
+kontrahentów, produktów, stanów i cen oraz w sporej ilości improwizacji pomiędzy nimi,
+przy czym targi obsługiwała osobna aplikacja kioskowa.
+
+## Problem
+
+Wszystko inne w produkcie tego rodzaju kształtują dwa ograniczenia i żadne z nich nie
+jest funkcją.
+
+Pierwszym ograniczeniem jest łączność, a przedstawiciel pracuje wewnątrz sklepu, często
+na zapleczu albo w alejce magazynowej, na telefonie z jedną kreską zasięgu albo bez
+niej. Oprogramowanie traktujące sieć jako dostępną i degradujące się, kiedy jej nie ma,
+zostanie porzucone w ciągu miesiąca, bo zawodzi dokładnie w chwili, gdy przedstawiciel
+stoi przed klientem.
+
+Drugim ograniczeniem jest własność klienta, ponieważ konto B2B istnieje w ERP jako
+kontrahent z kodem, cennikiem i pozycją kredytową oraz w CRM jako firma z pipeline'em,
+szansami i historią aktywności. Oba są poprawne i żadne nie jest kompletne, a aplikacja
+sprzedażowa wybierająca jedno z nich jako swoją definicję konta spędzi resztę życia na
+uzgadnianiu.
+
+## Podejście
+
+Aplikacja jest offline-first w dosłownym sensie, z lokalną bazą na urządzeniu i
+synchronizacją nad nią, a nie widokiem webowym z pamięcią podręczną. Plany wizyt, dane
+kont, katalog produktów, ceny i stany są na miejscu, zanim przedstawiciel wejdzie do
+środka, zamówienie albo zapytanie ofertowe składa się i zapisuje lokalnie, a
+synchronizacja uzgadnia stan po powrocie zasięgu. Konsekwencja jest taka, że ciekawa
+inżynieria siedzi w obsłudze konfliktów i w rozstrzygnięciu, które pola urządzenie ma
+prawo tworzyć, czyli tam, gdzie jej miejsce.
+
+Granicę konta spisaliśmy jako równanie przed narysowaniem modelu danych. Kontem w
+aplikacji jest para kodu kontrahenta z ERP i referencji firmy z CRM, a żaden z tych
+systemów nie jest proszony o trzymanie spraw drugiego. ERP pozostaje masterem dla
+kontrahentów, produktów, stanów i cenników oraz jest adresem docelowym zamówień
+złożonych w terenie. CRM pozostaje systemem źródłowym dla toru rozwoju biznesu, a
+aplikacja dosyła do niego aktywności terenowe, dzięki czemu wizyta, zapytanie ofertowe i
+zamówienie pojawiają się w pipelinie bez drugiego wprowadzania danych.
+
+Jeden kod obsługuje trzy grupy odbiorców rozdzielone rolą, a nie osobną aplikacją.
+Opiekunowie kluczowych klientów dostają pełny widok konta, planowanie wizyt, zamawianie
+z katalogiem i upsellem, brief przygotowany przed spotkaniem oraz przygotowanie do
+targów. Sieć partnerska dostaje zadania terenowe z mapą, walidację ankietą, zdjęciem,
+kodem QR albo tagiem zbliżeniowym, punkty przeliczane na nagrody, e-learning i
+komunikaty. Menedżerowie dostają przydzielanie, cele, dashboardy i budżet punktów z
+panelu webowego korzystającego z tej samej biblioteki komponentów co klient mobilny.
+Tryb kiosku targowego przenieśliśmy z zastępowanej aplikacji, zamiast go porzucać.
+
+Warstwa AI dociera do aplikacji przez współdzieloną platformę asystenta, zamiast być w
+niej zaszyta. Brief przed spotkaniem, streszczenie historii konta i szkic wiadomości
+następczej powstają tam, co utrzymuje dostęp do modeli, obserwowalność kosztów i tracing
+w jednym miejscu dla całego majątku aplikacyjnego, zamiast rozsypywać je po produktach.
+
+## Rezultat
+
+Efektem jest jeden ekosystem sprzedażowy obejmujący realizację terenową, zamawianie,
+grywalizację sieci partnerskiej i tryb targowy, na współdzielonym dostawcy tożsamości i
+współdzielonej instancji bazy z własnym dedykowanym schematem, z granicami ERP i CRM
+nazwanymi, a nie negocjowanymi przy każdej funkcji.
+
+## Wnioski
+
+Decyzją definiującą w aplikacji sprzedażowej jest to, który system jest właścicielem
+którego faktu, a zapada ona przed pierwszym ekranem. Zespoły traktują integrację jako
+pracę idącą za produktem, a w systemie handlowym granica integracji jest produktem, bo
+każdy ekran jest projekcją cudzych danych podstawowych.
+
+Drugi wniosek dotyczy pracy bez sieci. Zbudowanie offline-first kosztuje znacznie więcej
+niż dołożenie cache'u później i nie są to te same rzeczy przychodzące w różnym czasie.
+Aplikacja z pamięcią podręczną odpowiada na pytania zadane wcześniej; aplikacja
+offline-first pozwala przedstawicielowi wykonać pracę i rozliczyć się potem, a tylko to
+drugie przeżywa sklep z grubymi ścianami.

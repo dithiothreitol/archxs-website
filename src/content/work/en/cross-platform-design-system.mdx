@@ -1,0 +1,131 @@
+---
+title: "A design system where the review is performed by a script"
+summary: "How to run one component library across a web application and a native one, in two brands and two colour schemes, when the defects that matter most are invisible in any single screenshot and live in the relationship between two tokens."
+sector: "Consumer marketplace, pet care"
+period: "2026"
+disclosure: "anonymised"
+metrics:
+  - label: "One shared library"
+    value: "62 domain areas used by both web and native"
+  - label: "Contrast gating"
+    value: "Every ink and surface pair scored in four brand and scheme variants"
+  - label: "End-to-end"
+    value: "78 browser specs and 42 native flows on shared test identifiers"
+  - label: "Merge gates"
+    value: "Five audit scripts that have to report zero"
+capabilities:
+  - "Software delivery"
+  - "Enterprise architecture"
+  - "Business processes"
+stack:
+  - "Turborepo, pnpm workspace"
+  - "TypeScript strict"
+  - "Next.js 15 App Router"
+  - "Expo, Expo Router"
+  - "Tamagui cross-platform UI"
+  - "TanStack Query, Zustand"
+  - "Keycloak OIDC"
+  - "Playwright, Maestro, Biome"
+order: 21
+---
+
+## Context
+
+A consumer marketplace is delivered as a web application and a native mobile application
+from a single repository, in two brands and three languages, with a shared component
+package sitting underneath both. The product surface is wide: catalogue and checkout, an
+account area, loyalty and quests, community features, content and a set of care tools,
+spread across sixty-two domain areas in the shared package.
+
+## Problem
+
+A cross-platform design system fails in ways that no individual screenshot reveals. The
+example that shaped the tooling here is what the team took to calling the half-flip. A
+surface token changes between light and dark while the ink token sitting on top of it
+stays where it was, or the reverse happens. Each token is entirely defensible on its
+own, and it is the pairing that breaks, so a review that examines tokens one at a time
+will approve it and a designer checking the light theme will never see it.
+
+Multiply that by two brands and two colour schemes and the number of combinations passes
+what anybody will check by hand, on a product where components are added weekly. The
+same shape of problem recurs elsewhere. A radius written as a raw pixel value looks
+right until the scale changes. A hand-rolled shadow looks right until it sits next to
+one from the elevation helpers. A font weight written in the wrong order silently loses
+to the framework.
+
+## Approach
+
+Every visual value comes from a theme token. Hex and rgba literals are prohibited in
+components, spacing and radii are written as tokens, and a token that does not yet exist
+is added to the shared theme factory with a sensible default before being overridden per
+brand. That rule is necessary and nowhere near sufficient, so the interesting work went
+into the checks that run beside it.
+
+A contrast checker gates the WCAG AA pairs, and its companion is the one that earns its
+keep. Instead of reading a hand-written matrix of intended pairs, it reads every ink and
+surface pairing out of the JSX itself and scores each one in all four combinations of
+colour scheme and brand, which is precisely what catches the half-flip. Its automatic
+fix rewrites a token literal only where the replacement clears AA for every usage of
+that literal, so a repair cannot quietly trade one failure for another somewhere else in
+the codebase. Decorative border advisories are listed separately and do not gate, and
+exemptions live in a list with a written reason attached to each entry.
+
+One pattern falls out of that checker rather than being imposed on it. Where a component
+varies its fill by state or by tone, the fill and its inks are kept in one record per
+tone. That is the right way to write the component in any case, and it is also what lets
+the checker align an ink with the surface it will actually sit on.
+
+Three further gates cover the failures that recur. Raw pixel radii in the shared package
+must stay at zero, with computed and circular geometry left numeric by design.
+Hand-rolled shadow recipes outside the elevation helpers must stay at zero, since
+neutral drop shadows and brand-aware coloured emphasis are two different things and
+deserve two different helpers.
+
+The typography gate is worth describing, because the constraint behind it is the kind
+that no amount of care survives at scale. The framework re-derives font weight from font
+metrics, and both the size token and the font family re-derive it, which means whichever
+of the three is written last wins. The rule is simply that weight comes after the other
+two, and where a component varies size and weight together they live in one styled
+variant holding both. A rule that subtle cannot be maintained by review, so an audit
+script holds it at zero and the reasoning is written down beside the numbers.
+
+Navigation received the same treatment from the other direction. Any element whose press
+navigates renders as a real anchor on the web through a shared primitive that carries
+both an href and a press handler, so middle-click, ctrl-click and crawlers behave as a
+visitor expects while a plain left click still routes client-side. Elements that open a
+sheet or mutate state stay press-only and are given no decorative href, and on native
+the primitive degrades to an ordinary pressable.
+
+Testing shares its vocabulary across the two platforms. Every scene carries a test
+identifier on its root, and that single value serves as a Playwright selector on the web
+and as a Maestro accessibility identifier on native. A new scene cannot merge without
+the identifier, a browser spec and a native flow, which is why there are 78 of the
+former and 42 of the latter rather than a thorough web suite and an aspiration for
+mobile.
+
+Forms follow one canonical field metric defined in two primitives, and every validation
+predicate lives in a single module, so that no component redefines an email, phone or
+tax-number expression of its own. A new field cannot merge without the canonical
+primitive, enforcement of the required flag where it applies, and an inline error
+message that exists in all three languages.
+
+## Outcome
+
+The shared package covers sixty-two domain areas used identically by web and native, in
+two brands with separate typeface pairings and in three languages. The gates run in
+continuous integration and are expected to report zero, and each one came from a class
+of defect that had already shipped once.
+
+## What it taught us
+
+A design system is enforced by the checks that ship with it. A written specification
+describes the intent and a linting rule describes what the codebase actually contains,
+and on a product where components arrive weekly only the second of those keeps its
+accuracy.
+
+The more transferable lesson concerns what the useful checks look at. Almost every rule
+that mattered here is about a relationship between two values rather than about a value:
+an ink against the surface beneath it, a weight against the size and family declared
+before it, a radius against the scale it belongs to. Checks written against single
+values pass a codebase that is quietly inconsistent, and the inconsistency surfaces on
+somebody's phone, in dark mode, in the brand nobody was looking at.

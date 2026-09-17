@@ -1,0 +1,138 @@
+---
+title: "System projektowy, w którym przegląd wykonuje skrypt"
+summary: "Jak prowadzić jedną bibliotekę komponentów dla aplikacji webowej i natywnej, w dwóch markach i dwóch schematach kolorystycznych, kiedy najważniejsze usterki są niewidoczne na pojedynczym zrzucie ekranu i mieszkają w relacji między dwoma tokenami."
+sector: "Marketplace konsumencki, opieka nad zwierzętami"
+period: "2026"
+disclosure: "anonymised"
+metrics:
+  - label: "Jedna wspólna biblioteka"
+    value: "62 obszary dziedzinowe używane przez web i natywną"
+  - label: "Bramka kontrastu"
+    value: "Każda para atramentu i powierzchni oceniana w czterech wariantach"
+  - label: "Testy end-to-end"
+    value: "78 scenariuszy przeglądarkowych i 42 przepływy natywne na wspólnych identyfikatorach"
+  - label: "Bramki scalenia"
+    value: "Pięć skryptów audytowych, które muszą pokazywać zero"
+capabilities:
+  - "Wytwarzanie oprogramowania"
+  - "Architektura korporacyjna"
+  - "Procesy biznesowe"
+stack:
+  - "Turborepo, workspace pnpm"
+  - "TypeScript strict"
+  - "Next.js 15 App Router"
+  - "Expo, Expo Router"
+  - "Tamagui, UI wieloplatformowe"
+  - "TanStack Query, Zustand"
+  - "Keycloak OIDC"
+  - "Playwright, Maestro, Biome"
+order: 21
+---
+
+## Kontekst
+
+Marketplace konsumencki dostarczany jest jako aplikacja webowa i natywna aplikacja
+mobilna z jednego repozytorium, w dwóch markach i trzech językach, ze wspólnym pakietem
+komponentów pod jednym i drugim. Powierzchnia produktu jest szeroka: katalog i zakupy,
+obszar konta, lojalność i zadania, funkcje społecznościowe, treści oraz zestaw narzędzi
+opiekuńczych, rozłożone na sześćdziesiąt dwa obszary dziedzinowe we wspólnym pakiecie.
+
+## Problem
+
+Wieloplatformowy system projektowy psuje się w sposób, którego nie pokaże żaden
+pojedynczy zrzut ekranu. Przykładem, który ukształtował tutejsze narzędzia, jest to, co
+zespół zaczął nazywać półobrotem. Token powierzchni zmienia się między trybem jasnym a
+ciemnym, podczas gdy token atramentu leżący na nim zostaje tam, gdzie był, albo dzieje
+się odwrotnie. Każdy token z osobna jest całkowicie do obronienia, rozjeżdża się dopiero
+para, więc przegląd oglądający tokeny pojedynczo zaakceptuje taki stan, a osoba
+projektująca w trybie jasnym nigdy go nie zobaczy.
+
+Pomnóżmy to przez dwie marki i dwa schematy kolorystyczne, a liczba kombinacji
+przekroczy to, co ktokolwiek sprawdzi ręcznie, przy produkcie, do którego komponenty
+dochodzą co tydzień. Ten sam kształt problemu wraca gdzie indziej. Promień napisany
+surową liczbą pikseli wygląda dobrze do czasu zmiany skali. Ręcznie złożony cień wygląda
+dobrze do czasu, aż stanie obok cienia z helperów elewacji. Grubość kroju napisana w
+złej kolejności po cichu przegrywa z frameworkiem.
+
+## Podejście
+
+Każda wartość wizualna pochodzi z tokenu motywu. Literały hex i rgba są w komponentach
+zakazane, odstępy i promienie zapisujemy tokenami, a token, którego jeszcze nie ma,
+dodaje się do wspólnej fabryki motywu z rozsądną wartością domyślną, zanim zostanie
+nadpisany per marka. Ta reguła jest konieczna i zupełnie niewystarczająca, więc ciekawa
+praca poszła w sprawdzenia, które chodzą obok niej.
+
+Kontroler kontrastu pilnuje par na poziomie WCAG AA, a na swoje utrzymanie zarabia jego
+towarzysz. Zamiast czytać ręcznie spisaną macierz zamierzonych par, wyciąga każde
+zestawienie atramentu i powierzchni wprost z JSX-a i ocenia je we wszystkich czterech
+kombinacjach schematu kolorystycznego i marki, czyli dokładnie tam, gdzie kryje się
+półobrót. Jego automatyczna naprawa przepisuje literał tokenu wyłącznie tam, gdzie
+zamiennik przechodzi AA dla każdego użycia tego literału, żeby naprawa nie wymieniła po
+cichu jednej porażki na inną w innym miejscu kodu. Doradcze uwagi o obramowaniach
+dekoracyjnych są wypisywane osobno i nie blokują, a wyjątki mieszkają na liście, przy
+której każdy wpis ma zapisany powód.
+
+Jeden wzorzec wypada z tego kontrolera, zamiast być mu narzucony. Tam, gdzie komponent
+zmienia wypełnienie zależnie od stanu albo tonacji, wypełnienie i jego atramenty
+trzymamy w jednym rekordzie na tonację. Tak czy inaczej jest to właściwy sposób
+napisania komponentu, a przy okazji to właśnie pozwala kontrolerowi zestawić atrament z
+powierzchnią, na której naprawdę wyląduje.
+
+Trzy kolejne bramki pokrywają usterki, które wracają. Surowe piksele w promieniach we
+wspólnym pakiecie muszą stać na zerze, przy czym geometria wyliczana i okrągła zostaje
+liczbowa z założenia. Ręcznie składane przepisy na cień poza helperami elewacji również
+muszą stać na zerze, bo neutralny cień rzucany i świadome marki podkreślenie kolorem to
+dwie różne rzeczy, którym należą się dwa różne helpery.
+
+Bramka typograficzna zasługuje na opis, bo ograniczenie, które za nią stoi, należy do
+tych, których żadna staranność nie przeżywa w skali. Framework wyprowadza grubość kroju
+z metryk fontu, a robią to ponownie zarówno token rozmiaru, jak i rodzina kroju, co
+oznacza, że wygrywa to z trzech, co zostało napisane ostatnie. Reguła brzmi po prostu
+tak, że grubość idzie po dwóch pozostałych, a tam, gdzie komponent zmienia rozmiar i
+grubość razem, oba mieszkają w jednym wariancie stylowanym. Tak subtelnej reguły nie
+utrzyma przegląd, więc trzyma ją na zerze skrypt audytowy, a uzasadnienie jest spisane
+obok liczb.
+
+Nawigacja dostała to samo traktowanie z drugiej strony. Każdy element, którego
+naciśnięcie nawiguje, renderuje się w wersji webowej jako prawdziwa kotwica, przez
+wspólny prymityw niosący jednocześnie adres i obsługę naciśnięcia, dzięki czemu środkowy
+przycisk myszy, ctrl-klik i roboty indeksujące zachowują się tak, jak odwiedzający tego
+oczekuje, a zwykłe kliknięcie lewym nadal trasuje się po stronie klienta. Elementy
+otwierające arkusz albo zmieniające stan zostają wyłącznie na naciśnięciu i nie dostają
+dekoracyjnego adresu, a na platformie natywnej prymityw schodzi do zwykłego elementu
+dotykowego.
+
+Testy dzielą słownik między platformami, więc każda scena niesie identyfikator testowy
+na korzeniu, a ta jedna wartość służy jako selektor Playwrighta w wersji webowej i jako
+identyfikator dostępności Maestro na platformie natywnej. Nowa scena nie wejdzie do
+gałęzi głównej bez identyfikatora, scenariusza przeglądarkowego i przepływu natywnego,
+dlatego tych pierwszych jest 78, a drugich 42, zamiast solidnego zestawu webowego i
+dobrych chęci po stronie mobilnej.
+
+Formularze trzymają jedną kanoniczną metrykę pola zdefiniowaną w dwóch prymitywach, a
+każdy predykat walidacyjny mieszka w jednym module, żeby żaden komponent nie definiował
+sobie własnego wyrażenia na adres e-mail, telefon czy numer podatkowy. Nowe pole nie
+wejdzie bez kanonicznego prymitywu, egzekwowania wymagalności tam, gdzie ona obowiązuje,
+i komunikatu błędu przy polu, istniejącego we wszystkich trzech językach.
+
+## Rezultat
+
+Wspólny pakiet pokrywa sześćdziesiąt dwa obszary dziedzinowe używane identycznie przez
+wersję webową i natywną, w dwóch markach z osobnymi parami krojów i w trzech językach.
+Bramki chodzą w ciągłej integracji i mają pokazywać zero, a każda z nich wzięła się z
+klasy usterki, która zdążyła już raz pojechać na produkcję.
+
+## Wnioski
+
+System projektowy jest egzekwowany przez sprawdzenia, które jadą razem z nim. Spisana
+specyfikacja opisuje intencję, a reguła lintera opisuje to, co kod naprawdę zawiera, i
+przy produkcie, do którego komponenty dochodzą co tydzień, tylko to drugie utrzymuje
+swoją aktualność.
+
+Wniosek bardziej przenośny dotyczy tego, na co patrzą użyteczne sprawdzenia. Niemal
+każda reguła, która miała tu znaczenie, mówi o relacji między dwiema wartościami, a nie
+o samej wartości: atrament wobec powierzchni pod nim, grubość wobec rozmiaru i rodziny
+zadeklarowanych przed nią, promień wobec skali, do której należy. Sprawdzenia napisane
+przeciwko pojedynczym wartościom przepuszczają kod po cichu niespójny, a niespójność
+wychodzi na czyimś telefonie, w trybie ciemnym, w marce, na którą nikt akurat nie
+patrzył.

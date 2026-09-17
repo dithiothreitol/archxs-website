@@ -1,0 +1,100 @@
+---
+title: "One marketing automation for several brands, without a copy per brand"
+summary: "How to run content and campaign automation across multiple e-commerce brands from a single set of workflows parameterised by tenant, with an agent container per brand isolated behind a controlled interface."
+sector: "E-commerce, multi-brand marketing"
+period: "2026"
+disclosure: "anonymised"
+metrics:
+  - label: "Workflows"
+    value: "19 automations parameterised by brand, not duplicated per brand"
+  - label: "Isolation"
+    value: "Brand identifier as the data isolation key throughout"
+  - label: "Agent layer"
+    value: "One sandboxed container per brand behind an API airlock"
+  - label: "Model access"
+    value: "Single gateway with caching and full cost tracing"
+capabilities:
+  - "Applied AI"
+  - "Business processes"
+  - "Software delivery"
+stack:
+  - "Workflow orchestrator"
+  - "LLM gateway with response caching"
+  - "PostgreSQL with pgvector"
+  - "Redis cache and queue"
+  - "Tracing and cost observability"
+  - "Containerised agent per brand"
+  - "Python CLI tooling"
+order: 19
+---
+
+## Context
+
+A group operates several e-commerce brands selling to different audiences, each with its
+own brand book, personas, tone and channels. The marketing work is the same shape across
+all of them: producing content, adapting it per channel, scheduling it, reacting to what
+performs, and keeping the writing recognisably that brand rather than recognisably
+generated.
+
+## Problem
+
+Multi-brand marketing automation fails in a predictable way. The first brand gets a set
+of workflows that work. The second brand gets a copy of them with the prompts edited,
+because copying is faster than parameterising on the day. By the fourth brand there are
+four divergent copies of every workflow, a fix applied to one of them, and nobody who
+can say with confidence what the others do.
+
+The second problem is what an agent with tool access is permitted to reach. An assistant
+useful enough to draft, schedule and analyse for a brand needs credentials and data, and
+an assistant that holds the credentials of every brand at once is one prompt away from
+writing for the wrong one.
+
+## Approach
+
+A brand identifier is the isolation key throughout, and there is one set of workflows in
+one folder in the orchestrator, parameterised by that identifier rather than duplicated.
+Brand material lives as files per brand outside the workflow definitions, so the brand
+book, the personas and the reference content that gives a brand its voice are data that
+a marketer can edit, while the automation that consumes them stays single.
+
+Model access runs through one gateway for the whole estate, with response caching and
+full cost tracing, so a change of model or a rate limit is handled in one place and the
+cost of a campaign is attributable rather than estimated. The tracing layer carries the
+calls for observability, and the prompts are held as templates with placeholders rather
+than embedded in workflow nodes, which keeps them reviewable and versioned as text.
+
+Retrieval uses vector embeddings held in the shared database with a schema of its own,
+so a brand's past content informs new content without the corpora of different brands
+mixing.
+
+The agent layer is where the isolation becomes physical. Each brand gets its own
+container holding its own memory, sessions and credentials, running in a sandbox and
+reaching the outside world through a controlled interface rather than directly. An agent
+therefore cannot reach another brand's credentials because it does not have them, which
+is a stronger guarantee than instructing it not to. Published views prefixed for the
+purpose give the agent read-only access to the data it needs, and nothing beyond them.
+
+The infrastructure position is the same as everywhere else in this estate. Nothing here
+runs its own database, cache, orchestrator, gateway or observability stack; all of those
+are shared with the other internal systems, and this project holds only what is specific
+to it, which is the prompts, the workflows, the brand data, the analytical service and
+the agent configuration.
+
+## Outcome
+
+Nineteen automations run across the brands from one definition each, with the brand
+supplied as a parameter. Adding a brand means adding its files, its identifier and its
+agent container, rather than forking a set of workflows and inheriting the maintenance.
+
+## What it taught us
+
+The decision that determines whether multi-tenant automation stays maintainable is taken
+on the day the second tenant arrives, and the pressure at that moment is always toward
+copying. Parameterising costs a day then and saves the divergence that otherwise becomes
+permanent, because nobody ever merges four copies of a workflow back together.
+
+The second lesson concerns how to isolate an agent. Instructions in a prompt are the
+weakest available control and the easiest to write. Giving each brand its own container
+with only its own credentials moves the guarantee from something the model is asked to
+respect into something the environment enforces, and that distinction is the whole of
+the security posture.

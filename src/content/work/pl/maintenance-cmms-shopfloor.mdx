@@ -1,0 +1,111 @@
+---
+title: "Wymiana systemu utrzymania ruchu przez zbudowanie go w mniejszej części"
+summary: "Jak wycofać samodzielny CMMS bez odbudowywania go, traktując istniejący już rejestr maszyn, telemetrię z hali i hierarchię zakładu jako fundament i budując wyłącznie to, czego naprawdę brakowało."
+sector: "Produkcja spożywcza, utrzymanie ruchu i dane z hali"
+period: "2026"
+disclosure: "anonymised"
+metrics:
+  - label: "Rejestr maszyn"
+    value: "327 maszyn kanonicznych z oznaczeniem KKS, krytycznością i kondycją"
+  - label: "Reużyte zamiast odbudowane"
+    value: "Rejestr, OEE na żywo, wallboard alarmów, kalendarz przeglądów"
+  - label: "Wyzwalacze prewencji"
+    value: "Liczniki maszyn z warstwy akwizycji, obok kalendarza"
+  - label: "Wskaźniki niezawodności"
+    value: "MTBF, MTTR i koszt liczone z faktycznych zleceń"
+capabilities:
+  - "Physical AI"
+  - "Architektura korporacyjna"
+  - "Procesy biznesowe"
+  - "Applied AI"
+stack:
+  - "Hierarchia zakładu wg ISA-95"
+  - "OPC UA, SCADA i liczniki maszyn"
+  - "Telemetria w TimescaleDB"
+  - "Python 3.12, FastAPI"
+  - "PostgreSQL, audyt append-only"
+  - "Klient mobilny w Expo"
+  - "Keycloak, dostęp oparty na rolach"
+order: 9
+---
+
+## Kontekst
+
+Zakład prowadził utrzymanie ruchu w samodzielnym, komercyjnym CMMS-ie: kartoteka maszyn,
+awarie, przeglądy prewencyjne, części zamienne, wskaźniki niezawodności i zestaw
+aplikacji mobilnych do zgłaszania i inspekcji. Obok niego, zupełnie osobno, platforma
+planistyczna trzymała już rejestr maszyn, hierarchię zakładu, telemetrię na żywo i
+wallboard alarmów. Oba systemy opisywały ten sam park maszynowy i zgadzały się ze sobą
+wyłącznie przypadkiem.
+
+## Problem
+
+Oczywistym projektem jest kupno albo budowa zastępczego CMMS-a i jest to zły kształt
+przedsięwzięcia. Samodzielny system utrzymania ruchu potrzebuje własnego rejestru
+maszyn, własnego spojrzenia na strukturę zakładu, własnych użytkowników i własnej
+integracji ze wszystkim pozostałym, czyli dokładnie tej duplikacji, która na początku
+uczyniła sytuację niewygodną. Odbudowanie go własnymi siłami odtwarza tę samą duplikację
+drożej i z dodatkowym kosztem jej utrzymania.
+
+Bardziej użyteczne pytanie jest węższe i brzmi tak: mając platformę, która wie już,
+jakie są maszyny, gdzie stoją w hierarchii zakładu, jak bardzo każda z nich jest
+krytyczna i co pokazują w tej chwili jej liczniki, czego naprawdę brakuje?
+
+## Podejście
+
+Odpowiedź spisaliśmy jako tabelę porównawczą przed napisaniem kodu, zestawiając to, co
+dawał dotychczasowy system, z tym, co platforma już miała. Rejestr maszyn istniał i był
+bogatszy od tamtego, niosąc oznaczenie KKS, kondycję, krytyczność i miejsce w hierarchii
+ISA-95 dla 327 maszyn kanonicznych. Żywe OEE, akwizycja danych z hali i wallboard
+alarmów istniały. Słownik działów utrzymywany przez zespół operacyjny istniał, podobnie
+jak tygodniowe okna przeglądowe importowane z harmonogramu zakładu i blokujące już
+zdolność linii w kalendarzu planistycznym.
+
+To, czego naprawdę brakowało, sprowadzało się do czterech rzeczy: zleceń pracy i obsługi
+awarii jako rdzenia operacyjnego, przeglądów prewencyjnych jako harmonogramu, części
+zamiennych oraz wskaźników niezawodności. Zbudowaliśmy wyłącznie te cztery i nic poza
+nimi.
+
+Dwie z nich powstały inaczej niż w wymienianym systemie, a różnica wzięła się z tego, co
+platforma już posiadała. Prewencja wyzwala się na licznikach maszyn odczytywanych z
+warstwy akwizycji, nie tylko z kalendarza, czego samodzielny system nie zrobi bez
+integracji, której nikt nie kupił. Wskaźniki niezawodności liczymy z faktycznych zleceń
+pracy zamiast trzymać je jako kolumny z wartościami docelowymi, dzięki czemu liczby
+opisują zakład, a nie czyjś zamiar.
+
+Części zamienne były najczystszym przypadkiem odmowy budowania. Stany odczytujemy z ERP,
+ponieważ firma już go prowadzi, a moduł utrzymania ruchu trzymający własny, równoległy
+stan wytworzyłby problem uzgodnieniowy w zamian za wygodę. To samo rozumowanie zostawiło
+poza zakresem system magazynowy, który należy do własnego kontekstu.
+
+Warstwa AI proponuje i nigdy nie decyduje, zgodnie z resztą majątku aplikacyjnego. Czyta
+dokumentację serwisową, żeby zasugerować, jakich części będzie wymagać zadanie, i
+analizuje historię oraz przyczyny awarii, żeby zaproponować stany minimalne części. Oba
+wyniki lądują przed człowiekiem, który je zatwierdza albo odrzuca, i oba zostawiają wpis
+w append-only audit logu z hash-chainem.
+
+Klient mobilny jest współdzielony ze stroną planistyczną zamiast osobny, a widoczne
+zakładki idą za rolą, którą dana osoba ma w dostawcy tożsamości, więc technik utrzymania
+ruchu i planista instalują tę samą aplikację i widzą jej różne połowy.
+
+## Rezultat
+
+Moduł utrzymania ruchu pracuje wewnątrz platformy planistycznej, na jej bazie, jej
+dostawcy tożsamości i jej wzorcu wdrożenia, rozwijany jako równoległy strumień pod
+ścisłymi granicami modułów i na wspólnym łańcuchu migracji. System zewnętrzny, który
+zastępuje, przestaje być osobną umową, osobnym logowaniem i drugą opinią o tym, jakie
+maszyny istnieją.
+
+## Wnioski
+
+O rozmiarze projektu wymiany decyduje to, jak uczciwie zrobiono inwentaryzację przed
+jego rozpoczęciem. Spisanie tego, co robi dotychczasowy system, jest łatwiejszą połową;
+spisanie tego, co organizacja już posiada i co w przeciwnym razie odbuduje przez
+nieuwagę, jest tą połową, która zmienia budżet.
+
+Drugi wniosek dotyczy tego, gdzie zintegrowany moduł wygrywa ze specjalizowanym
+produktem. Samodzielny system utrzymania ruchu jest od modułu lepszy we wszystkim, co
+robi w izolacji, i gorszy we wszystkim, co zależy od wiedzy o tym, co dzieje się w
+reszcie zakładu. Prewencja sterowana licznikami i stany części wyprowadzone z analizy
+awaryjności potrzebują tego kontekstu i to one są powodem, dla którego ten moduł w ogóle
+powstał.

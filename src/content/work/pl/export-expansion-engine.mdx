@@ -1,0 +1,108 @@
+---
+title: "Maszyna eksportowa złożona niemal w całości z systemów, które już istniały"
+summary: "Jak zbudować narzędzia ekspansji rynkowej reużywające klientów modelowych, składu dokumentów, usługi podpisu i rejestru korespondencji należących do trzech innych systemów wewnętrznych, dokładając wyłącznie tę część, która była naprawdę nowa."
+sector: "Produkcja karm, eksport i ekspansja rynkowa"
+period: "2026"
+disclosure: "anonymised"
+metrics:
+  - label: "Nowa infrastruktura"
+    value: "Żadna — trzy istniejące systemy dostarczają zdolności"
+  - label: "Interfejs operatora"
+    value: "Rozmowa na komunikatorze z jawną maszyną stanów dialogu"
+  - label: "Bramka ludzka"
+    value: "Żadna korespondencja do urzędów i dystrybutorów nie wychodzi bez akceptacji"
+  - label: "Dostęp analityczny"
+    value: "Rola tylko do odczytu ograniczona do opublikowanych widoków"
+capabilities:
+  - "Applied AI"
+  - "Procesy biznesowe"
+  - "Architektura korporacyjna"
+stack:
+  - "Python 3.12, FastAPI"
+  - "Modele Claude do syntezy i klasyfikacji"
+  - "Osadzenia z wyszukiwaniem wektorowym"
+  - "Konektory researchu webowego"
+  - "Skład dokumentów, poczta i podpis przez wewnętrzne API"
+  - "Schemat PostgreSQL na współdzielonej instancji"
+  - "Bramka WhatsApp"
+order: 18
+---
+
+## Kontekst
+
+Producent karm wchodzący na rynki zagraniczne potrzebuje powtarzalnego procesu
+operacyjnego, a nie serii jednorazowych zrywów: wskazania regionów docelowych,
+rozpoznania wymogów regulacyjnych i rejestracyjnych, zbudowania obrazu dystrybutorów i
+struktur handlu, przygotowania i wysłania korespondencji, śledzenia, co do kogo poszło i
+co wróciło, oraz utrzymania całości w stanie, który ktoś podejmie po przerwie.
+
+Obok niego działał już system badawczy pokrywający rozpoznanie produktowe i rynkowe po
+stronie rozwoju, a ten projekt jest jego wychodzącym odpowiednikiem.
+
+## Problem
+
+Przedsięwzięcie o takim kształcie zwyczajowo dorabia się własnego wszystkiego.
+Potrzebuje dostępu do modeli, więc konfiguruje dostawcę. Potrzebuje researchu webowego,
+więc wykupuje subskrypcje. Potrzebuje miejsca na dokumenty, sposobu na wysyłanie i
+odbieranie poczty, sposobu na podpisywanie, rejestru korespondencji, bazy danych,
+dostawcy tożsamości i kanału do operatora. Zanim ruszy, po cichu staje się dziesiątą
+platformą wewnętrzną, a koszt jej utrzymania przychodzi dwanaście miesięcy później,
+kiedy osoba, która ją zbudowała, zajmuje się już czym innym.
+
+Każda z tych zdolności istniała już gdzieś w majątku aplikacyjnym, w systemach
+zbudowanych do innych celów i utrzymywanych przez ten sam niewielki zespół.
+
+## Podejście
+
+Projekt nie wdraża własnej infrastruktury i zapadło to przed pierwszym modułem. Klienci
+modelowi, osadzenia, konektory researchu webowego i tracing pochodzą z systemu
+badawczego przez moduł pomostowy, zamiast być implementowane ponownie. Skład, poczta
+przychodząca i wychodząca, podpis elektroniczny, ślad audytowy i encja sprawy
+korespondencyjnej pochodzą z platformy obiegu dokumentów przez jej API i webhook zdarzeń
+sprawy. Schemat bazy, cache, dostawca tożsamości, warstwa obserwowalności i bramka
+komunikatora pochodzą ze współdzielonej platformy asystenta we wspólnej sieci.
+
+Ten projekt zawiera faktycznie to, co jest naprawdę jego własne: definicje regionów,
+moduły filarów niosące proces ekspansji, schemat i widoki, prompty oraz warstwę
+operatora.
+
+Warstwa operatora ma postać rozmowy, w której osoba prowadząca ekspansję pracuje przez
+kanał komunikatora z jawną maszyną stanów dialogu i magazynem sesji pod spodem, zamiast
+przez aplikację webową, którą musiałaby pamiętać, żeby otworzyć. Ta decyzja idzie za tym
+samym rozumowaniem co system zamówień eventowych obok i korzysta z tej samej bramki.
+
+Na wszystkim, co wychodzi, stoi bramka ludzka. AI bada, syntetyzuje, klasyfikuje i
+redaguje, a nie wysyła samodzielnie korespondencji do urzędów ani dystrybutorów. Skoro
+wynikiem są tutaj pisma do organów i pierwsze podejścia do potencjalnych partnerów,
+wysyłka autonomiczna należy do kategorii pomyłek bez czystej ścieżki odwrotu.
+
+Dobór modeli jest jawny, a nie przypadkowy: mocny model do syntezy i redagowania, mały i
+szybki do klasyfikacji oraz osobny model osadzeń do wyszukiwania wektorowego, co
+utrzymuje profil kosztowy przebiegu badawczego w przewidywalnych ramach.
+
+Dostęp analityczny realizuje zasadę najmniejszych uprawnień w sposób konkretny. Warstwa
+agentowa używana do eksploracji ma rolę tylko do odczytu z uprawnieniem select wyłącznie
+na opublikowanych widokach, więc zapytanie eksploracyjne nie sięgnie tabel źródłowych.
+
+## Rezultat
+
+Wszystkie filary procesu ekspansji są zaimplementowane i wdrożone, działają jako usługa
+we wspólnej sieci obok systemów, od których pożyczają, a migracje są napisane
+idempotentnie i nakładane skryptem, a nie ręcznie. Naprawdę nowy kod stanowi ułamek
+tego, czego wymagałby równoważny system samodzielny, a pożyczane zdolności są
+utrzymywane raz dla całego majątku.
+
+## Wnioski
+
+O koszcie systemu wewnętrznego decyduje przede wszystkim infrastruktura, którą ten
+system postanowił posiadać. Reużycie bramy modelowej, składu dokumentów i usługi podpisu
+w kilku aplikacjach wymaga świadomej granicy i wewnętrznego API, a zwrot pojawia się za
+każdym razem, gdy startuje nowy projekt i zastaje te rzeczy rozwiązane.
+
+Drugi wniosek dotyczy tego, gdzie reużycie przestaje być rozsądne. Pomost do systemu
+badawczego jest zależnością na poziomie kodu, co jest wygodne i wytwarza sprzężenie,
+które trzeba obserwować, a platforma dokumentowa jest osiągana przez API i webhook, co
+kosztuje więcej pisania i zostawia obie strony wolne do niezależnej zmiany.
+Rozstrzygnięcie inne dla każdej z nich było tutaj właściwą odpowiedzią i było osądem o
+tym, jak każda z tych relacji zestarzeje się w czasie, a nie regułą stosowaną
+jednolicie.

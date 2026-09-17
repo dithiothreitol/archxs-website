@@ -1,0 +1,111 @@
+---
+title: "A storefront that shares a building with the back office but not a lock"
+summary: "How to run a customer-facing commerce platform beside a dozen internal systems on the same infrastructure, when the correct answer to sharing is different for the database, the identity provider and the network."
+sector: "Consumer e-commerce, pet care"
+period: "2026"
+disclosure: "anonymised"
+metrics:
+  - label: "Identity"
+    value: "A dedicated provider and realm, deliberately separate from the internal one"
+  - label: "Network"
+    value: "Isolated Docker network; the API never reaches the internal one"
+  - label: "Database"
+    value: "Its own instance rather than a schema on the shared cluster"
+  - label: "Search"
+    value: "Dedicated index with an explicit full-text fallback path"
+capabilities:
+  - "Enterprise architecture"
+  - "Cybersecurity & identity"
+  - "Software delivery"
+  - "Business processes"
+stack:
+  - "Quarkus, Java 21"
+  - "Commerce engine on Node"
+  - "Next.js 15, Expo"
+  - "PostgreSQL 18, dedicated instance"
+  - "Keycloak, dedicated instance"
+  - "Search engine with fallback"
+  - "Shared cache on an allocated database index"
+  - "ERP integration over REST"
+order: 11
+---
+
+## Context
+
+The same small team that runs a dozen internal systems on shared infrastructure also
+runs a consumer marketplace: a storefront, a native application, accounts, ordering, a
+loyalty programme and a set of community features, serving the public rather than
+employees.
+
+## Problem
+
+Shared infrastructure is the reason the internal estate is affordable. One identity
+provider, one database cluster, one cache, one reverse proxy, one model gateway, and
+every new internal system receives those as inputs rather than rebuilding them.
+
+Extending that arrangement to a public-facing product is where the reasoning stops
+holding, and it stops holding for security rather than for capacity. An internal system
+is used by employees who are already inside the identity perimeter. A storefront is used
+by anybody with a browser, it takes registrations from the public, and its
+authentication surface is exposed to the internet continuously. Sharing a realm between
+the two means a defect in public registration is a defect in the system that also guards
+the production planning platform.
+
+The naive conclusions are both wrong. Sharing everything makes the internal estate only
+as safe as the most exposed public endpoint, and sharing nothing means running a second
+copy of infrastructure that a small team then maintains twice.
+
+## Approach
+
+The sharing decision was taken separately for each component rather than as a single
+policy, and the answers differ.
+
+Identity is not shared at all, so the marketplace has a dedicated provider instance and
+its own realm, on its own hostname, with its own clients. An internal identity
+compromise and a public one stay separate incidents.
+
+The database is not shared either. The marketplace runs its own instance holding its
+application database and its identity database, rather than taking a schema on the
+shared cluster, so a public workload cannot exhaust connections or storage that internal
+operations depend on.
+
+The network is where the separation is enforced rather than asserted. The marketplace
+runs on its own Docker network, and the backend service sits on that network only, with
+no route to the internal one. Where a component genuinely needs to serve both, it holds
+an interface on each network explicitly and the crossing is visible in the composition
+rather than implied.
+
+Sharing continues where the risk profile allows it. The cache is shared with an
+allocated database index, and the reverse proxy is shared, because both are stateless
+with respect to tenancy and both benefit from being operated once.
+
+The commerce architecture itself splits along a similar line. A commerce engine handles
+the catalogue, carts and orders and carries the ERP integration, while a separate
+service holds the domain logic that belongs to this product rather than to commerce in
+general. Search runs on a dedicated index with an explicit fallback to platform
+full-text search when the index is unavailable, which is written into the code path
+rather than left as an assumption that the index will be there.
+
+The front ends share everything they safely can, with a web application and a native
+application built from one component library, one API layer and one set of translations,
+which is the subject of its own case study.
+
+## Outcome
+
+The marketplace runs as a public product on the same physical infrastructure as the
+internal estate, with the identity, the database and the network separated, and the
+cache and the ingress shared. The hosting bill stays close to what a single environment
+costs, and a compromise of the public authentication surface does not reach the systems
+that run the plant.
+
+## What it taught us
+
+Shared infrastructure is a decision made per component and not per estate. Asking
+whether to share is the wrong shape of question; asking what a compromise of one side
+would mean for the other produces a different answer for identity than for a reverse
+proxy, and both answers are correct.
+
+The second lesson concerns where a boundary should live. A rule that one service must
+not reach another can be written in a policy, enforced in application code, or expressed
+as an absence of a network route. Only the last one holds when somebody adds a feature
+in a hurry, and it costs no more than the other two to set up at the beginning.

@@ -1,0 +1,144 @@
+---
+title: "Oprogramowanie rekrutacyjne napisane wokół audytu, który nadejdzie"
+summary: "Jak zbudować rekrutację wspieraną przez AI jako system wysokiego ryzyka wedle unijnego aktu o sztucznej inteligencji, w którym zabezpieczeniem przed wymyśleniem kwalifikacji przez model jest sprawdzenie zawierania się łańcucha znaków, a lista zachowań zakazanych powstała przed listą funkcji."
+sector: "Grupa produkcyjna, HR i rekrutacja"
+period: "2026"
+disclosure: "anonymised"
+metrics:
+  - label: "Klasyfikacja"
+    value: "Załącznik III pkt 4, wysokie ryzyko, obowiązki deployera z art. 26"
+  - label: "Ugruntowanie"
+    value: "Każdy cytat dowodowy musi być dosłownym fragmentem sparsowanego CV"
+  - label: "Ślad audytowy"
+    value: "Append-only, hash-chain, retencja co najmniej sześć miesięcy"
+  - label: "Przegląd biasu"
+    value: "Kwartalny i idempotentny, progi ustalone z góry"
+capabilities:
+  - "Applied AI"
+  - "Procesy biznesowe"
+  - "Cyberbezpieczeństwo i tożsamość"
+  - "Wytwarzanie oprogramowania"
+stack:
+  - "Python 3.12, FastAPI"
+  - "PostgreSQL, schemat audytowy append-only"
+  - "Keycloak RBAC"
+  - "Claude API z wyjściem strukturalnym"
+  - "Parsowanie dokumentów do markdown"
+  - "Langfuse, Prometheus"
+  - "pytest, testcontainers"
+order: 5
+---
+
+## Kontekst
+
+Grupa produkcyjna rekrutuje bez przerwy na produkcję, do logistyki i do biura, a cały
+proces prowadziła na wspólnej skrzynce pocztowej i w arkuszu. Zamówienie dotyczyło
+własnego systemu rekrutacyjnego, w którym czytaniem zajmuje się AI: parsowaniem CV do
+struktury, punktowaniem wobec opublikowanej rubryki, przygotowywaniem korespondencji i
+pilnowaniem terminów za rekruterów.
+
+## Problem
+
+Rekrutacja wspierana przez AI mieści się w załączniku III punkt 4 unijnego aktu o
+sztucznej inteligencji, obejmującym zatrudnienie i dostęp do samozatrudnienia, co czyni
+ją systemem wysokiego ryzyka. Organizacja, która ją wdraża, jest deployerem, a nie
+dostawcą, bo model pochodzi skądinąd, więc obowiązują ją wymogi z artykułu 26. Pełna
+egzekucja wchodzi 2 sierpnia 2026 roku, kary sięgają sześciu do siedmiu procent
+światowego obrotu rocznego, a RODO obowiązuje równolegle, zupełnie odrębną ścieżką
+egzekucyjną.
+
+Praktyczna konsekwencja jest niewygodna dla każdego, kto taki produkt specyfikuje.
+Funkcjami, które czynią AI atrakcyjnym w rekrutacji, są ranking, filtrowanie i
+automatyczne odrzucenie poniżej progu, czyli dokładnie te zachowania, które regulacja
+ogranicza. System zaprojektowany najpierw pod przepustowość, a dopiero potem pod
+zgodność, będzie wymagał wyjęcia z niego tej przepustowości z powrotem.
+
+Pod problemem prawnym leży drugi, ponieważ model czytający CV wystawia ocenę z płynnym
+uzasadnieniem niezależnie od tego, czy dowód znajduje się w dokumencie, a osoba
+przeglądająca czterdzieste zgłoszenie tego dnia nie wyłapie tego jednego, które zostało
+wymyślone.
+
+## Podejście
+
+Specyfikacja otwiera się trybami, w których system nigdy nie może pracować. Nie wolno mu
+odrzucić ani przyjąć zgłoszenia bez rekrutera, przewidywać płci, wieku ani narodowości z
+CV, próbować dopasować zanonimizowanych zgłoszeń do realnych osób, odrzucać
+automatycznie po progu punktowym, wysyłać kandydatowi czegokolwiek bez akceptacji ani
+redagować umowy o pracę. Spisanie tego na początku zamieniło dyskusję o zgodności w
+architekturę, ponieważ każdy zakaz nazywa ścieżkę kodu, która nie ma prawa istnieć.
+
+Tryby dozwolone są następnie wyliczone w tabeli z jawnie odnotowaną bramką akceptacji
+przy każdym z nich. Parsowanie i walidacja anomalii nie mają bramki, bo wydobywają i
+flagują, nie dochodząc do wniosku. Punktowanie, dopracowane odpowiedzi i informacja
+zwrotna przy odmowie wymagają, żeby rekruter zaakceptował, poprawił albo odrzucił
+propozycję, zanim cokolwiek opuści system. Trzy wąskie wyjątki działające samodzielnie
+to potwierdzenie wpłynięcia zgłoszenia, wewnętrzne przypomnienia, które nigdy nie
+docierają do kandydata, oraz informacje o zmianie etapu, generowane jako szkice i
+wysyłane automatycznie wyłącznie tam, gdzie rekruter włączył to dla konkretnego
+ogłoszenia.
+
+Ugruntowanie egzekwujemy mechanicznie, bo każde kryterium w ocenie niesie uzasadnienie i
+cytat dowodowy, a ten cytat musi być dosłownym fragmentem sparsowanego CV. Kwalifikacja
+wymyślona przez model nie przechodzi więc sprawdzenia zawierania się łańcucha znaków
+wewnątrz serwisu, zanim trafi do człowieka, który musiałby ją wychwycić. Sam parser
+zwraca strukturę walidowaną schematem, z ponowieniami przy niepowodzeniu walidacji, a
+osobny walidator flaguje anomalie ekstrakcji, takie jak dana kontaktowa albo data, które
+nie trzymają się kupy.
+
+Nadzór ludzki niosą jednocześnie role i interfejs. Przeniesienie kandydata do etapu
+zatrudnienia albo odmowy wymaga roli partnerskiej w dostawcy tożsamości, tranzycje
+etapów przechodzą przez maszynę stanów zapisującą wpisy audytowe, a interfejs nie
+oferuje żadnego sposobu na masowe odrzucenie po wyniku, ponieważ interfejs, który czyni
+działanie zakazane wygodnym, prędzej czy później doczeka się jego wykonania.
+
+Audit log jest append-only w Postgresie, z hash-chainem, i rejestruje każdą inferencję
+razem z hashem wejścia, wersją promptu, modelem, wyjściem oraz tym, co rekruter z nim
+następnie zrobił. Retencja sięga co najmniej sześciu miesięcy zgodnie z artykułem 12, a
+sam log celowo trzymamy wolny od nadmiarowych danych osobowych, żeby zapis nie stał się
+osobnym ryzykiem.
+
+Monitoring biasu jest kwartalny, idempotentny w obrębie kwartału, a jego progi ustalono,
+zanim ktokolwiek zobaczył wynik: korelacja z płcią powyżej 0,2 co do wartości
+bezwzględnej, dysproporcja pochodzenia powyżej 1,5 albo stosunek wskaźników zatrudnienia
+powyżej 1,5 podnosi flagę. Jednostką analizy jest jeden kanoniczny wynik na zgłoszenie,
+złączony po ocenie automatycznej, żeby kandydat oceniony dwukrotnie nie liczył się dwa
+razy. Wskaźniki nieograniczone są przycinane do typu kolumny z zachowaniem surowej
+wartości w notatce, co zapobiega sytuacji, w której patologiczny stosunek po cichu
+przelewa się w liczbę wyglądającą akceptowalnie.
+
+Prawo do wyjaśnienia z artykułu 86 jest endpointem, a nie obietnicą. Kandydat dociera do
+niego bezpiecznym linkiem z maila i otrzymuje kryteria rubryki wraz z punktacją,
+uzasadnieniem i dowodem przy każdym z nich, końcowy etap i jego powód oraz dane
+kontaktowe do ścieżki ochrony danych, wyrenderowane na żądanie do PDF.
+
+Podstawy prawne są zmapowane cel po celu, a nie założone. Zgłoszenie na konkretne
+stanowisko opiera się na działaniach przed zawarciem umowy, przechowywanie na potrzeby
+obrony przed roszczeniami na prawnie uzasadnionym interesie i jest ograniczone do
+sześciu miesięcy jako odczyt ostrożny, a baza talentów wymaga wyraźnej zgody, sięga
+najwyżej dwudziestu czterech miesięcy i odnawia zgodę automatycznie.
+
+## Rezultat
+
+System pracuje na współdzielonej infrastrukturze obok pozostałych aplikacji wewnętrznych
+grupy, z własnymi klientami w realmie, własnym schematem i tym samym wzorcem wdrożenia,
+który zespół utrzymania już zna. Oceny skutków wymagane przed produkcją, zarówno ta
+dotycząca ochrony danych, jak i ta dotycząca praw podstawowych, traktujemy jako warunek
+uruchomienia, nie jako dokument wytwarzany po fakcie.
+
+Koszt tego wszystkiego warto nazwać wprost. System obsługuje się wolniej niż taki, który
+filtruje automatycznie, a kolejka przeglądu musi mieć obsadę, żeby całość w ogóle
+działała. W zamian organizacja dostaje proces rekrutacyjny, w którym każdą decyzję
+wspartą przez AI da się odtworzyć, wyjaśnić kandydatowi i przekazać organowi nadzoru bez
+uprzedniego projektu naprawczego.
+
+## Wnioski
+
+Spisanie zakazów przed funkcjami to najbardziej wartościowa godzina w projekcie tego
+rodzaju. Zakaz jest twierdzeniem o kodzie, który nie ma prawa istnieć, i ogranicza
+projekt w sposób, w jaki zasada wyrażona jako wartość nigdy tego nie zrobi.
+
+Drugi wniosek brzmi tak, że warto opierać się na tych kontrolach zgodności, które
+sprawdzi maszyna. Nadzór ludzki, wyjaśnialność i niedyskryminację łatwo zadeklarować w
+dokumencie polityki i trudno wykazać podczas kontroli. Sprawdzenie zawierania się
+łańcucha, hash-chain i próg ustalony z góry zamieniają każde z tych zobowiązań w coś, co
+albo się utrzymuje, albo przewraca w sposób widoczny.

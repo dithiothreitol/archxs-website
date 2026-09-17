@@ -1,0 +1,109 @@
+---
+title: "An export engine assembled almost entirely from systems that already existed"
+summary: "How to build market expansion tooling that reuses the model clients, the document storage, the signature service and the correspondence register belonging to three other internal systems, and adds only the part that was genuinely new."
+sector: "Pet food manufacturing, export and market expansion"
+period: "2026"
+disclosure: "anonymised"
+metrics:
+  - label: "New infrastructure"
+    value: "None — three existing systems supply the capabilities"
+  - label: "Operator interface"
+    value: "A messaging conversation with an explicit dialogue state machine"
+  - label: "Human gate"
+    value: "No correspondence to authorities or distributors leaves unapproved"
+  - label: "Analytical access"
+    value: "Read-only role restricted to published views"
+capabilities:
+  - "Applied AI"
+  - "Business processes"
+  - "Enterprise architecture"
+stack:
+  - "Python 3.12, FastAPI"
+  - "Claude models for synthesis and classification"
+  - "Embeddings with vector search"
+  - "Web research connectors"
+  - "Document storage, mail and e-signature via an internal API"
+  - "PostgreSQL schema on the shared instance"
+  - "WhatsApp gateway"
+order: 18
+---
+
+## Context
+
+A pet food manufacturer expanding into foreign markets needs a repeatable operational
+process rather than a series of one-off efforts: identifying target regions, researching
+regulatory and registration requirements, building a picture of distributors and retail
+structures, preparing and sending correspondence, tracking what was sent to whom and
+what came back, and keeping the whole thing in a state somebody can pick up after a gap.
+
+Alongside it, an inbound research system already covered product and market research for
+the R&D side, and this is the outbound counterpart.
+
+## Problem
+
+A project of this shape ordinarily acquires its own everything. It needs model access,
+so it configures a provider. It needs web research, so it takes out subscriptions. It
+needs somewhere to keep documents, a way to send and receive mail, a way to have things
+signed, a record of correspondence, a database, an identity provider and a channel to
+reach the operator. By the time it is running it has quietly become a tenth internal
+platform, and the cost of maintaining it arrives twelve months later when whoever built
+it has moved on.
+
+Every one of those capabilities already existed somewhere in the estate, held by systems
+built for other purposes and maintained by the same small team.
+
+## Approach
+
+The project deploys no infrastructure of its own, and that was decided before the first
+module. Model clients, embeddings, web research connectors and tracing come from the
+research system through a bridge module rather than being reimplemented. Storage,
+inbound and outbound mail, electronic signature, the audit trail and the correspondence
+case entity come from the document workflow platform through its API and a webhook for
+case events. The database schema, the cache, the identity provider, the observability
+layer and the messaging gateway come from the shared assistant platform on the common
+network.
+
+What this project actually contains is the part that is genuinely its own: the region
+definitions, the pillar modules that carry the expansion process, the schema and the
+views, the prompts, and the operator layer.
+
+The operator layer is a conversation. Someone running an expansion works through a
+messaging channel with an explicit dialogue state machine and a session store behind it,
+rather than through a web application they would have to remember to open. That decision
+follows the same reasoning as the event ordering system beside it, and it reuses the
+same gateway.
+
+A human gate sits on everything that leaves. The AI researches, synthesises, classifies
+and drafts, and it does not send correspondence to authorities or distributors on its
+own. Given that the outputs here are letters to regulators and first approaches to
+potential partners, an autonomous send is a category of mistake with no clean recovery.
+
+Model selection is explicit rather than incidental, with a capable model for synthesis
+and drafting, a small fast one for classification, and a separate embedding model for
+vector search, which keeps the cost profile of a research run predictable.
+
+Analytical access follows least privilege in a concrete way. The agent layer used for
+exploration holds a read-only role with select permission on published views only, so an
+exploratory query cannot reach the underlying tables.
+
+## Outcome
+
+All the pillars of the expansion process are implemented and deployed, running as a
+service on the shared network beside the systems it borrows from, with migrations
+written to be idempotent and applied through a script rather than by hand. The genuinely
+new code is a fraction of what an equivalent standalone system would have required, and
+the capabilities it borrows are maintained once for the whole estate.
+
+## What it taught us
+
+The cost of an internal system is dominated by the infrastructure it decides to own.
+Reusing a model gateway, a document store and a signature service across several
+applications takes a deliberate boundary and an internal API, and the return appears
+every time a new project starts and finds those already solved.
+
+The second lesson concerns where reuse stops being sensible. The bridge to the research
+system is a code-level dependency, which is convenient and creates coupling that has to
+be watched, while the document platform is reached through its API and a webhook, which
+costs more to write and leaves the two free to change independently. Choosing
+differently for the two was the right answer here, and it was a judgement about how each
+relationship was likely to age rather than a rule applied uniformly.

@@ -522,6 +522,365 @@ guide lines, thin ink linework, one accent colour.
 ${ARCHXS_STYLE_GUIDE}`,
   },
 
+  {
+    id: "work-planning",
+    outputPath: "img/work/reproducible-production-planning.png",
+    width: 1600,
+    height: 900,
+    aspectRatio: "16:9",
+    prompt: `SCENE: An axonometric drawing of a sealed archive canister lying open on a
+drafting table, with a rolled drawing sheet half withdrawn from it. To the right,
+the same sheet lies unrolled and flat, showing a horizontal schedule of solid
+rectangular bars arranged in rows on a ruled baseline. Thin registration lines
+with small cross marks run between the rolled sheet and the flat one, aligning
+them edge to edge as a copy check would. One bar in the schedule is filled in
+drafting red-orange. A small wax-style seal disc rests on the canister lid.
+IMPORTANT: the two sheets must read as the same drawing verified against itself,
+calm and archival; the canister must read as a sealed container, not as a pipe.
+CRITICAL: the drawing carries no labels, no callouts, no lettering and no digits
+of any kind, including on the schedule bars and the seal.
+BACKGROUND: drafting paper, faint grid, generous empty space.
+TECHNICAL: 16:9, axonometric, thin ink linework, one accent colour.
+${ARCHXS_STYLE_GUIDE}`,
+  },
+
+  {
+    id: "work-packing",
+    outputPath: "img/work/carton-packing-operator-approval.png",
+    width: 1600,
+    height: 900,
+    aspectRatio: "16:9",
+    prompt: `SCENE: An axonometric cutaway of a rectangular shipping carton with its
+near wall removed, revealing solid rectangular blocks of several sizes packed
+inside in a precise, deliberate arrangement, each block drawn with its own
+contour and resting on the one beneath it. Around one block a light dashed
+bounding cage is drawn with dimension lines and end ticks along its three edges,
+and that cage is the single drafting red-orange element. To the right, a small
+upright rectangular panel the proportions of a handheld device shows the same
+stack redrawn in plain outline, as a preview would. Dimension lines with end
+ticks run beneath the carton.
+IMPORTANT: the packing must read as measured and validated, with blocks clearly
+supported and never floating or overlapping; the upright panel must read as a
+plain screen with no icons.
+CRITICAL: the drawing carries no labels, no callouts, no lettering and no digits
+of any kind, including on the panel.
+BACKGROUND: drafting paper, faint grid, generous empty space.
+TECHNICAL: 16:9, axonometric cutaway, thin ink linework, one accent colour.
+${ARCHXS_STYLE_GUIDE}`,
+  },
+
+  {
+    id: "work-recruitment",
+    outputPath: "img/work/high-risk-ai-recruitment.png",
+    width: 1600,
+    height: 900,
+    aspectRatio: "16:9",
+    prompt: `SCENE: A single document sheet lies flat in orthographic plan, ruled with
+plain horizontal lines standing in for text. One rectangular window has been cut
+clean out of the sheet, leaving a crisp aperture with hatched cut edges. The
+removed rectangle rests on a small card beside the sheet, and a thin leader line
+with end ticks connects the card back to the aperture it came from, matching them
+exactly. The card outline is drafting red-orange. Below, a short horizontal chain
+of small identical flat plates is drawn linked edge to edge, each overlapping the
+next by a fixed amount.
+IMPORTANT: the cut fragment and the aperture must read as an exact match in size
+and proportion; the chain below must read as rigid and evenly linked.
+CRITICAL: the drawing carries no labels, no callouts, no lettering and no digits
+of any kind — the ruled lines are plain rules, never readable text.
+BACKGROUND: drafting paper, faint grid, generous empty space.
+TECHNICAL: 16:9, orthographic plan with hatched cut edges, thin ink linework, one
+accent colour.
+${ARCHXS_STYLE_GUIDE}`,
+  },
+
+  {
+    id: "work-designsystem",
+    outputPath: "img/work/cross-platform-design-system.png",
+    width: 1600,
+    height: 900,
+    aspectRatio: "16:9",
+    prompt: `SCENE: A two-by-two matrix of four identical square tiles set out on a
+drafting sheet with even gaps, drawn flat in orthographic plan. Each tile is a
+plain square panel carrying a smaller concentric square centred on it, and each
+of the four pairs is rendered in a different flat tonal combination drawn from
+muted steel blue and warm grey, light fill with dark inner square or the reverse.
+In one tile alone the inner square is left as an open outline in drafting
+red-orange, standing out from the other three. A slim vertical comparison scale
+with graduated tick marks runs down the right-hand side of the matrix, and a
+bracket with end ticks spans one tile from its outer edge to its inner square.
+IMPORTANT: the four tiles must be identical in geometry and differ only in tonal
+pairing; the composition must read as a systematic variant sheet.
+CRITICAL: the drawing carries no labels, no callouts, no lettering and no digits
+of any kind, including on the scale.
+BACKGROUND: drafting paper, faint grid, wide empty margins.
+TECHNICAL: 16:9, orthographic plan, thin ink linework, one accent colour.
+${ARCHXS_STYLE_GUIDE}`,
+  },
+
+  {
+    id: "work-feedcompliance",
+    outputPath: "img/work/feed-compliance-deterministic-core.png",
+    width: 1600,
+    height: 900,
+    aspectRatio: "16:9",
+    prompt: `SCENE: An exploded axonometric of three horizontal layers separated
+along thin dashed vertical guide lines. The lowest layer is a flat plate with
+several small connector spigots along its underside. The middle layer is a solid
+machined block, heavier than the others, drawn in vertical section with hatched
+cut faces so its mass is visible. The top layer is an open lattice frame, light
+and airy, clearly not solid. A funnel sits above the stack, its spout aimed at
+the solid middle block rather than at the lattice. To the right, mounted on a
+small upright panel, a single circular instrument dial with a needle and a
+graduated scale sits at a definite reading. The funnel is drafting red-orange.
+IMPORTANT: the middle block must read as dense and machined, the top layer as
+open latticework; the funnel must clearly feed the solid block.
+CRITICAL: the drawing carries no labels, no callouts, no lettering and no digits
+of any kind, including on the dial face.
+BACKGROUND: drafting paper, faint grid, generous empty space.
+TECHNICAL: 16:9, exploded axonometric with hatched section, thin ink linework,
+one accent colour.
+${ARCHXS_STYLE_GUIDE}`,
+  },
+
+  {
+    id: "work-maintenance",
+    outputPath: "img/work/maintenance-cmms-shopfloor.png",
+    width: 1600,
+    height: 900,
+    aspectRatio: "16:9",
+    prompt: `SCENE: An axonometric technical drawing of an industrial machine
+assembly, compact and boxy, shown with one quarter cut away in section with
+hatched cut faces so a geared shaft inside is visible. Mounted on its outer
+casing is a circular counter dial with a needle and a graduated scale. A thin
+leader line with an end tick runs from that dial down to a neat fanned stack of
+small rectangular cards resting on the table below. The topmost card is outlined
+in drafting red-orange. Dimension lines with end ticks run along the base of the
+machine.
+IMPORTANT: the machine must read as a measured technical object on a drafting
+sheet, never as a futuristic robot; the cards must read as plain blank cards.
+CRITICAL: the drawing carries no labels, no callouts, no lettering and no digits
+of any kind, including on the dial face and the cards.
+BACKGROUND: drafting paper, faint grid, generous empty space.
+TECHNICAL: 16:9, axonometric with hatched section, thin ink linework, one accent
+colour.
+${ARCHXS_STYLE_GUIDE}`,
+  },
+
+  {
+    id: "work-accounting",
+    outputPath: "img/work/group-accounting-ksef.png",
+    width: 1600,
+    height: 900,
+    aspectRatio: "16:9",
+    prompt: `SCENE: A flat document sheet drawn in orthographic plan, ruled into a
+regular grid of small rectangular cells, a few of them filled solid. A thin
+leader line runs from one filled cell across to a small solid rectangular slug
+resting on the table, and from there into a gate valve drawn in section, its
+plate lowered across the channel so the path is closed. Beyond the valve stand
+three identical upright blocks of equal size, set apart with even gaps, each
+carrying a small plain plate on its face. The valve plate is drafting red-orange.
+IMPORTANT: the valve must clearly read as shut, and the three blocks as separate
+and evenly spaced, never touching.
+CRITICAL: the drawing carries no labels, no callouts, no lettering and no digits
+of any kind — the grid cells are plain rectangles, never readable figures.
+BACKGROUND: drafting paper, faint grid, generous empty space.
+TECHNICAL: 16:9, orthographic plan with a sectioned valve, thin ink linework, one
+accent colour.
+${ARCHXS_STYLE_GUIDE}`,
+  },
+
+  {
+    id: "work-fleet",
+    outputPath: "img/work/fleet-reminders-that-persist.png",
+    width: 1600,
+    height: 900,
+    aspectRatio: "16:9",
+    prompt: `SCENE: A delivery van drawn in plain orthographic side elevation as a
+precise technical object with thin contour lines and flat panels, resting on a
+ruled baseline with dimension lines and end ticks beneath it. Set beside it on a
+small upright panel is a circular odometer dial with a needle and a graduated
+scale. A continuous loop arrow, drawn as a smooth closed circuit with a single
+arrowhead, runs from the dial out to a small flat tray holding a plain sealed
+envelope and back again to the dial. Below the baseline a horizontal rule carries
+three evenly spaced upright threshold markers of decreasing height. The nearest
+marker is drafting red-orange.
+IMPORTANT: the loop must read as a repeating circuit that returns on itself; the
+van must read as a measured drawing, never as an advertisement.
+CRITICAL: the drawing carries no labels, no callouts, no lettering, no digits and
+no badges of any kind, including on the van body and the dial face.
+BACKGROUND: drafting paper, faint grid, generous empty space.
+TECHNICAL: 16:9, orthographic elevation, thin ink linework, one accent colour.
+${ARCHXS_STYLE_GUIDE}`,
+  },
+
+  {
+    id: "work-fieldsales",
+    outputPath: "img/work/field-sales-offline-first.png",
+    width: 1600,
+    height: 900,
+    aspectRatio: "16:9",
+    prompt: `SCENE: An axonometric drawing of a small upright rectangular panel with
+the proportions of a handheld device, standing on a shelf. Directly beneath it,
+connected by a short solid coupling drawn with a firm double line, sits a compact
+closed cabinet with a single drawer, clearly local and attached. Rising away to
+the upper right, a long lattice mast stands at a distance, and the line running
+toward it is drawn as a thin dashed leader that stops short and does not connect.
+In the foreground two flat identical plates lie side by side, joined edge to edge
+by a bracket with end ticks. That bracket is drafting red-orange.
+IMPORTANT: the coupling to the cabinet must read as solid and complete, the run
+to the mast as deliberately broken; the two plates must read as a matched pair.
+CRITICAL: the drawing carries no labels, no callouts, no lettering, no digits and
+no icons of any kind, including on the panel face.
+BACKGROUND: drafting paper, faint grid, generous empty space.
+TECHNICAL: 16:9, axonometric, thin ink linework, one accent colour.
+${ARCHXS_STYLE_GUIDE}`,
+  },
+
+  {
+    id: "work-eventdesk",
+    outputPath: "img/work/event-ordering-over-whatsapp.png",
+    width: 1600,
+    height: 900,
+    aspectRatio: "16:9",
+    prompt: `SCENE: A plain rounded rectangular panel with a small tail on its lower
+left, drawn flat as a message form and ruled with blank horizontal lines. Thin
+leader lines with end ticks fan out from it to a horizontal shelf rail on which
+four closed rectangular cartons stand in a row. Above each carton hangs a small
+circular dial with a needle and a graduated scale, each needle at a different
+reading. A light rectangular frame with corner registration brackets encloses the
+whole shelf rail, as a measuring instrument frames a subject. One carton is
+outlined in drafting red-orange.
+IMPORTANT: the cartons must read as plain closed boxes with no packaging artwork;
+the enclosing frame must read as a registration frame, not as a picture border.
+CRITICAL: the drawing carries no labels, no callouts, no lettering and no digits
+of any kind, including on the message panel, the cartons and the dial faces.
+BACKGROUND: drafting paper, faint grid, generous empty space.
+TECHNICAL: 16:9, orthographic with slight axonometric depth on the cartons, thin
+ink linework, one accent colour.
+${ARCHXS_STYLE_GUIDE}`,
+  },
+
+  {
+    id: "work-export",
+    outputPath: "img/work/export-expansion-engine.png",
+    width: 1600,
+    height: 900,
+    aspectRatio: "16:9",
+    prompt: `SCENE: An exploded axonometric assembly. At the centre a rectangular
+open frame waits to be filled, drawn as a light outline with empty bays inside
+it. From three separate compact modules standing apart at the left, upper right
+and lower right, solid blocks travel inward along thin dashed assembly guide
+lines toward the bays that match them, each block clearly originating from one of
+the modules. A single small block sits already seated inside the central frame
+and is the one part drawn as new, filled in drafting red-orange. In the
+foreground a plain sealed envelope lies flat with a single horizontal bar drawn
+across it, holding it closed.
+IMPORTANT: the borrowed blocks must clearly belong to the outer modules and the
+central frame must read as mostly empty and receiving; the bar must read as a
+deliberate hold.
+CRITICAL: the drawing carries no labels, no callouts, no lettering and no digits
+of any kind.
+BACKGROUND: drafting paper, faint grid, wide empty margins.
+TECHNICAL: 16:9, exploded axonometric, dashed guide lines, thin ink linework, one
+accent colour.
+${ARCHXS_STYLE_GUIDE}`,
+  },
+
+  {
+    id: "work-marketing",
+    outputPath: "img/work/multi-brand-marketing-automation.png",
+    width: 1600,
+    height: 900,
+    aspectRatio: "16:9",
+    prompt: `SCENE: An axonometric drawing of a single machined manifold block with
+one inlet pipe entering it from the left. From the manifold, four identical
+outlet pipes branch away, each terminating in its own closed sealed chamber drawn
+as a compact box with a bolted lid and a small hand valve on top. The four
+chambers are set well apart with even gaps and no connection between them. One
+valve is drafting red-orange. Dimension lines with end ticks run beneath the
+manifold.
+IMPORTANT: the four chambers must read as fully separate and sealed, with no pipe
+or line running between them; the manifold must read as a single machined part.
+CRITICAL: the drawing carries no labels, no callouts, no lettering and no digits
+of any kind, including on the valves and lids.
+BACKGROUND: drafting paper, faint grid, generous empty space.
+TECHNICAL: 16:9, axonometric, thin ink linework, one accent colour.
+${ARCHXS_STYLE_GUIDE}`,
+  },
+
+  {
+    id: "work-wms",
+    outputPath: "img/work/warehouse-system-second-warehouse.png",
+    width: 1600,
+    height: 900,
+    aspectRatio: "16:9",
+    prompt: `SCENE: An axonometric drawing of a warehouse racking bay, drawn as a
+clean open frame of uprights and horizontal beams dividing it into a regular grid
+of individual bays, a few of them holding plain rectangular pallets. Immediately
+beside it, aligned on the same baseline, stands a second racking bay of identical
+geometry drawn entirely as a light dashed outline, clearly planned rather than
+built. In the foreground rests a small ratchet wheel with a pawl engaged against
+its teeth, permitting motion in one direction only. The pawl is drafting
+red-orange. Dimension lines with end ticks span both bays.
+IMPORTANT: the second bay must read as a dashed projection of the first, not as a
+faded copy; the ratchet must read as a precise mechanical detail.
+CRITICAL: the drawing carries no labels, no callouts, no lettering and no digits
+of any kind.
+BACKGROUND: drafting paper, faint grid, generous empty space.
+TECHNICAL: 16:9, axonometric, dashed guide lines, thin ink linework, one accent
+colour.
+${ARCHXS_STYLE_GUIDE}`,
+  },
+
+  {
+    id: "work-projectcrm",
+    outputPath: "img/work/project-crm-build-vs-adopt.png",
+    width: 1600,
+    height: 900,
+    aspectRatio: "16:9",
+    prompt: `SCENE: A drafting sheet seen flat in orthographic plan, laid out as a
+single vertical column of identical rectangular slots with even gaps. The upper
+slots are filled solid, the middle slots are drawn as light dashed outlines still
+waiting, and the three lowest slots are drawn as plain outlines each struck
+through by a single firm diagonal bar. Those three diagonal bars are the only
+drafting red-orange elements. Below the column, a horizontal rail runs across the
+sheet carrying evenly spaced upright tick marks, with a small solid marker
+travelling along it.
+IMPORTANT: the three states must be immediately distinguishable — solid, dashed
+and struck through; the struck slots must read as settled decisions, never as
+errors or deletions.
+CRITICAL: the drawing carries no labels, no callouts, no lettering and no digits
+of any kind, and the slots contain no text.
+BACKGROUND: drafting paper, faint grid, wide empty margins.
+TECHNICAL: 16:9, orthographic plan, thin ink linework, one accent colour.
+${ARCHXS_STYLE_GUIDE}`,
+  },
+
+  {
+    id: "work-commerce",
+    outputPath: "img/work/commerce-platform-erp-boundary.png",
+    width: 1600,
+    height: 900,
+    aspectRatio: "16:9",
+    prompt: `SCENE: A single building drawn in vertical cross section with hatched
+cut faces, standing on one continuous foundation slab. Inside, a solid dividing
+wall runs from the slab clean up to the roof, splitting the interior into two
+separate wings with no door, opening or passage anywhere through it. Each wing
+carries its own bolt lock plate mounted on its outer face, and each wing has its
+own separate entrance at ground level. Running horizontally along the foundation
+beneath both wings is a single continuous service pipe that passes under the
+dividing wall and serves both sides. The dividing wall is drafting red-orange.
+IMPORTANT: the dividing wall must be unmistakably unbroken from slab to roof,
+while the pipe beneath clearly runs the full width; the building must read as an
+architectural section, calm and measured.
+CRITICAL: the drawing carries no labels, no callouts, no lettering and no digits
+of any kind.
+BACKGROUND: drafting paper, faint grid, generous empty space.
+TECHNICAL: 16:9, orthographic cross section with hatched cut faces, thin ink
+linework, one accent colour.
+${ARCHXS_STYLE_GUIDE}`,
+  },
+
   // ── Method ──────────────────────────────────────────────────────────────
   {
     id: "method-loop",

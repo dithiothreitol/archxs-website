@@ -1,0 +1,123 @@
+---
+title: "Plan produkcyjny, który po roku nadal da się odtworzyć"
+summary: "Jak zbudować planowanie i utrzymanie ruchu na solverze ograniczeń tak, żeby decyzję harmonogramową sprzed miesięcy dało się wygenerować ponownie co do bajta, a najgroźniejszy błąd w systemie nie mógł przejść przy zielonych testach."
+sector: "Produkcja spożywcza, planowanie i utrzymanie ruchu"
+period: "2026"
+disclosure: "anonymised"
+metrics:
+  - label: "Odtwarzalność"
+    value: "Ten sam kanoniczny ładunek, seed i wersja solvera dają identyczny plan"
+  - label: "Wejścia solvera"
+    value: "Każde uruchomienie utrwalone append-only, niezmienność egzekwuje baza"
+  - label: "Zmierzony rozrzut"
+    value: "144–168 pozycji planu z identycznej treści w innej kolejności"
+  - label: "Pokrycie"
+    value: "367 modułów testowych, testy własnościowe solvera"
+capabilities:
+  - "Architektura korporacyjna"
+  - "Procesy biznesowe"
+  - "Applied AI"
+  - "Physical AI"
+  - "Wytwarzanie oprogramowania"
+stack:
+  - "ISA-95 (APS/MOM)"
+  - "OR-Tools CP-SAT"
+  - "Python 3.12, FastAPI"
+  - "PostgreSQL, row-level security"
+  - "TimescaleDB"
+  - "OPC UA, MQTT / Sparkplug B"
+  - "Keycloak"
+  - "Hypothesis, testcontainers"
+order: 7
+---
+
+## Kontekst
+
+Producent spożywczy planuje jednocześnie w kilku horyzontach. Planowanie sprzedaży i
+operacji nadaje kształt kwartałowi, zgrubna weryfikacja zdolności konfrontuje go z
+liniami, harmonogram główny przekłada to na tygodnie, a warstwa harmonogramowania
+skończonego zamienia tygodnie w zlecenia na konkretne maszyny. Wokół tego stoi
+utrzymanie ruchu, grafiki zmianowe, stany magazynowe i telemetria spływająca z hali.
+Przed tym wdrożeniem te decyzje mieszkały w arkuszach i w osądzie kilku osób, które
+robiły to na tyle długo, że nosiły ograniczenia w pamięci.
+
+## Problem
+
+Systemy planistyczne ocenia się zwykle po jakości planu, który produkują, i jest to
+rozsądne kryterium wyboru. W zakładzie podlegającym audytom, gdzie opublikowany plan
+angażuje zakupy surowca i obsadę agencyjną na kilka tygodni w przód, równie ważna
+okazuje się druga własność: czy plan da się wyjaśnić po fakcie. Kiedy ktoś pyta w
+listopadzie, dlaczego tydzień trzydziesty czwarty wyglądał tak, a nie inaczej,
+satysfakcjonującą odpowiedzią jest ponowne uruchomienie, które ląduje na tym samym
+wyniku; wspomnienie osoby planującej jest warte niewiele.
+
+Solver ograniczeń utrudnia to bardziej, niż się początkowo wydaje. Funkcja celu
+dopuszcza wiele optimów o identycznej ocenie, a przeszukiwanie jest wrażliwe na
+kolejność, w jakiej zmienne i ograniczenia wchodzą do modelu. Dwa uruchomienia na tych
+samych faktach biznesowych potrafią więc dać widocznie różne harmonogramy, przy czym oba
+pozostają w pełni poprawne. Matematyce to nie przeszkadza, a osobie, która ma jeden z
+nich obronić, pomaga niewiele.
+
+## Podejście
+
+Każdą decyzję planistyczną podejmuje OR-Tools CP-SAT, a model językowy w systemie nie
+decyduje o niczym; odpowiada na pytania o plan i pomaga go czytać. Nic nie trafia do ERP
+ani do MES bez zatwierdzenia przez osobę z odpowiednią rolą, a każda operacja
+modyfikująca dane zostawia wpis w append-only audit logu z hash-chainem.
+
+Twierdzenie o odtwarzalności sformułowaliśmy na tyle precyzyjnie, żeby dało się je
+testować: identyczny kanoniczny ładunek, ten sam seed, ta sama wersja solvera i jeden
+wątek roboczy dają wynik identyczny co do bajta. Całą pracę wykonuje tu słowo
+„kanoniczny", ponieważ postać kanoniczną buduje jedna funkcja i ta sama funkcja karmi
+zarówno hash wejścia, jak i budowniczego modelu. Gdyby hash liczono z jednego porządku,
+a model budowano z drugiego, system wyprodukowałby zgodny hash obok innego planu, a
+zestaw testów nie zgłosiłby niczego. Wyeliminowanie takiego scenariusza było całym
+powodem, dla którego obie ścieżki trzymamy na jednym kodzie.
+
+Wejścia solvera są utrwalane, a nie rekonstruowane. Dedykowana tabela przechowuje pełny
+ładunek w JSON razem z jego hashem, zapisywana wyłącznie insertem przez pięć serwisów
+wywołujących solver i odczytywana z powrotem przez warstwę harmonogramowania.
+Niezmienność egzekwuje baza zamiast konwencji: jedna migracja zamroziła kolumnę ładunku
+i nadała hashowi treści charakter write-once, późniejsza zablokowała usuwanie, także
+kaskadą z wersji planu, i zamroziła powiązanie wejścia z wersją, do której należy.
+
+Dwa ograniczenia są opisane, a nie po cichu pominięte. Planów sprzed kanonizacji nie da
+się odtworzyć, przy czym powodem jest kolejność, a nie brak danych — wejścia istnieją,
+tyle że te same wejścia dawały różne plany. Hashe migawek zapisane przed tą datą
+zawierają losowy identyfikator, co czyni je nieporównywalnymi z czymkolwiek, również
+między sobą.
+
+Pomiar potraktowaliśmy z tą samą ostrożnością, ponieważ liczba pozycji w planie
+wyglądała na oczywistą metrykę regresyjną do momentu, w którym ją zmierzyliśmy:
+identyczna treść migawki podana w innej kolejności dawała od 144 do 168 pozycji przy
+niezmienionej wartości funkcji celu, czyli rozrzut rzędu szesnastu procent. Testy
+regresyjne porównują sztuki, ważone niepokrycie i pokrycie per źródło, a liczbę pozycji
+traktujemy jako szum do czasu, aż model dostanie człon czasowy.
+
+Strona hali trzyma tę samą dyscyplinę w innym materiale. Model dziedzinowy jest zgodny z
+ISA-95, dzięki czemu słowa zasób, operacja i zlecenie znaczą jedno w rozmowie z
+automatykiem, w interfejsie i w schemacie bazy. Sieć operacyjna jest odseparowana od IT,
+jedynym przejściem są edge gateway i OPC UA w trybie sign and encrypt, a telemetria
+ląduje w składzie szeregów czasowych obok danych biznesowych, nie w środku nich.
+
+## Rezultat
+
+Platforma pracuje produkcyjnie jako cienki deployment na współdzielonej infrastrukturze,
+a moduły planistyczny i utrzymania ruchu rozwijają się równolegle w dwóch strumieniach
+pracujących pod ścisłymi granicami modułów i na jednym łańcuchu migracji. Pokrywa ją
+około 367 modułów testowych, w tym testy własnościowe solvera i testy integracyjne na
+kontenerach. Wejścia solvera utrwalamy od wiosny 2026, kanonizacja weszła latem tego
+samego roku i od niej odtwarzalność obowiązuje w przód.
+
+## Wnioski
+
+Odtwarzalność jest własnością całego potoku, nie solvera. Solver był deterministyczny od
+pierwszego dnia; brakowało gwarancji, że te same fakty biznesowe dotrą do niego w tym
+samym kształcie, a ta gwarancja mieszka w serializacji, w składowaniu i w ograniczeniach
+bazy danych.
+
+Drugi wniosek dotyczy tego, przeciwko jakim błędom warto projektować. W systemie
+optymalizacyjnym kosztowna klasa usterki produkuje wiarygodny artefakt z poprawnymi
+metadanymi, bo nic dalej w łańcuchu nie ma powodu go kwestionować. Testy wyłapują
+wyniki, które wyglądają źle, więc pracą opłacalną na wczesnym etapie jest likwidacja
+ścieżek, na których zły wynik może wyglądać dobrze.

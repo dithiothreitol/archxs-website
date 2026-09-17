@@ -1,0 +1,113 @@
+---
+title: "Zamówienie, które zaczyna się wiadomością na WhatsAppie, a kończy w ERP"
+summary: "Jak zamienić swobodnie napisane zapotrzebowania na towar targowy i samplingowy w pozycje zamówienia w ERP, gdzie każdy proponowany produkt niesie pewność i zacytowany fragment oryginalnej wiadomości, a katalog zostaje zamrożony w momencie ekstrakcji."
+sector: "Produkcja karm, targi i sampling"
+period: "2026"
+disclosure: "anonymised"
+metrics:
+  - label: "Punkt wejścia"
+    value: "Wiadomość w języku naturalnym, bez formularza do wypełnienia"
+  - label: "Każda propozycja"
+    value: "Niesie ocenę pewności i zacytowany fragment zapotrzebowania"
+  - label: "Odtwarzalność"
+    value: "Migawka katalogu przy ekstrakcji, model i prompt zalogowane"
+  - label: "Granica"
+    value: "Osobny kontekst, odczyt-only na schemacie plannera"
+capabilities:
+  - "Applied AI"
+  - "Procesy biznesowe"
+  - "Architektura korporacyjna"
+stack:
+  - "FastAPI, Next.js 15"
+  - "WhatsApp Business API"
+  - "PostgreSQL, audyt z hash-chainem"
+  - "Orkiestracja w Prefect"
+  - "Brama LLM z tracingiem"
+  - "Integracja zamówień z ERP"
+  - "Keycloak, dwie role"
+order: 17
+---
+
+## Kontekst
+
+Producent wysyła towar na targi i eventy samplingowe przez cały rok. Osoba prowadząca
+event potrzebuje towaru na stoisku w konkretnym terminie, a zapotrzebowanie przychodzi
+jako wiadomość: nazwa targów, daty, kilka kodów produktów i kilka opisów towaru, który
+ta osoba zna z wyglądu, a nie z kodu.
+
+Przed tym wdrożeniem dział zamówień przeklejał takie zapotrzebowania z jednego arkusza
+do drugiego, łapał albo przeoczał literówki w krótkich kodach, gubił pozycje opisane
+prozą, bo nie były podane kodem, nie zostawiał w danych firmy śladu, do którego eventu
+zamówienie należy, i nie odsyłał statusu.
+
+## Problem
+
+Kuszącą odpowiedzią jest formularz, który daje osobie prowadzącej event katalog,
+wyszukiwarkę i pola wymagane, dzięki czemu niejednoznaczność znika w punkcie
+wprowadzenia. Przenosi przy tym cały ciężar na kogoś, kto stoi w magazynie albo jedzie
+na obiekt, a zapotrzebowanie i tak będzie przychodzić wiadomością, bo tak ta praca
+naprawdę wygląda.
+
+Przyjęcie swobodnego tekstu oznacza przyjęcie problemu dopasowania. Fraza opisująca
+mokrą karmę dla psa w określonej gramaturze puszki i smaku musi stać się konkretnym
+kodem produktu, a model poproszony o to wyprodukuje kod z pełnym przekonaniem
+niezależnie od tego, czy taki produkt istnieje.
+
+## Podejście
+
+Wiadomość jest tutaj interfejsem, więc osoba prowadząca event pisze, czego potrzebuje,
+system wyciąga event, daty i pozycje, mapuje każdą pozycję na produkt z katalogu i wraca
+tym samym kanałem z interaktywną listą prosząc o potwierdzenie. Każde proponowane
+odwzorowanie niesie ocenę pewności i zacytowany fragment oryginalnej wiadomości, z
+którego powstało, więc osoba weryfikująca widzi, co model czytał, a nie wyłącznie to, co
+wywnioskował. Propozycje poniżej progu pewności idą do działu zamówień po akceptację,
+zamiast wracać do osoby zgłaszającej.
+
+AI proponuje i nie decyduje, co w tej dziedzinie ma precyzyjne znaczenie: żadna pozycja
+zamówienia nie trafia do ERP bez potwierdzenia przez człowieka, a potwierdzenie zapisuje
+się przy konkretnej osobie.
+
+Odtwarzalność obsługujemy tak samo jak w pozostałych systemach. Katalog produktów
+zostaje zamrożony w migawce w momencie ekstrakcji, dzięki czemu odwzorowanie można
+później zbadać wobec katalogu w stanie ówczesnym, a nie obecnym, a model, prompt i
+odpowiedź są logowane przez warstwę tracingu. Szablony wiadomości są wersjonowane, bo
+zmiana sformułowania zmienia to, co ludzie odpisują.
+
+System zbudowaliśmy jako osobny kontekst obok platformy planistycznej, a nie w jej
+wnętrzu, i uzasadnienie warto wypowiedzieć. Język dziedziny jest inny, cykl wydawniczy
+jest inny, a powierzchnia bezpieczeństwa różni się istotnie, ponieważ ta aplikacja
+wystawia publiczny webhook dostawcy komunikatora, czego platforma planistyczna nie robi.
+Katalog i status zamówienia czytamy przez stabilny interfejs odczytu platformy
+planistycznej, a ten system nigdy nie pisze ani do tamtego schematu, ani bezpośrednio do
+ERP.
+
+Prywatność potraktowaliśmy jako dane wejściowe projektu, a nie punkt przeglądu. Osoby
+prowadzące eventy są pracownikami, a ich numery telefonów danymi osobowymi, więc treści
+wiadomości nie leżą w logach w postaci jawnej, a warstwa tracingu niesie odpowiednią
+klasyfikację.
+
+Dostarczanie rozłożyliśmy tak, żeby wartość przyszła przed integracją. Pierwsza faza
+produkuje arkusz, który dział zamówień i tak już importuje, co natychmiast likwiduje
+przeklejanie, a faza późniejsza zapisuje zamówienie do ERP przez outbox z idempotencją.
+Status z ERP wraca do osoby zgłaszającej tym kanałem, od którego zaczęła.
+
+## Rezultat
+
+Zapotrzebowanie, które wcześniej przeklejano między dwoma arkuszami, przychodzi teraz,
+zostaje odwzorowane, potwierdzone przez osoby za nie odpowiadające i ląduje w ERP pod
+kontrahentem i serią eventową, ze śladem łączącym zamówienie z eventem, którego
+dotyczyło, i ze statusem wracającym do osoby, która pytała.
+
+## Wnioski
+
+Spotkanie ludzi na kanale, którego już używają, kosztuje więcej inżynierii niż formularz
+i likwiduje tryb awarii, którego formularz nie zaadresuje, czyli zapotrzebowanie nigdy
+niewprowadzone. Problem ekstrakcji jest realny i jest lepszym problemem niż problem
+stosowania się do zasad, czyli proszenie zajętych ludzi o korzystanie z oprogramowania,
+którego nie lubią.
+
+Drugi wniosek brzmi tak, że sama ocena pewności nie nadaje się do weryfikacji. Liczba
+dopięta do propozycji mówi weryfikującemu, jak bardzo model deklaruje przekonanie, a
+zacytowany fragment źródła mówi, czy ta deklaracja jest cokolwiek warta. Wydanie
+drugiego razem z pierwszym sprawia, że przegląd idzie szybciej niż wykonanie tej pracy
+od nowa.
