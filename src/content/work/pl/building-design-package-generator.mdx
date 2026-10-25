@@ -1,0 +1,113 @@
+---
+title: "Dokumentacja projektowa z jednego pliku, dla projektanta, który nadal ją podpisuje"
+summary: "Jak generować projekt budowlany obiektu przemysłowego, od analizy działki i modelu IFC po rysunki, ścieżkę formalną i tomy, tak żeby projektant z uprawnieniami go sprawdzał, a nie robił od nowa, a każda liczba prowadziła do tekstu przepisu, karty producenta albo jawnego założenia."
+sector: "Grupa produkcyjna, inwestycje i budowa zakładów"
+period: "2026"
+disclosure: "anonymised"
+metrics:
+  - label: "Wejście"
+    value: "Jeden plik projektu i teksty przepisów pobrane z API ELI Sejmu"
+  - label: "Pilot gorzelni"
+    value: "173 wymagania spełnione, 62 braki, 0 błędów; wszystkie 41 pozycji otwartych zewnętrzne"
+  - label: "Typy obiektów"
+    value: "Gorzelnia, biogazownia, hale renderingu, hala magazynowa"
+  - label: "Dowody"
+    value: "778 testów, pięć niezależnych przeglądów przed przekazaniem"
+capabilities:
+  - "Applied AI"
+  - "Procesy biznesowe"
+  - "Wytwarzanie oprogramowania"
+  - "Architektura korporacyjna"
+stack:
+  - "Python 3.12, uv, pydantic"
+  - "IfcOpenShell, IFC4, ifcclash"
+  - "ezdxf (DXF, PDF)"
+  - "shapely, geopandas"
+  - "docxtpl, LibreOffice"
+  - "thermo, chemicals, DWSIM"
+  - "Next.js 16, shadcn/ui"
+  - "Claude: copilot, MCP, plugin Claude Code"
+order: 6
+---
+
+## Kontekst
+
+Grupa produkcyjna przygotowywała jednocześnie kilka inwestycji: gorzelnię zbożową na terenie
+istniejącego zakładu, dwie hale renderingu i małą biogazownię rolniczą. Każda z nich potrzebuje
+projektu budowlanego, czyli projektu zagospodarowania terenu, projektu architektoniczno-budowlanego,
+projektu technicznego, ścieżki decyzji i uzgodnień oraz obliczeń, na których to wszystko stoi. Formę tej
+dokumentacji określa rozporządzenie, a podpisuje ją i odpowiada za nią projektant z uprawnieniami.
+
+## Problem
+
+Biura projektowe rozliczają tę pracę objętością, a większość tej objętości nie jest projektowaniem. To
+czytanie planu miejscowego, ustalanie, jakie decyzje są potrzebne i w jakiej kolejności, przenoszenie
+programu pomieszczeń na rysunki, sprawdzanie odległości między budynkami według przepisów
+przeciwpożarowych i składanie tych samych faktów w kilkanaście dokumentów, które muszą się ze sobą
+zgadzać. Gdy zmienia się jeden parametr, tę zgodność utrzymuje się ręcznie, i właśnie tam się ona sypie.
+
+Oczywista odpowiedź z użyciem AI, model piszący dokumentację, zawodzi na własności najważniejszej.
+Projekt czytają ludzie, którzy szukają paragrafu, na którym opiera się każde zdanie. Model cytujący
+warunki techniczne z pamięci podaje numery paragrafów, które wyglądają poprawnie, a tom z jednym
+zmyślonym odwołaniem jest gorszy od pustej kartki, bo sprawdzający przestaje ufać całej reszcie.
+
+## Podejście
+
+Generator zbudowałem wokół trzech zasad, które egzekwuje kod, a nie prośba w prompcie. Jedno źródło
+prawdy: każdy rysunek, zestawienie i dokument powstaje z jednego pliku projektu i bazy wiedzy, wyników
+nie edytuje się ręcznie, a zmiana parametru przebudowuje cały pakiet. Żadnej liczby bez źródła: parametr
+procesu, odległość czy wymóg ma odwołanie do paragrafu przepisu, literatury albo karty producenta, albo
+jest oznaczony jako założenie i trafia do rejestru, w którym decyzję podejmuje projektant. Przepisy tylko
+z plików: akty pobieram z API ELI Sejmu z datą i adresem, każdy plik wskazuje tekst jednolity, z którego
+pochodzi, i akty zmieniające wydane po nim, a testy odnajdują cytowany fragment każdej reguły dosłownie w
+tekście aktu. Wartości z tabel przepisów żyją jako dane ze źródłem, nigdy jako liczby wpisane w kod.
+
+Rdzeń nie wie nic o konkretnym typie obiektu. Obsługuje działkę i plan miejscowy, bryłę i model IFC,
+strefy pożarowe, wyzwalacze formalne, dokumenty i listę kontrolną kompletności. Wiedza o zakładzie żyje w
+modułach branżowych: gorzelnia z bilansem masy i energii, doborem kolumn, P&ID i strefami zagrożenia
+wybuchem; biogazownia z bilansem substratów, doborem komór i magazynem gazu dopasowanym do okien pracy z
+umowy przyłączeniowej. Warunek na typ obiektu wewnątrz rdzenia traktuję jako błąd projektu. Spójność
+krzyżowa jest bramką builda: oznaczenie pomieszczenia albo urządzenia, które występuje w zestawieniu, a
+nie ma go w P&ID albo w modelu IFC, zatrzymuje generowanie.
+
+Brakujących danych generator nie zgaduje. Trafiają na listę pozycji otwartych z informacją, który dokument
+blokują i kto ma je dostarczyć. Płatnych norm również nie odtwarza; wynik, który jej wymaga, zostaje tak
+oznaczony i czeka na projektanta.
+
+Wokół generatora działa aplikacja webowa, która prowadzi pracownika przez siedem etapów, z kontrolami
+mającymi gotowe poprawki i podgląd skutków przed zapisem. Jej copilot bierze liczby z generatora, przepisy
+z plików aktów, a procedury z wersjonowanych skilli, i proponuje zmiany jako karty do zatwierdzenia. Te
+same skille, subagenci recenzujący i hooki są dostępne jako plugin Claude Code, z przypadkami ewaluacji
+takimi jak cytowanie przepisu bez sięgania do pamięci.
+
+Przed przekazaniem czegokolwiek przeprowadziłem audyt pakietu i samego generatora: pięć niezależnych
+przeglądów, z których każdy potwierdzał ustalenia w kodzie, w tekście aktu albo w pliku wynikowym.
+Znalazł to, co znalazłby projektant, między innymi budynek modułu, który nie spełniał warunków działki, a
+nadal zasilał podsumowanie pakietu, kontrolę bilansu mediów, która z definicji nie mogła wykazać błędu, i
+zbyt wąsko stosowane przepisy o drogach pożarowych i odległościach. Poprawki weszły przed przekazaniem,
+nie po nim.
+
+## Rezultat
+
+Pilot gorzelni trafił do projektantów jedenaście dni po pierwszym commicie jako kompletny pakiet: rysunki
+w klasie zatwierdzonego projektu budowlanego przyjętego za wzorzec, model IFC z podglądem 3D, opisy
+techniczne i raport weryfikacji. Stan to 173 wymagania spełnione, 62 braki i zero błędów, przy 41
+pozycjach otwartych, z których każda czeka na kogoś spoza projektu, na przykład na gestora sieci, zarządcę
+drogi albo badania geotechniczne. Hale renderingu i biogazownia przechodzą przez ten sam rdzeń, a dane
+techniczne i harmonogram robót biogazowni mają zasilać dokumentację kredytową, którą grupa przygotowuje
+dla banku.
+
+Ograniczenia są częścią projektu. Generator niczego nie podpisuje i nie zastępuje osądu projektanta;
+przesuwa jego pracę ze składania na sprawdzanie. Nie zastosuje normy, której nie ma, a jego wiedza o
+przepisach jest dokładnie tak aktualna jak ostatnie pobranie.
+
+## Wnioski
+
+Użyteczna granica dla AI w dziedzinie regulowanej nie przebiega tam, gdzie kończy się dokładność modelu,
+tylko tam, gdzie zaczyna się pytanie o źródło każdego zdania. Gdy każda liczba i każde odwołanie musi
+wskazywać plik, większość tego, co model miałby ochotę wymyślić, nie ma dokąd trafić, a to, co zostaje,
+jest widoczne jako założenie.
+
+Drugi wniosek dotyczy sprawdzania własnego wyniku, zanim zrobi to ktoś inny. Przeglądy znalazły błędy,
+których nie złapały testy, bo testy sprawdzały to, o czym pomyślałem, a audyt czytał pakiet tak, jak
+przeczyta go pierwszy odbiorca.

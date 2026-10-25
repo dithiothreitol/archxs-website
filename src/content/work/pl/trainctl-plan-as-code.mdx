@@ -7,10 +7,10 @@ disclosure: "public"
 metrics:
   - label: "Identyfikowalność"
     value: "Każda reguła z ID źródła, ~60 pozycji"
-  - label: "Dwa interfejsy"
-    value: "CLI i 16 narzędzi MCP na jednym zestawie handlerów"
+  - label: "Interfejsy"
+    value: "CLI, 19 narzędzi MCP, plugin Claude Code i Codex na jednym zestawie handlerów"
   - label: "Dowody"
-    value: "525 testów, backtest na 50 realnych planach"
+    value: "641 testów, backtest na 50 realnych planach"
 capabilities:
   - "Applied AI"
   - "Procesy biznesowe"
@@ -22,9 +22,9 @@ stack:
   - "Plan jako kod w YAML, git"
   - "Solver ograniczeń"
   - "VDOT, modele fizjologiczne"
-  - "Synchronizacja z intervals.icu"
+  - "Synchronizacja z intervals.icu, pliki FIT/TCX/GPX"
   - "Vitest, licencja MIT"
-order: 22
+order: 25
 ---
 
 ## Kontekst
@@ -65,10 +65,10 @@ ryzyka kontuzji, bo używane do tego metryki obciążenia nie wytrzymują konfro
 z literaturą. Nie liczy gotowości ze zmienności rytmu serca, bo wielkość efektu
 jest mała, a przedział ufności przechodzi przez zero; strefy biorą się z wyników
 startowych. I nigdy nie przepisuje po cichu własnego planu: `adapt` zwraca
-propozycje, a ich zastosowanie oznacza edycję profilu i ponowne wygenerowanie,
-więc zmiana w czyimś treningu jest diffem, który ten ktoś zatwierdził. Na
-krawędziach też raczej odmawia, niż zgaduje: poniżej czterech tygodni historii nie
-wyprowadzi profilu, a bez wyniku startowego nie skalibruje stref z odczytów zegarka.
+propozycje, zastosowanie każdej najpierw pokazuje dokładne zmiany, a wynik jest
+diffem, który zatwierdził właściciel planu. Na krawędziach też raczej odmawia,
+niż zgaduje: poniżej czterech tygodni historii nie wyprowadzi profilu, a bez
+wyniku startowego nie skalibruje stref z odczytów zegarka.
 
 Korpus pięćdziesięciu realnych planów trenerskich, około tysiąca trzystu dni od
 jednego trenera, stoi obok badań jako osobne źródło i służy stylowi, a nie
@@ -78,17 +78,31 @@ kalibracji, a zmierzenie rzeczywistych wybiegań usunęło karę w solverze, kt�
 spychała generowane plany od tego, co trener naprawdę robi. Korpus zawiera dane
 osobowe i nie jest dystrybuowany.
 
-Integracja z agentem wynika z tego samego podziału. Szesnaście narzędzi MCP stoi
-na tych samych handlerach, które wywołuje CLI, więc terminal i agent nie mogą się
-rozjechać, a plik instrukcji pisany przy inicjalizacji każe agentowi pytać przed
-przegenerowaniem planu i nigdy nie wymyślać liczb. Model wnosi rozmowę i kontekst,
-co mówi kalendarz, dlaczego tydzień wypadł; silnik wnosi każdą liczbę.
+Integracja z agentem wynika z tego samego podziału. Dziewiętnaście narzędzi MCP
+stoi na tych samych handlerach, które wywołuje CLI, więc terminal i agent nie mogą
+się rozjechać, a plik instrukcji pisany przy inicjalizacji każe agentowi pytać
+przed przegenerowaniem planu i nigdy nie wymyślać liczb. Ten sam silnik jest też
+pluginem Claude Code i Codex, ze skillami trenera generowanymi z tego samego
+tekstu instrukcji i hookiem, który po każdej edycji planu uruchamia jego lint.
+Model wnosi rozmowę i kontekst, co mówi kalendarz, dlaczego tydzień wypadł;
+silnik wnosi każdą liczbę.
+
+Obietnica braku cichych zmian okazała się mieć dziurę, a jej znalezienie wymagało
+uruchomienia każdego polecenia na świeżym katalogu. Przegenerowanie planu,
+udokumentowany krok po dopisaniu nowego wyniku startowego, po cichu porzucało
+przypięte dni, ręczne edycje i zatwierdzone adaptacje. Od wersji 0.4 regeneracja
+dotyka tylko przyszłości, zachowuje wszystko, o czym zdecydował właściciel planu,
+i odmawia nadpisania pliku, którego nie potrafi odczytać, a `diff` pokazuje
+dokładnie to, co regeneracja by zmieniła.
 
 ## Rezultat
 
-Produkt jest publiczny na npm na licencji MIT, ma około pięciuset testów i backtest
+Produkt jest publiczny na npm na licencji MIT, ma ponad sześćset testów i backtest
 na korpusie trenerskim. Działa jako CLI, jako serwer MCP dla dowolnego klienta
-agentowego, synchronizuje się z platformą treningową i eksportuje na zegarki.
+agentowego i jako plugin agenta. Planuje z uwzględnieniem tygodniowego budżetu
+czasu, tygodni po starcie i treningu bez startu docelowego, synchronizuje się z
+platformą treningową albo czyta wyeksportowane pliki z zegarka bez żadnego konta,
+i eksportuje na zegarki, do kalendarza i na papier.
 Repozytorium: [github.com/dithiothreitol/trainctl](https://github.com/dithiothreitol/trainctl).
 
 Koszt tych odmów warto nazwać uczciwie: konkurent, który wyda wskaźnik ryzyka

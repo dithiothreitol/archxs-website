@@ -1,0 +1,110 @@
+---
+title: "Platforma, na którą jedna strona wchodzi raz, a druga musi zaglądać codziennie"
+summary: "Jak zaplanować i zbudować platformę łączącą właścicieli domów z lokalnymi ekipami montującymi fotowoltaikę i magazyny energii, gdy to ekipy decydują, czy mapa będzie pełna, i dlaczego katalog cen przeszedł z jednej z ostatnich faz do rdzenia MVP."
+sector: "Odnawialne źródła energii, platforma dla ekip montażowych"
+period: "2026"
+disclosure: "anonymised"
+metrics:
+  - label: "Klienci"
+    value: "Web, iOS i Android z jednego zestawu wspólnych ekranów"
+  - label: "Języki"
+    value: "Polski i angielski dla klientów, ukraiński i rosyjski dla ekip"
+  - label: "Migracje schematu"
+    value: "79 w pierwszych pięciu tygodniach, każda z dokumentem checkpointu"
+  - label: "Planowany koszt utrzymania"
+    value: "≈ 15–30 € miesięcznie na jednym VPS"
+capabilities:
+  - "Procesy biznesowe"
+  - "Wytwarzanie oprogramowania"
+  - "Architektura korporacyjna"
+  - "Cyberbezpieczeństwo i tożsamość"
+stack:
+  - "Quarkus 3, Java 21, GraphQL"
+  - "PostgreSQL 18, PostGIS"
+  - "Keycloak 26, logowanie kodem z e-maila, TOTP"
+  - "Next.js 16, Expo, Tamagui"
+  - "MapLibre, OpenFreeMap"
+  - "Transakcyjny outbox, Expo Push, Web Push"
+  - "Hetzner, Docker Compose, Caddy"
+order: 14
+---
+
+## Kontekst
+
+Klient z rynku odnawialnych źródeł energii chciał platformy dla dwóch grup odbiorców. Właściciel domu,
+który szuka instalacji fotowoltaicznej, magazynu energii albo pompy ciepła, znajduje na mapie lokalną
+ekipę montażową i prowadzi z nią inwestycję w jednym miejscu. Ekipy dostają lekki CRM, kalendarz, pokój
+inwestycji wspólny z klientem, katalog cen hurtowni i dostęp do usług formalnych, takich jak wnioski do
+operatora sieci i dotacje. Jedna strona WWW, jedna aplikacja mobilna dla obu ról, jeden backend.
+
+## Problem
+
+Mapa ekip jest warta dokładnie tyle, ile jej gęstość. Właściciel domu korzysta z takiej platformy kilka
+razy w życiu, więc wartość, którą znajdzie, zależy od tego, czy ekipy się zarejestrowały, aktualizują
+profile i szybko odpowiadają na zapytania. Ekipy nie zrobią żadnej z tych rzeczy dla narzędzia, które
+otwierają, gdy raz w miesiącu wpadnie zapytanie. Plan, który zaczyna od ścieżki klienta, czyli mapy,
+profilu i kontaktu, a codzienne narzędzia ekipy zostawia na później, dostarcza pustą mapę z
+dopracowaną wyszukiwarką.
+
+Mój pierwszy plan robił mniej więcej to: katalog cen był w szóstej fazie planu sięgającego fazy ósmej.
+Klient przeszedł plan punkt po punkcie i nazwał to błędem produktowym, bo to alerty cenowe miały być
+powodem, dla którego ekipa codziennie otwiera aplikację. Klient miał rację, a ta poprawka zmieniła
+kolejność całej budowy.
+
+Druga trudność polegała na tym, że procesu biznesowego nie dało się domknąć na starcie. Klient powiedział
+wprost, że statusy inwestycji będą doprecyzowywane z prawdziwymi użytkownikami: prośba o konkretne
+zdjęcia przed montażem, sprzęt w drodze, wgranie dokumentów pomontażowych. Pipeline zakodowany na sztywno
+według pierwszej specyfikacji byłby nieaktualny po miesiącu.
+
+## Podejście
+
+Katalog, ręczne promocje, obserwowanie produktów i alerty cenowe przeszły do rdzenia MVP, przed pokój
+inwestycji. Dashboard ekipy stał się centrum aplikacji i zaczyna się od alertów liczonych z istniejących
+danych, a nie zapisywanych: zapytanie bez odpowiedzi od 46 godzin, dwie osoby czekające na telefon, audyt
+o szesnastej, falownik tańszy o kilkaset złotych, brak protokołu w inwestycji. Każdy alert znika, gdy znika
+jego przyczyna, i prowadzi do miejsca, w którym sprawę się załatwia.
+
+Alerty cenowe to miejsce, w którym poprawność kosztuje najwięcej, bo błędny alert uczy ignorować te
+właściwe. Wywołać je mogą tylko zweryfikowane oferty z aktywnych źródeł. Każdy rodzaj alertu, próg ceny,
+koniec promocji, nowa oferta, nowa promocja, spadek ceny, ma własny kursor po pierwszych zatwierdzeniach,
+więc włączenie alertu nie odtwarza historii, a ponownie zatwierdzona oferta nie powiadamia drugi raz. Gdy
+ta sama oferta pasuje do obserwowanego produktu i do obserwowanej kategorii, użytkownik dostaje jedno
+powiadomienie. Doręczenie idzie przez outbox zapisywany w tej samej transakcji co zmiana biznesowa, a
+zadanie wysyłki przed wysłaniem ponownie sprawdza ofertę, obserwację i preferencje kanałów, więc awaria
+dostawcy push nigdy nie cofa zatwierdzenia, a wycofana oferta nie trafia na telefon.
+
+Statusy są danymi. Kod zna fazy i cztery statusy kotwiczne; wszystko pomiędzy żyje w tabelach, które
+administrator może zmieniać, zasilonych każdym statusem wymienionym przez klienta. Prośba o zdjęcia
+dostała od razu pełny model danych, a jej szczegółowe UX świadomie odłożyłem do chwili, gdy będzie na
+czym je testować.
+
+Dwie decyzje wynikały z samych ekip. Pracują po polsku, ukraińsku i rosyjsku, więc strona montera działa w
+tych językach, z cyrylicą w subsetach fontów i kontrolą zgodności kluczy tłumaczeń w CI. A baza ekipy to
+często czyjś dom, więc publiczna projekcja zawiera tylko punkt prezentacyjny, nigdy adres ani
+identyfikatory użytkowników. Wyszukiwanie mierzy rzeczywistą bazę zarówno względem promienia, jak i
+deklarowanego zasięgu, zwraca odległość zaokrągloną do pół kilometra, a strony publiczne renderują się bez
+cache wyników, żeby ukrycie profilu albo decyzja moderacji działały przy następnym żądaniu. Pusty wynik
+wyszukiwania nigdy nie jest wypełniany przykładowymi ekipami.
+
+Platforma powtarza architekturę wcześniejszego marketplace'u, który dostarczyłem: ten sam wzorzec
+tożsamości, potok uploadu i wspólne ekrany web i mobile. Tam, gdzie tamten kod deklarował zasady, których
+w rzeczywistości nie stosował, rozstrzygnąłem każdą jawnie, na przykład umieszczając wszystkie decyzje o
+dostępie w jednej klasie polityki zamiast w setkach adnotacji przy metodach.
+
+## Rezultat
+
+Pięć tygodni po starcie faza fundamentu jest zamknięta, a pozostałe osiem jest częściowo wdrożonych:
+weryfikacja firm i publikacja ekip, wyszukiwanie i kontakt, CRM z zadaniami i przypomnieniami, katalog z
+pięcioma rodzajami alertów cenowych, pokój inwestycji z rozmową, dokumentami, prośbami o zdjęcia i
+formalnościami oraz panel administratora. Dokumentacja projektu mówi wprost, że „wdrożone” oznacza kod i
+opisane testy, a nie gotowość produkcyjną. Testy aparatu i powiadomień push na urządzeniach, produkcyjne
+klucze płatności i SMS oraz samo uruchomienie są jeszcze przed nami.
+
+## Wnioski
+
+Na platformie dwustronnej strona, która wraca codziennie, jest produktem, a strona, która przychodzi raz,
+jest dystrybucją. Kolejność budowy powinna iść za tą stroną, która musi wracać.
+
+Drugi wniosek dotyczy planów. Najcenniejszy przegląd tej architektury przyszedł od klienta, który czytał
+plan na tyle konkretny, że dało się z nim nie zgodzić, aż do fazy, w której mieszkał katalog. Bardziej
+ogólnikowy plan przetrwałby tę lekturę i zawiódł później, w użyciu.

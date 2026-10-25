@@ -1,0 +1,110 @@
+---
+title: "A platform one side visits once and the other has to open every day"
+summary: "How to plan and build a platform connecting homeowners with local photovoltaic and energy storage crews when the crews decide whether the map stays full, and why the price catalogue moved from a late phase into the core of the MVP."
+sector: "Renewable energy, installer marketplace"
+period: "2026"
+disclosure: "anonymised"
+metrics:
+  - label: "Clients"
+    value: "Web, iOS and Android from one set of shared screens"
+  - label: "Languages"
+    value: "Polish and English for homeowners, Ukrainian and Russian for crews"
+  - label: "Schema migrations"
+    value: "79 in the first five weeks, each with a checkpoint document"
+  - label: "Planned running cost"
+    value: "≈ €15–30 a month on one VPS"
+capabilities:
+  - "Business processes"
+  - "Software delivery"
+  - "Enterprise architecture"
+  - "Cybersecurity & identity"
+stack:
+  - "Quarkus 3, Java 21, GraphQL"
+  - "PostgreSQL 18, PostGIS"
+  - "Keycloak 26, e-mail code login, TOTP"
+  - "Next.js 16, Expo, Tamagui"
+  - "MapLibre, OpenFreeMap"
+  - "Transactional outbox, Expo Push, Web Push"
+  - "Hetzner, Docker Compose, Caddy"
+order: 14
+---
+
+## Context
+
+A client in the renewable energy market wanted a platform with two audiences. Homeowners looking for a
+photovoltaic system, an energy storage unit or a heat pump find a local installation crew on a map and run
+the project with them in one place. Crews get a lightweight CRM, a calendar, an investment room shared
+with the client, a catalogue of wholesale prices and access to formal services such as grid operator
+applications and subsidies. One website, one mobile application for both roles, one backend.
+
+## Problem
+
+A map of crews is worth exactly as much as its density. A homeowner uses such a platform a few times in a
+lifetime, so the value they find depends on crews having registered, kept their profiles current and
+answered enquiries quickly. Crews do none of that for a tool they open when a lead arrives once a month. A
+plan that starts with the homeowner's journey, map, profile, contact, and leaves the crew's daily tools
+for later delivers an empty map with a polished search box.
+
+My first plan did roughly that: the price catalogue sat in phase six of a plan running to phase eight. The
+client read the plan item by item and called that a product mistake, because price alerts were the reason
+a crew would open the application every day. The client was right, and the correction changed the order
+of the whole build.
+
+The second difficulty was that the business process could not be closed up front. The client said plainly
+that project statuses would be refined with real users: a request for specific photographs before
+installation, equipment in transit, uploading the post-installation documents. A pipeline hard-coded from
+the first specification would have been wrong within a month.
+
+## Approach
+
+The catalogue, manual promotions, product watches and price alerts moved into the core of the MVP, ahead
+of the investment room. The crew's dashboard became the centre of the application, opening with alerts
+computed from existing data rather than stored: an enquiry unanswered for 46 hours, two people waiting
+for a call, a site audit at four, an inverter a few hundred złoty cheaper, a protocol missing in an
+investment. Each alert disappears when its cause does and links to the place where it gets resolved.
+
+Price alerts are where correctness costs most, because a wrong alert teaches people to ignore the right
+ones. Only verified offers from active sources can trigger them. Each kind of alert, a price threshold, a
+promotion ending, a new offer, a new promotion, a price drop, keeps its own cursor over first approvals,
+so opting in never replays history and a re-approved offer never fires twice. When one offer matches both
+a product watch and a category watch, the user gets one notification. Delivery goes through an outbox
+written in the same transaction as the business change, and the delivery job rechecks the offer, the
+watch and the user's channel preferences before sending, so a failing push provider never rolls back an
+approval and a withdrawn offer never reaches a phone.
+
+Statuses are data. The code knows the phases and four anchor statuses; everything in between lives in
+tables an administrator can change, seeded with every status the client listed. The photo request got its
+full data model at once, while its detailed experience was explicitly deferred until there was something
+to test it on.
+
+Two decisions came from the crews themselves. They work in Polish, Ukrainian and Russian, so the installer
+side ships in those languages, with Cyrillic font subsets and a translation parity check in CI. And a
+crew's base is often someone's home, so the public projection carries only a display point, never the
+address or user identifiers. Search measures the real base against both the radius and the declared
+coverage and returns distance rounded to half a kilometre, and public pages are rendered without a result
+cache, so hiding a profile or a moderation decision takes effect on the next request. An empty search
+result is never padded with illustrative crews.
+
+The platform reuses the architecture of an earlier marketplace I had delivered: the same identity
+pattern, upload pipeline and shared cross-platform screens. Where that earlier codebase stated rules it
+did not actually follow, I settled each one explicitly, for example by putting every access decision in
+one policy class instead of hundreds of per-method annotations.
+
+## Outcome
+
+Five weeks after the start, the foundation phase is closed and the remaining eight are partly
+implemented: company verification and crew publication, search and contact, a CRM with tasks and
+reminders, the catalogue with five kinds of price alerts, the investment room with conversation,
+documents, photo requests and formalities, and the administration panel. The project documentation
+states plainly that "implemented" means code and described tests, not production readiness. Device tests
+of the camera and push notifications, production keys for payments and SMS, and the launch itself are
+still ahead.
+
+## What it taught me
+
+In a two-sided platform, the side that comes back every day is the product and the side that comes once
+is distribution. The order of the build should follow the side that has to return.
+
+The second lesson concerns plans. The most valuable review of this architecture came from a client reading
+a plan concrete enough to disagree with, down to the phase in which the catalogue lived. A vaguer plan
+would have survived that reading and failed later, in use.

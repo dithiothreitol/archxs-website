@@ -1,0 +1,112 @@
+---
+title: "A loan package in which the business plan cannot contradict the model"
+summary: "How to prepare investment loan documentation for a bank, the financial model, business plan, schedule of works, contractor offer and contract, from one set of sourced assumptions, so that moving a single date shows its effect on debt service cover before anything is saved."
+sector: "Manufacturing group, investment finance"
+period: "2026"
+disclosure: "anonymised"
+metrics:
+  - label: "From one set of assumptions"
+    value: "Model, business plan, schedule, contractor offer and contract, bank checklist"
+  - label: "Control rules"
+    value: "23, most with a fix previewed before saving"
+  - label: "Construction 7 → 10 months"
+    value: "Four documents edited by hand → one assumption changed"
+  - label: "Evidence"
+    value: "~160 backend tests, a code review closing each of five sessions"
+capabilities:
+  - "Applied AI"
+  - "Business processes"
+  - "Software delivery"
+stack:
+  - "FastAPI, Pydantic, Alembic"
+  - "Next.js, shadcn/ui"
+  - "Claude: citations, tools, reviewer"
+  - "openpyxl (XLSX with live formulas)"
+  - "docxtpl, LibreOffice"
+  - "pdfplumber"
+  - "Company register, statistics office and VAT white list APIs"
+order: 7
+---
+
+## Context
+
+The group's internal assistant, a platform of AI tools used across the company, gained a new mode for
+one recurring job: preparing an investment loan application for a bank. The reference case was a small
+agricultural biogas plant, and the package the bank expects is familiar to anyone who has financed a
+project: a financial model, a business plan, a schedule of works and spending, the general contractor's
+offer and contract, and a set of source documents from permits to financial statements.
+
+## Problem
+
+The manual package for the reference case had been prepared carefully, and it still contradicted
+itself. The business plan stated that the minimum debt service cover ratio met bank standards, while the
+model behind it gave 1.10 in the first year of repayment, below the threshold the plan itself quoted. The
+model's balance sheet failed to balance in one year by more than three million złoty, several columns
+showed broken references, formulas pointed at an external file, the loan was drawn in a single sum rather
+than in tranches following the schedule, and the supporting company's balance sheet was described with
+the wrong date.
+
+None of these were exotic mistakes. They are what happens when five documents are maintained by hand
+around one set of numbers. Then the bank asked for ten months of construction instead of seven. That one
+change required edits in four documents, and with the grace period left as it was, the cover ratio in the
+first year of repayment fell below one. Nobody would have noticed until the bank did.
+
+## Approach
+
+The governing rule is one case, one set of assumptions, one calculation engine, every document. No number
+in any document is typed by hand or written by a language model.
+
+Assumptions start from sources. The user uploads whatever the client sent, scanned permits included, and
+the model extracts facts with a verbatim quotation and a page number. Each fact is accepted or rejected
+next to the original with the quotation highlighted, and when two documents disagree, the user has to
+choose between them. An accepted value enters the assumptions with its provenance, so every field can
+open the document it came from at the right page. Company data comes from the court register, the
+statistics office and the VAT white list rather than from anyone's memory.
+
+The engine computes capital expenditure month by month, loan tranches, interest capitalised during
+construction, repayments, depreciation, the income statement, cash flow and balance sheet, cover ratios,
+IRR and NPV, and a set of scenarios. A cockpit of key ratios stays on screen, and every change shows its
+consequence before it is saved: the minimum cover ratio moving from one value to another, and the list of
+documents that would become stale.
+
+Problems are presented as tasks with a fix rather than as red messages. Twenty-three rules check the case,
+from a first repayment falling before revenue starts, through a cash gap in a given month, to construction
+running outside the window set by the grid connection agreement. Most come with a prepared correction,
+such as choosing the grace period or adding an owner's loan in the month of the gap, shown as a preview
+and applied only on explicit confirmation. A separate review has Claude read the case as a bank credit
+analyst looking for reasons to refuse, returning red flags, questions and strengths, and its findings
+feed the next version of the business plan.
+
+The documents follow from the same state. The model is generated as a spreadsheet with live formulas, the
+schedule as a spreadsheet and a document, and the business plan is written by Claude chapter by chapter
+while the engine inserts every number. The contractor's contract is generated as a draft marked on every
+page as requiring legal review and goes on to the group's contract review tool. The bank checklist
+assembles the latest current versions with the source files and records exactly what was sent.
+
+Each case has a copilot that knows its assumptions, results and unsaved changes. It answers a question
+such as "how do we reach a cover ratio of 1.2?" by running the engine's solvers for grace period, loan
+share or number of instalments, never by estimating. It proposes and never saves, and it is not allowed
+to adjust prices, production or costs to improve a ratio, because those are facts from documents.
+
+## Outcome
+
+The mode was built in five coding sessions, each closed by a code review, and is covered by around 160
+backend tests. On the reference case the bank's request is now a single change. Extending construction to
+ten months moves the start of revenue and raises two blocking findings; the grace period fix moves the
+first instalment and lifts the minimum cover ratio from 0.87 to 1.25, leaving one finding, a short cash
+gap in a single month, with a fix of its own.
+
+The tool states what it does not do. It does not verify the contract legally, does not model VAT
+financing, does not compute LLCR or dividends, and does not assess creditworthiness on the bank's behalf.
+It shows the risks a bank will ask about, and the decision stays with the bank.
+
+## What it taught me
+
+A loan application is an argument made with numbers, and its weakest point is rarely the arithmetic. It
+is the distance between the number in the model and the sentence in the plan. Generating both from one
+state removes that distance instead of checking it after the fact.
+
+The second lesson concerns where to put the model. Claude earns its place here in exactly three roles:
+reading scans, writing prose and arguing as a sceptical analyst. Each of them is bounded by an engine
+that owns the numbers, and the copilot's most important rule is the one that forbids it from making the
+case look better than the documents allow.

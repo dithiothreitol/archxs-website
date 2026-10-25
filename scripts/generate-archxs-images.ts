@@ -881,6 +881,77 @@ linework, one accent colour.
 ${ARCHXS_STYLE_GUIDE}`,
   },
 
+  {
+    id: "work-building",
+    outputPath: "img/work/building-design-package-generator.png",
+    width: 1600,
+    height: 900,
+    aspectRatio: "16:9",
+    prompt: `SCENE: An axonometric drawing of a small industrial plant on a plot: a
+steel-framed hall with a visible column grid and, beside it, two cylindrical
+process tanks and a slender column on a concrete pad. On the left edge of the
+composition lies one single plain card. From that card, thin leader lines fan out
+to the hall, the tanks and to a row of four drawing sheets laid flat on the right,
+each showing clean linework only: a floor plan, a section, an elevation and a site
+plan. Beneath the plant rests a neat row of closed bound reference volumes, and a
+few thin dotted lines tie individual building elements down to individual
+volumes. On the nearest drawing sheet, the empty field in the lower right corner
+where a signature would go is outlined in drafting red-orange and left blank.
+IMPORTANT: every element must read as derived from the single card; the signature
+field must be clearly empty.
+CRITICAL: the drawing carries no labels, no callouts, no lettering and no digits
+of any kind, including on the sheets, the card and the book spines.
+BACKGROUND: drafting paper, faint grid, generous empty space.
+TECHNICAL: 16:9, axonometric, thin ink linework, one accent colour.
+${ARCHXS_STYLE_GUIDE}`,
+  },
+
+  {
+    id: "work-loan",
+    outputPath: "img/work/investment-loan-package.png",
+    width: 1600,
+    height: 900,
+    aspectRatio: "16:9",
+    prompt: `SCENE: An axonometric drawing of a precise mechanism: one long horizontal
+drive shaft runs through five identical small housings standing in a row, like
+instrument cases on a bench. Each housing carries a round gauge on its front face.
+At the left end of the shaft sits a single hand crank, drawn in drafting
+red-orange, the only coloured element. Beneath the housings, parallel to the
+shaft, lies a long graduated ruler with a sliding marker that has just been moved
+a short distance to the right, its previous position shown as a faint dashed
+outline. All five gauge needles point to exactly the same angle.
+IMPORTANT: the needles must be visibly identical in angle across all five gauges;
+the shaft must clearly be one continuous piece driving every housing.
+CRITICAL: the drawing carries no labels, no callouts, no lettering and no digits
+of any kind, including on the gauge faces and the ruler.
+BACKGROUND: drafting paper, faint grid, generous empty space.
+TECHNICAL: 16:9, axonometric, thin ink linework, one accent colour.
+${ARCHXS_STYLE_GUIDE}`,
+  },
+
+  {
+    id: "work-renewables",
+    outputPath: "img/work/renewables-installer-platform.png",
+    width: 1600,
+    height: 900,
+    aspectRatio: "16:9",
+    prompt: `SCENE: An axonometric drawing of a flat map plate resting on a drafting
+table, showing a calm rural and suburban landscape in plan: small detached houses,
+many of them with neat rectangular solar panel arrays on their roofs, thin roads,
+field boundaries. Scattered across the plate are a few small upright markers, each
+the centre of a large dashed circle drawn with a compass, the circles overlapping
+in places so that the plate is evenly covered. One of these coverage circles is
+drawn in drafting red-orange. Beside the plate stands a small open toolbox, drawn
+as a plain technical object.
+IMPORTANT: the circles must read as measured coverage radii drawn with a compass,
+not as glowing halos; the houses stay small and schematic.
+CRITICAL: the drawing carries no labels, no callouts, no lettering and no digits
+of any kind.
+BACKGROUND: drafting paper, faint grid, generous empty space.
+TECHNICAL: 16:9, axonometric map plate, thin ink linework, one accent colour.
+${ARCHXS_STYLE_GUIDE}`,
+  },
+
   // ── Method ──────────────────────────────────────────────────────────────
   {
     id: "method-loop",

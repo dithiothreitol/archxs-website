@@ -1,0 +1,110 @@
+---
+title: "Pakiet kredytowy, w którym biznes plan nie może zaprzeczyć modelowi"
+summary: "Jak przygotować dokumentację kredytu inwestycyjnego dla banku, czyli model finansowy, biznes plan, harmonogram rzeczowo-finansowy, ofertę i umowę generalnego wykonawcy, z jednego zestawu założeń ze źródłami, tak żeby przesunięcie jednej daty pokazywało skutek dla DSCR, zanim cokolwiek zostanie zapisane."
+sector: "Grupa produkcyjna, finansowanie inwestycji"
+period: "2026"
+disclosure: "anonymised"
+metrics:
+  - label: "Z jednego zestawu założeń"
+    value: "Model, biznes plan, harmonogram, oferta i umowa GW, spis paczki dla banku"
+  - label: "Reguły kontroli"
+    value: "23, większość z poprawką i podglądem skutków przed zapisem"
+  - label: "Budowa 7 → 10 miesięcy"
+    value: "Ręczne poprawki w czterech dokumentach → zmiana jednego założenia"
+  - label: "Dowody"
+    value: "~160 testów backendu, code review na koniec każdej z pięciu sesji"
+capabilities:
+  - "Applied AI"
+  - "Procesy biznesowe"
+  - "Wytwarzanie oprogramowania"
+stack:
+  - "FastAPI, Pydantic, Alembic"
+  - "Next.js, shadcn/ui"
+  - "Claude: cytowania, narzędzia, recenzent"
+  - "openpyxl (XLSX z żywymi formułami)"
+  - "docxtpl, LibreOffice"
+  - "pdfplumber"
+  - "API KRS, GUS i Białej listy VAT"
+order: 7
+---
+
+## Kontekst
+
+Wewnętrzny asystent grupy, platforma narzędzi AI używanych w całej firmie, dostał nowy tryb do jednej
+powtarzalnej pracy: przygotowania wniosku o kredyt inwestycyjny. Przypadkiem wzorcowym była mała
+biogazownia rolnicza, a pakiet, którego oczekuje bank, zna każdy, kto finansował inwestycję: model
+finansowy, biznes plan, harmonogram rzeczowo-finansowy, oferta i umowa generalnego wykonawcy oraz
+dokumenty źródłowe, od pozwoleń po sprawozdania finansowe.
+
+## Problem
+
+Ręczny pakiet dla przypadku wzorcowego przygotowano starannie, a mimo to przeczył sam sobie. Biznes plan
+stwierdzał, że minimalny DSCR spełnia standardy banku, podczas gdy model, na którym się opierał, dawał
+1,10 w pierwszym roku spłat, poniżej progu przytoczonego w tym samym biznes planie. Bilans w modelu nie
+bilansował się w jednym z lat o ponad trzy miliony złotych, kilka kolumn pokazywało zerwane odwołania,
+formuły sięgały do zewnętrznego pliku, kredyt był wypłacany jednorazowo zamiast w transzach według
+harmonogramu, a bilans podmiotu wspierającego opisano złą datą.
+
+Żaden z tych błędów nie był egzotyczny. Tak wygląda pięć dokumentów utrzymywanych ręcznie wokół jednego
+zestawu liczb. Potem bank poprosił o dziesięć miesięcy budowy zamiast siedmiu. Ta jedna zmiana wymagała
+poprawek w czterech dokumentach, a przy niezmienionej karencji DSCR w pierwszym roku spłat spadał poniżej
+jedności. Nikt by tego nie zauważył, dopóki nie zauważyłby bank.
+
+## Podejście
+
+Zasada nadrzędna brzmi: jedna sprawa, jeden zestaw założeń, jeden silnik obliczeń, wszystkie dokumenty.
+Żadna liczba w żadnym dokumencie nie jest wpisywana ręcznie ani pisana przez model językowy.
+
+Założenia zaczynają się od źródeł. Użytkownik wgrywa to, co przysłał klient, także skany decyzji, a model
+wyciąga fakty z dosłownym cytatem i numerem strony. Każdy fakt jest akceptowany albo odrzucany obok
+oryginału z podświetlonym cytatem, a gdy dwa dokumenty podają różne wartości, użytkownik musi wybrać
+jedną z nich. Zaakceptowana wartość trafia do założeń razem z pochodzeniem, więc każde pole otwiera
+dokument, z którego pochodzi, na właściwej stronie. Dane spółek pochodzą z KRS, GUS i Białej listy VAT, a
+nie z czyjejś pamięci.
+
+Silnik liczy nakłady inwestycyjne miesiąc po miesiącu, transze kredytu, odsetki kapitalizowane w okresie
+budowy, raty, amortyzację, rachunek zysków i strat, przepływy pieniężne i bilans, DSCR, IRR i NPV oraz
+zestaw scenariuszy. Kokpit kluczowych wskaźników jest zawsze na ekranie, a każda zmiana pokazuje skutek
+przed zapisem: minimalny DSCR z jednej wartości na drugą i listę dokumentów, które staną się nieaktualne.
+
+Problemy są pokazywane jako zadania z gotową naprawą, a nie jako czerwone komunikaty. Dwadzieścia trzy
+reguły sprawdzają sprawę, od pierwszej raty przed startem przychodów, przez lukę gotówkową w konkretnym
+miesiącu, po budowę wychodzącą poza okno wyznaczone umową przyłączeniową. Większość ma przygotowaną
+poprawkę, na przykład dobór karencji albo pożyczkę właścicielską w miesiącu luki, pokazywaną jako podgląd
+i stosowaną dopiero po wyraźnym potwierdzeniu. Osobny przegląd każe Claude'owi przeczytać sprawę oczami
+analityka kredytowego, który szuka powodów odmowy, i zwrócić czerwone flagi, pytania oraz mocne strony, a
+jego ustalenia trafiają do kolejnej wersji biznes planu.
+
+Dokumenty wynikają z tego samego stanu. Model powstaje jako arkusz z żywymi formułami, harmonogram jako
+arkusz i dokument, a biznes plan pisze Claude rozdział po rozdziale, podczas gdy każdą liczbę wstawia
+silnik. Umowa z wykonawcą powstaje jako projekt oznaczony na każdej stronie jako wymagający weryfikacji
+prawnej i trafia dalej do narzędzia grupy do przeglądu umów. Spis paczki dla banku zbiera najnowsze
+aktualne wersje razem z plikami źródłowymi i zapisuje, co dokładnie zostało wysłane.
+
+Każda sprawa ma copilota, który zna jej założenia, wyniki i niezapisane zmiany. Na pytanie „jak dojść do
+DSCR 1,2?” odpowiada, uruchamiając solvery silnika dla karencji, udziału kredytu albo liczby rat, nigdy
+szacując. Proponuje i nigdy nie zapisuje, a nie wolno mu ruszać cen, produkcji ani kosztów po to, żeby
+poprawić wskaźnik, bo to są fakty z dokumentów.
+
+## Rezultat
+
+Tryb powstał w pięciu sesjach kodowych, z których każdą zamykał code review, i jest pokryty około 160
+testami backendu. W przypadku wzorcowym prośba banku to dziś jedna zmiana. Wydłużenie budowy do dziesięciu
+miesięcy przesuwa start przychodów i wywołuje dwa ustalenia blokujące; poprawka karencji przesuwa
+pierwszą ratę i podnosi minimalny DSCR z 0,87 do 1,25, zostawiając jedno ustalenie, krótką lukę gotówkową
+w jednym miesiącu, z własną poprawką.
+
+Narzędzie mówi wprost, czego nie robi. Nie weryfikuje prawnie umowy, nie modeluje finansowania VAT, nie
+liczy LLCR ani dywidend i nie ocenia zdolności kredytowej za bank. Pokazuje ryzyka, o które bank zapyta,
+a decyzja zostaje po stronie banku.
+
+## Wnioski
+
+Wniosek kredytowy to argument prowadzony liczbami, a jego najsłabszym punktem rzadko jest arytmetyka.
+Jest nim odległość między liczbą w modelu a zdaniem w biznes planie. Generowanie obu z jednego stanu
+usuwa tę odległość, zamiast sprawdzać ją po fakcie.
+
+Drugi wniosek dotyczy miejsca dla modelu. Claude zarabia tu na swoje miejsce w dokładnie trzech rolach:
+czytania skanów, pisania tekstu i sceptycznego analityka. Każdą z nich ogranicza silnik, do którego
+należą liczby, a najważniejsza reguła copilota to ta, która zabrania mu przedstawiać sprawę lepiej, niż
+pozwalają na to dokumenty.

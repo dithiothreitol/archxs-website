@@ -7,10 +7,10 @@ disclosure: "public"
 metrics:
   - label: "Traceability"
     value: "Every rule carries a source ID, ~60 sources"
-  - label: "Two interfaces"
-    value: "CLI and 16 MCP tools over one handler set"
+  - label: "Interfaces"
+    value: "CLI, 19 MCP tools, Claude Code and Codex plugin over one handler set"
   - label: "Evidence"
-    value: "525 tests, backtest against 50 real plans"
+    value: "641 tests, backtest against 50 real plans"
 capabilities:
   - "Applied AI"
   - "Business processes"
@@ -22,9 +22,9 @@ stack:
   - "YAML plan as code, git"
   - "Constraint solver"
   - "VDOT, physiological models"
-  - "intervals.icu sync"
+  - "intervals.icu sync, FIT/TCX/GPX files"
   - "Vitest, MIT licence"
-order: 22
+order: 25
 ---
 
 ## Context
@@ -64,11 +64,10 @@ not computed, because the load metrics used for it do not survive the
 literature. Readiness from heart rate variability is not computed, because the
 effect size is small and its confidence interval crosses zero; zones come from
 race results instead. And the engine never silently rewrites its own plan:
-`adapt` returns proposals, applying them means editing the profile and
-regenerating, so a change to someone's training is a diff they approved. It also
-refuses rather than guesses at the edges, below four weeks of history it will
-not infer a profile, and with no race result it will not calibrate zones from
-watch estimates.
+`adapt` returns proposals, applying one shows the exact changes first, and the
+result is a diff its owner approved. It also refuses rather than guesses at the
+edges, below four weeks of history it will not infer a profile, and with no race
+result it will not calibrate zones from watch estimates.
 
 A corpus of fifty real coaching plans, about thirteen hundred days from one
 coach, sits beside the research as a separate source and is used for house style
@@ -78,18 +77,30 @@ calibration works, and measuring actual long runs removed a solver penalty that
 had been pushing generated plans away from what a coach really does. The corpus
 holds personal data and is not distributed.
 
-The agent integration follows from the same split. Sixteen MCP tools sit over the
+The agent integration follows from the same split. Nineteen MCP tools sit over the
 same handlers the CLI calls, so the terminal and the agent cannot disagree, and
 the instruction file written at setup tells the agent to ask before regenerating
-a plan and never to invent numbers. The model contributes conversation and
+a plan and never to invent numbers. The same engine ships as a plugin for Claude
+Code and Codex, with coach skills generated from that instruction text and a hook
+that lints the plan after every edit. The model contributes conversation and
 context, what the calendar says, why a week was missed; the engine contributes
 every figure.
 
+The promise of no silent rewrites turned out to have a hole, and finding it took
+running every command on a fresh directory. Regenerating a plan, the documented
+step after adding a new race result, quietly discarded pinned days, hand edits
+and approved adaptations. Since version 0.4 regeneration touches only the
+future, keeps everything its owner decided, and refuses to overwrite a plan file
+it cannot read, while `diff` shows exactly what a regeneration would change.
+
 ## Outcome
 
-The product is public on npm and MIT-licensed, with around five hundred tests and
-a backtest against the coaching corpus. It runs as a CLI, as an MCP server for
-any agent client, and it syncs with a training platform and exports to watches.
+The product is public on npm and MIT-licensed, with over six hundred tests and a
+backtest against the coaching corpus. It runs as a CLI, as an MCP server for any
+agent client and as an agent plugin. It plans around a weekly time budget, the
+weeks after a race and training without a race at all, syncs with a training
+platform or reads exported watch files without any account, and exports to
+watches, calendars and paper.
 Repository: [github.com/dithiothreitol/trainctl](https://github.com/dithiothreitol/trainctl).
 
 The cost of the refusals is honest to state: a competitor that ships an injury

@@ -1,0 +1,115 @@
+---
+title: "Design documentation generated from one file, for a designer who still signs it"
+summary: "How to generate a building permit package for industrial plants, from the site analysis and an IFC model to drawings, the formal path and the design volumes, so that a licensed designer checks it rather than redoes it, with every figure traced to a legal text, a datasheet or a declared assumption."
+sector: "Manufacturing group, capital investment and plant construction"
+period: "2026"
+disclosure: "anonymised"
+metrics:
+  - label: "Input"
+    value: "One project file plus legal texts fetched from the official legislation API"
+  - label: "Distillery pilot"
+    value: "173 requirements met, 62 gaps, 0 errors; all 41 open items external"
+  - label: "Plant types"
+    value: "Distillery, biogas plant, rendering halls, storage hall"
+  - label: "Evidence"
+    value: "778 tests, five independent reviews before handover"
+capabilities:
+  - "Applied AI"
+  - "Business processes"
+  - "Software delivery"
+  - "Enterprise architecture"
+stack:
+  - "Python 3.12, uv, pydantic"
+  - "IfcOpenShell, IFC4, ifcclash"
+  - "ezdxf (DXF, PDF)"
+  - "shapely, geopandas"
+  - "docxtpl, LibreOffice"
+  - "thermo, chemicals, DWSIM"
+  - "Next.js 16, shadcn/ui"
+  - "Claude: copilot, MCP, Claude Code plugin"
+order: 6
+---
+
+## Context
+
+A manufacturing group was preparing several capital projects at once: a grain distillery on an
+existing plant site, two rendering halls and a small agricultural biogas plant. Each of them needs a
+building permit design, meaning a site development plan, an architectural and construction design, a
+technical design, the formal path of decisions and agreements, and the calculations behind all of it.
+In Poland the form of that documentation is set by regulation, and a licensed designer signs it and
+carries the liability.
+
+## Problem
+
+Design offices bill this work by volume, and most of the volume is not design. It is reading a local
+zoning plan, establishing which decisions are needed and in what order, carrying room programmes into
+drawings, checking distances between buildings against fire regulations, and assembling the same facts
+into a dozen documents that have to agree with one another. When one parameter changes, that agreement
+is maintained by hand, and that is where it breaks.
+
+The obvious AI answer, a model that drafts the documentation, fails on the property that matters most.
+A design package is read by people looking for the paragraph each statement rests on. A model that cites
+building regulations from memory produces paragraph numbers that look right, and a design volume with
+one invented citation is worse than a blank page, because the reviewer can no longer trust the rest of
+it.
+
+## Approach
+
+I built the generator around three rules that the code enforces rather than the prompt requests. One
+source of truth: every drawing, schedule and document is produced from one project file and a knowledge
+base, outputs are never edited by hand, and changing a parameter rebuilds the whole package. Every number
+has a source: a process parameter, a distance or a requirement carries a reference to a paragraph of
+law, to literature or to a manufacturer's datasheet, or it is marked as an assumption and lands in a
+register on which the designer has to decide. Regulations come only from files: legal acts are fetched
+from the official legislation API with the date and address, each file names the consolidated text it
+comes from and the amendments published after it, and the tests find every rule's quoted fragment
+verbatim in the text of the act. Values from regulation tables live as data with their source, never as
+numbers in code.
+
+The core knows nothing about a particular kind of building. It handles the plot and the zoning plan, the
+massing and the IFC model, fire zones, formal triggers, documents and the completeness checklist. Plant
+knowledge lives in domain modules: a distillery with its mass and energy balance, column sizing, P&ID and
+explosion zones; a biogas plant with its substrate balance, digester sizing and gas storage matched to
+the operating windows in the grid connection agreement. A condition on the plant type inside the core is
+treated as a design error. Cross-consistency is a build gate: a room or equipment tag that appears in a
+schedule but not in the P&ID or the IFC model stops the build.
+
+Missing data is never guessed. It goes to a list of open items stating which document it blocks and who
+has to supply it. Paid standards are not reproduced either; a result that needs one is marked as such and
+left to the designer.
+
+Around the generator sits a web application that takes an employee through seven stages, with checks
+that come with ready fixes and a preview of their effect before anything is saved. Its copilot takes
+numbers from the generator, regulations from the legal files and procedures from versioned skills, and
+proposes changes as cards to approve. The same skills, reviewer subagents and hooks ship as a Claude Code
+plugin, with evaluation cases such as citing the law without relying on memory.
+
+Before handing anything over I ran an audit of the package and of the generator itself: five independent
+reviews, each confirming its findings in the code, the legal text or the output file. It found what a
+designer would have found, among others a module building that failed the zoning check while still
+feeding the package summary, a utilities balance check that could never fail, and fire road and distance
+rules applied too narrowly. The fixes went in before the handover, not after it.
+
+## Outcome
+
+The distillery pilot reached the designers eleven days after the first commit, as a complete package:
+drawings held to the standard of an approved permit design used as the reference, an IFC model with a 3D
+preview, technical descriptions and a verification report. It stands at 173 requirements met, 62 gaps and
+no errors, with 41 open items, every one of them waiting on someone outside the project, such as the grid
+operator, the road authority or a geotechnical survey. The rendering halls and the biogas plant run
+through the same core, and the biogas plant's technical data and schedule of works are meant to feed the
+loan documentation the group prepares for its bank.
+
+The limits are part of the design. The generator does not sign anything and does not replace the
+designer's judgement; it moves their work from assembling to checking. It cannot apply a standard it does
+not hold, and its legal knowledge is exactly as current as the last fetch.
+
+## What it taught me
+
+The useful boundary for AI in a regulated discipline is not the model's accuracy but the source of each
+statement. Once every number and every citation has to point at a file, most of what a model would be
+tempted to invent has nowhere to go, and what remains is visible as an assumption.
+
+The second lesson is about auditing your own output before someone else does. The reviews found errors
+the tests had not, because the tests checked what I had thought of, while the audit read the package the
+way its first reader would.
