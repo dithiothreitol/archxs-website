@@ -1,0 +1,122 @@
+---
+title: "A pet shop with a reason to come back between purchases"
+summary: "How to build a pet supplies marketplace that customers open between their monthly food orders without turning it into a pet app with a shop attached, and why its health features had to stop where the competence of the people answering for them stops."
+sector: "Consumer marketplace, pet care"
+period: "2026"
+disclosure: "anonymised"
+metrics:
+  - label: "In production"
+    value: "Web and mobile; the brand's main domain moved to the platform in November 2026"
+  - label: "Domain backend"
+    value: "About 60 modules and 249 schema migrations beside a hosted commerce engine"
+  - label: "Points economy"
+    value: "Four currencies kept apart, one designed daily bridge between them"
+  - label: "Delivery"
+    value: "About 2,700 commits in eight months, two brands, three languages"
+capabilities:
+  - "Business processes"
+  - "Software delivery"
+  - "Enterprise architecture"
+  - "Applied AI"
+stack:
+  - "Quarkus, Java 21, GraphQL"
+  - "Hosted commerce engine behind an adapter"
+  - "Next.js 16, Expo, Tamagui"
+  - "Keycloak, dedicated realm"
+  - "PostgreSQL"
+  - "Recurring card payments"
+  - "Expo Push, Web Push"
+order: 13
+---
+
+## Context
+
+A pet supplies retailer selling under two brands wanted more than an online shop. The product
+that came out of it combines a catalogue and checkout with regular deliveries and a loyalty
+programme, and around them pet profiles, walks recorded in the app, joint walks and playdates
+with friends, local leaderboards, places for pets on a map, a community feed, health records with
+reminders, consultations with specialists under a care subscription, pet shows, a barcode scanner
+and a food advisor. It runs on the web and as a native app on both mobile platforms, built from one
+codebase in three languages.
+
+## Problem
+
+Pet food is a repeat purchase and a price comparison. The customer buys the same bag every month and
+checks where it is cheapest, large international marketplaces win that comparison on range and
+price, and single-purpose pet apps own the time between purchases. A retailer that only sells the
+bag gets chosen once a month, on price.
+
+The obvious response is the opposite mistake: an app about the pet with a shop attached. An external
+review of the user experience proposed exactly that, a carer's dashboard in place of the catalogue
+as the main screen. It reads well, and it would have moved the place where the business earns its
+money two taps away from where the customer lands. A product with sixty modules has a second, quieter
+problem. Every feature competes for the same home screen, and without an agreed order of importance
+each new screen settles that argument again on its own.
+
+## Approach
+
+The governing rule is marketplace-first, with the pet as the lens. The shop stays the main
+experience. Activity, the map, the community, loyalty and health exist to give a reason to come back
+between purchases, and every such surface has to lead back to commerce in at most two taps: a product
+page, a regular delivery, the food advisor. The dashboard proposal was rejected on that basis, and
+the useful parts of the same review were taken: plain words instead of internal terms, so customers
+see regular deliveries rather than autoship, and pet signals moved into the shop instead of the shop
+moving into the pet.
+
+The pet profile is what makes the shop personal. From the pet's weight and the size of the pack, a
+product page states how long a bag will last for that particular animal, and the dashboard shows how
+many days of food are left and when the next delivery arrives. Suitability for the pet appears on the
+product page and as a "for my pet" scope on listings, with the same allergen rules as the food
+advisor. It is shown as a qualitative level with reasons, never as a percentage, because a figure
+like "92% suitable" would be a claim about a product with nothing to defend it. How listings are
+ordered is explained in plain words, including that no position is paid for. All of it works for
+cats as well as dogs, a rule that sounds trivial until the map turns out to be titled "places for
+dogs".
+
+Two backends divide the work. A hosted commerce engine owns products, carts, orders and the back
+office, and a domain backend owns everything specific to this product. The applications talk only to
+the domain backend, which reaches the engine through an adapter. The engine was replaced once
+already, in the first weeks, and that arrangement is what kept the change on the server.
+
+Engagement is an economy, so it was designed and audited as one. Loyalty points, experience, badges
+and streaks are separate currencies; experience can never be bought with points, and the only bridge
+from activity to rewards is a single designed daily reward. An audit of the whole surface found the
+defects such economies attract: reviews of products that were never bought were earning points, and a
+walk claiming a kilometre in one second could take a local leaderboard crown. Points now require a
+verified purchase, and an implausible pace still records the walk but cannot win. Showing who is
+walking nearby blurs positions to a 500-metre grid, with a minimum crowd size, jitter and an expiry.
+
+Health is where the product changed course most, and in the right direction. The first version
+framed consultations as veterinary care and offered AI assessments of symptoms and skin changes, along
+with suggestions for vaccinations, drug interactions and visit summaries. The people answering
+consultations are specialists in behaviour, nutrition and training rather than vets, so the request
+form stopped accepting health questions and the copy says "specialist" wherever it describes the
+service. The health AI was then withdrawn altogether. In its place is a static page listing the
+situations in which an owner should call a clinic open around the clock, with a search for one.
+Medication warnings now come from rules rather than a model, and a prescription comes from the
+owner's own vet and is verified by a person.
+
+## Outcome
+
+The platform is in production on the web and in the mobile stores. In November 2026 the brand's main
+domain moved from its old hosted storefront to the platform. The hosted engine stays as the back
+office, and indexed product addresses stay on the same host. Behind it are about sixty domain modules,
+249 schema migrations and about 2,700 commits over eight months, delivered by a small team that also
+runs the group's internal systems.
+
+Some limits are set by others. The care subscription is paid by card outside the App Store, so the
+iOS app does not show it, while members who joined on the web or on Android keep their benefits,
+because the server grants them. The retailer's own strategy places deeper personalisation in a later
+phase, and the pet-first changes so far are deliberately exposure of logic that already existed
+rather than new mechanics.
+
+## What it taught me
+
+In a product with many features, the most consequential design decision is the order of importance,
+written down so that each screen does not have to decide it again. "Marketplace-first, the pet as the
+lens" settled dozens of arguments, including the decision to turn down a well-argued review.
+
+The second lesson concerns what to remove. The health AI worked, in the sense that it produced
+plausible answers, and removing it was the right product decision, because nobody behind the service
+was in a position to answer for those answers. The boundary of a care product is drawn by the
+competence of the people standing behind its advice, not by what a model can generate.

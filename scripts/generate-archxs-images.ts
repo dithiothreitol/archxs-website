@@ -952,6 +952,32 @@ TECHNICAL: 16:9, axonometric map plate, thin ink linework, one accent colour.
 ${ARCHXS_STYLE_GUIDE}`,
   },
 
+  {
+    id: "work-petcare",
+    outputPath: "img/work/pet-marketplace-between-purchases.png",
+    width: 1600,
+    height: 900,
+    aspectRatio: "16:9",
+    prompt: `SCENE: An axonometric drawing of a small shop counter standing at the
+centre of a drafting sheet, with a few shelves behind it holding plain stacked
+sacks and tins. On the counter stands one tall sack beside a slender vertical
+gauge with a scale, its level marker set low. Around the counter, at a calm
+distance, sit five small objects drawn as technical models: a coiled leash, a
+food bowl, a small folded map with a single pin, a round medal on a ribbon and a
+ball. From each object a thin leader line runs back to the counter, every line
+bending exactly once on the way. The leader line from the leash is drafting
+red-orange; all others are ink. One empty dashed outline stands among the
+objects, marking a place where an instrument was deliberately removed.
+IMPORTANT: every leader line must end at the counter, so the counter clearly
+reads as the centre of the composition; the dashed outline must read as an
+intentional empty position, not a broken object.
+CRITICAL: the drawing carries no labels, no callouts, no lettering, no logos and
+no digits of any kind, including on the sacks, the tins, the gauge and the medal.
+BACKGROUND: drafting paper, faint grid, generous empty space.
+TECHNICAL: 16:9, axonometric, thin ink linework, one accent colour.
+${ARCHXS_STYLE_GUIDE}`,
+  },
+
   // ── Method ──────────────────────────────────────────────────────────────
   {
     id: "method-loop",

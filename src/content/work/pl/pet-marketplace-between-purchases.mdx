@@ -1,0 +1,125 @@
+---
+title: "Sklep zoologiczny, do którego wraca się także między zakupami"
+summary: "Jak zbudować marketplace z artykułami dla zwierząt, który klient otwiera między comiesięcznymi zamówieniami karmy, nie zamieniając go w aplikację o pupilu z doklejonym sklepem, i dlaczego funkcje zdrowotne musiały się zatrzymać tam, gdzie kończą się kompetencje ludzi, którzy za nie odpowiadają."
+sector: "Marketplace konsumencki, opieka nad zwierzętami"
+period: "2026"
+disclosure: "anonymised"
+metrics:
+  - label: "Na produkcji"
+    value: "Web i aplikacje mobilne; główna domena marki przeniesiona na platformę w listopadzie 2026"
+  - label: "Backend domenowy"
+    value: "Około 60 modułów i 249 migracji schematu obok hostowanego silnika commerce"
+  - label: "Ekonomia punktów"
+    value: "Cztery waluty trzymane osobno, jeden zaprojektowany dzienny pomost między nimi"
+  - label: "Wytwarzanie"
+    value: "Około 2 700 commitów w osiem miesięcy, dwie marki, trzy języki"
+capabilities:
+  - "Procesy biznesowe"
+  - "Wytwarzanie oprogramowania"
+  - "Architektura korporacyjna"
+  - "Applied AI"
+stack:
+  - "Quarkus, Java 21, GraphQL"
+  - "Hostowany silnik commerce za adapterem"
+  - "Next.js 16, Expo, Tamagui"
+  - "Keycloak, dedykowany realm"
+  - "PostgreSQL"
+  - "Cykliczne płatności kartą"
+  - "Expo Push, Web Push"
+order: 13
+---
+
+## Kontekst
+
+Sprzedawca artykułów dla zwierząt, działający pod dwiema markami, chciał czegoś więcej niż sklepu
+internetowego. Produkt, który z tego powstał, łączy katalog i kasę z regularnymi dostawami i programem
+lojalnościowym, a wokół nich profile zwierząt, spacery nagrywane w aplikacji, wspólne spacery i
+spotkania pupili ze znajomymi, lokalne rankingi, miejsca dla zwierząt na mapie, społecznościowy feed,
+dokumentację zdrowia z przypomnieniami, konsultacje ze specjalistami w ramach subskrypcji opieki,
+wystawy, skaner kodów kreskowych i doradcę żywieniowego. Działa w przeglądarce i jako natywna
+aplikacja na obu platformach mobilnych, z jednego kodu i w trzech językach.
+
+## Problem
+
+Karma to zakup powtarzalny i porównanie cen. Klient co miesiąc kupuje ten sam worek i sprawdza, gdzie
+jest najtaniej, duże międzynarodowe marketplace'y wygrywają to porównanie asortymentem i ceną, a
+jednofunkcyjne aplikacje o zwierzętach zajmują czas między zakupami. Sprzedawca, który sprzedaje tylko
+worek, jest wybierany raz w miesiącu, po cenie.
+
+Oczywista odpowiedź to błąd w przeciwną stronę: aplikacja o pupilu z doklejonym sklepem. Zewnętrzny
+przegląd doświadczenia użytkownika zaproponował dokładnie to, czyli pulpit opiekuna zamiast katalogu
+jako ekran główny. Dobrze się to czyta, a oddaliłoby miejsce, w którym firma zarabia, o dwa stuknięcia
+od miejsca, w którym klient ląduje. Produkt z sześćdziesięcioma modułami ma też drugi, cichszy problem.
+Każda funkcja walczy o ten sam ekran główny, a bez ustalonej kolejności ważności każdy nowy ekran
+rozstrzyga ten spór od nowa po swojemu.
+
+## Podejście
+
+Nadrzędna zasada brzmi: najpierw marketplace, a pupil jest soczewką. Sklep pozostaje głównym
+doświadczeniem. Aktywność, mapa, społeczność, lojalność i zdrowie istnieją po to, żeby dać powód do
+powrotu między zakupami, a każda taka powierzchnia musi prowadzić z powrotem do handlu w najwyżej dwóch
+stuknięciach: do karty produktu, regularnej dostawy albo doradcy żywieniowego. Na tej podstawie
+propozycja pulpitu została odrzucona, a z tego samego przeglądu przejęte zostało to, co trafne: zwykłe słowa
+zamiast wewnętrznych nazw, więc klient widzi regularne dostawy zamiast autoship, i sygnały o pupilu
+przeniesione do sklepu, zamiast sklepu przeniesionego do pupila.
+
+To profil pupila sprawia, że sklep jest osobisty. Z wagi zwierzęcia i wielkości opakowania karta
+produktu podaje, na ile dni worek wystarczy temu konkretnemu zwierzakowi, a pulpit pokazuje, ile dni
+karmy zostało i kiedy przyjedzie następna dostawa. Dopasowanie do pupila widać na karcie produktu i
+jako zakres „dla mojego pupila” na listach, z tymi samymi regułami alergenów co w doradcy
+żywieniowym. Jest pokazywane jako poziom jakościowy z powodami, nigdy jako procent, bo liczba w rodzaju
+„dopasowanie 92%” byłaby twierdzeniem o produkcie, którego nie ma czym obronić. Zasady kolejności
+produktów na listach są wyjaśnione zwykłymi słowami, łącznie z tym, że za wyższą pozycję nikt nie płaci.
+Wszystko działa dla kota tak samo jak dla psa, co brzmi banalnie, dopóki mapa nie okaże się zatytułowana
+„miejsca dla psów”.
+
+Pracę dzielą dwa backendy. Hostowany silnik commerce odpowiada za produkty, koszyki, zamówienia i
+zaplecze sklepu, a backend domenowy za wszystko, co jest specyficzne dla tego produktu. Aplikacje
+rozmawiają wyłącznie z backendem domenowym, który dociera do silnika przez adapter. Silnik został już
+raz wymieniony, w pierwszych tygodniach, i to właśnie ten układ sprawił, że zmiana została po stronie
+serwera.
+
+Zaangażowanie to ekonomia, więc zostało zaprojektowane i przeaudytowane jak ekonomia. Punkty lojalnościowe,
+doświadczenie, odznaki i serie to osobne waluty; doświadczenia nie da się kupić punktami, a jedynym
+pomostem od aktywności do nagród jest jedna zaprojektowana nagroda dzienna. Audyt całej tej warstwy
+znalazł błędy, które takie ekonomie przyciągają: recenzje produktów, których nikt nie kupił, zarabiały
+punkty, a spacer deklarujący kilometr w sekundę mógł zdobyć koronę w lokalnym rankingu. Punkty wymagają
+teraz potwierdzonego zakupu, a nieprawdopodobne tempo nadal zapisuje spacer, ale nie może wygrać.
+Pokazywanie, kto spaceruje w pobliżu, rozmywa położenie do siatki 500 metrów, z minimalną liczebnością
+grupy, losowym przesunięciem i terminem ważności.
+
+Zdrowie to obszar, w którym produkt najbardziej zmienił kurs, i to we właściwą stronę. Pierwsza wersja
+przedstawiała konsultacje jako opiekę weterynaryjną i oferowała ocenę objawów i zmian skórnych przez AI,
+a do tego podpowiedzi szczepień, interakcji leków i podsumowania wizyt. Na konsultacje odpowiadają
+specjaliści od zachowania, żywienia i szkolenia, a nie weterynarze, więc formularz przestał przyjmować
+pytania zdrowotne, a teksty mówią „specjalista” wszędzie tam, gdzie opisują usługę. Następnie AI
+zdrowotne zostało wycofane w całości. W jego miejscu jest statyczna strona z sytuacjami, w których opiekun
+powinien zadzwonić do całodobowej placówki, razem z wyszukiwarką takich placówek. Ostrzeżenia o lekach
+pochodzą teraz z reguł, a nie z modelu, a receptę wystawia własny weterynarz opiekuna i weryfikuje ją
+człowiek.
+
+## Rezultat
+
+Platforma działa produkcyjnie w przeglądarce i w sklepach z aplikacjami mobilnymi. W listopadzie 2026
+główna domena marki została przeniesiona ze starego hostowanego sklepu na platformę. Hostowany silnik
+pozostał zapleczem, a zaindeksowane adresy produktów zostały na tym samym hoście. Za tym stoi około
+sześćdziesięciu modułów domenowych, 249 migracji schematu i około 2 700 commitów w ciągu ośmiu miesięcy,
+dostarczonych przez mały zespół, który utrzymuje też systemy wewnętrzne grupy.
+
+Część ograniczeń wyznaczają inni. Subskrypcja opieki jest opłacana kartą poza App Store, więc aplikacja
+na iOS jej nie pokazuje, a członkowie, którzy dołączyli przez przeglądarkę albo na Androidzie, zachowują
+korzyści, bo przyznaje je serwer. Strategia samego sprzedawcy przewiduje głębszą personalizację w
+kolejnej fazie, a dotychczasowe zmiany „najpierw pupil” są świadomie wyeksponowaniem logiki, która już
+istniała, a nie nowymi mechanikami.
+
+## Wnioski
+
+W produkcie z wieloma funkcjami najbardziej brzemienną decyzją projektową jest kolejność ważności,
+zapisana tak, żeby żaden ekran nie musiał jej ustalać od nowa. „Najpierw marketplace, pupil jako
+soczewka” rozstrzygnęło dziesiątki sporów, łącznie z decyzją o odrzuceniu dobrze uargumentowanego
+przeglądu.
+
+Drugi wniosek dotyczy tego, co usuwać. AI zdrowotne działało, w tym sensie, że dawało wiarygodnie
+brzmiące odpowiedzi, a jego usunięcie było właściwą decyzją produktową, bo nikt po stronie usługi nie
+był w stanie za te odpowiedzi odpowiadać. Granicę produktu o opiece wyznaczają kompetencje ludzi, którzy
+stoją za jego poradami, a nie to, co potrafi wygenerować model.
