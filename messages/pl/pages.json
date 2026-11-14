@@ -107,7 +107,12 @@
       "paragraphs": [
         "Praktyka wyrosła z dwóch dekad pracy w organizacjach, w których błąd architektoniczny jest kosztowny: osiem lat w globalnych płatnościach kartowych pod reżimem PCI-DSS, architektura korporacyjna w państwowym banku rozwoju i przy wymianie systemu centralnego, technologia w regulowanym fintechu, produkt blockchain w skali ogólnokrajowej, wreszcie technologia w firmie produkcyjnej, od hali po e-commerce.",
         "Równolegle powstaje kod. Kilkanaście czynnych repozytoriów produkcyjnych, systemy backendowe w dwóch niezależnych ekosystemach, aplikacje web i mobilne, integracje przemysłowe, własne rozszerzenia serwera tożsamości, narzędzia open source. Ten dorobek jest sposobem weryfikowania własnych rekomendacji, zanim trafią do kogoś innego.",
-        "Stąd bierze się zakres tej strony. Nie znajdziesz tu biografii ani zdjęć z konferencji, bo nie one są przedmiotem pracy. Znajdziesz stanowiska, dowody i teksty, po których można ocenić sposób myślenia, a to jedyna rzecz, którą naprawdę kupuje się w doradztwie."
+        "Stąd bierze się zakres tej strony. Nie znajdziesz tu rozbudowanej biografii ani zdjęć z konferencji, bo nie one są przedmiotem pracy. Znajdziesz stanowiska, dowody i teksty, po których można ocenić sposób myślenia, a to jedyna rzecz, którą naprawdę kupuje się w doradztwie."
+      ],
+      "bioLabel": "Profil zawodowy",
+      "bio": [
+        "Dariusz Tyszka jest architektem korporacyjnym i menedżerem IT z ponad 25-letnim doświadczeniem w bankowości, płatnościach kartowych, fintechu, sektorze publicznym i przemyśle. Jest magistrem inżynierem elektroniki i telekomunikacji Politechniki Łódzkiej i absolwentem Executive MBA w Szkole Biznesu Politechniki Warszawskiej. Posiada certyfikaty z zakresu architektury korporacyjnej (TOGAF), nadzoru nad IT (CGEIT), zarządzania projektami i programami (PMP, PRINCE2, MSP) oraz bezpieczeństwa (CompTIA Security+).",
+        "Pełnił funkcje CIO, CTO i głównego architekta w organizacjach regulowanych i dużej skali, odpowiadając za strategię technologiczną, architekturę i zespoły. Specjalizuje się w architekturze korporacyjnej, integracji systemów oraz wdrażaniu sztucznej inteligencji i automatyzacji procesów biznesowych, a rolę menedżerską łączy z bieżącą praktyką inżynierską."
       ],
       "credentialsLabel": "Certyfikacje",
       "sectorsLabel": "Sektory",
@@ -120,7 +125,7 @@
         "Produkcja i przemysł spożywczy"
       ],
       "founderLabel": "Podmiot",
-      "founderNote": "Praktykę prowadzi Dariusz Tyszka. Szczegóły przebiegu pracy zawodowej, na LinkedIn; ta strona celowo ich nie powiela."
+      "founderNote": "Praktykę prowadzi Dariusz Tyszka. Pełny przebieg pracy zawodowej jest na LinkedIn."
     },
     "resources": {
       "kicker": "Materiały",

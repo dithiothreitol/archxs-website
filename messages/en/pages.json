@@ -107,7 +107,12 @@
       "paragraphs": [
         "The practice grew out of two decades in organisations where an architectural mistake is expensive: eight years in global card payments under PCI-DSS, enterprise architecture at a state development bank and on a core banking replacement, technology leadership at a regulated fintech, a national-scale blockchain product, and most recently technology in manufacturing, from the plant floor to e-commerce.",
         "Code is written in parallel. More than a dozen active production repositories, backend systems in two independent ecosystems, web and mobile applications, industrial integrations, custom identity-server extensions, open-source tooling. That body of work is how recommendations get tested before they are handed to someone else.",
-        "That is where the scope of this site comes from. You will not find a biography or conference photographs, because they are not the subject of the work. You will find positions, evidence and writing from which a way of thinking can be judged, and that is the only thing anyone really buys in advisory work."
+        "That is where the scope of this site comes from. You will not find a long biography or conference photographs, because they are not the subject of the work. You will find positions, evidence and writing from which a way of thinking can be judged, and that is the only thing anyone really buys in advisory work."
+      ],
+      "bioLabel": "Professional profile",
+      "bio": [
+        "Dariusz Tyszka is an enterprise architect and IT executive with more than 25 years of experience in banking, card payments, fintech, the public sector and manufacturing. He holds a master's degree in electronics and telecommunications engineering from Lodz University of Technology and an Executive MBA from the Warsaw University of Technology Business School. His certifications cover enterprise architecture (TOGAF), IT governance (CGEIT), project and programme management (PMP, PRINCE2, MSP) and security (CompTIA Security+).",
+        "He has served as CIO, CTO and chief architect in regulated, large-scale organisations, responsible for technology strategy, architecture and teams. He specialises in enterprise architecture, systems integration and the adoption of AI and business process automation, and combines management roles with ongoing hands-on engineering."
       ],
       "credentialsLabel": "Credentials",
       "sectorsLabel": "Sectors",
@@ -120,7 +125,7 @@
         "Manufacturing and food industry"
       ],
       "founderLabel": "Entity",
-      "founderNote": "The practice is run by Dariusz Tyszka. Career details live on LinkedIn; this site deliberately does not duplicate them."
+      "founderNote": "The practice is run by Dariusz Tyszka. The full career history is on LinkedIn."
     },
     "resources": {
       "kicker": "Resources",

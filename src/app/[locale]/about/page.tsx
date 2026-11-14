@@ -32,6 +32,7 @@ export default async function AboutPage({ params }: Props) {
   const tn = await getTranslations("nav");
   const paragraphs = t.raw("paragraphs") as string[];
   const sectors = t.raw("sectors") as string[];
+  const bio = t.raw("bio") as string[];
 
   return (
     <>
@@ -47,10 +48,21 @@ export default async function AboutPage({ params }: Props) {
 
       <Container className="py-16 sm:py-20">
         <div className="grid gap-14 lg:grid-cols-[1fr_18rem] lg:gap-20">
-          <div className="measure space-y-6 text-[1.0625rem] leading-[1.75] text-foreground/90">
-            {paragraphs.map((p) => (
-              <p key={p.slice(0, 40)}>{p}</p>
-            ))}
+          <div className="measure">
+            <div className="space-y-6 text-[1.0625rem] leading-[1.75] text-foreground/90">
+              {paragraphs.map((p) => (
+                <p key={p.slice(0, 40)}>{p}</p>
+              ))}
+            </div>
+
+            <section className="mt-14 border-t border-border pt-6">
+              <h2 className="sheet-label">{t("bioLabel")}</h2>
+              <div className="mt-4 space-y-5 text-[1.0625rem] leading-[1.75] text-foreground/90">
+                {bio.map((p) => (
+                  <p key={p.slice(0, 40)}>{p}</p>
+                ))}
+              </div>
+            </section>
           </div>
 
           <aside className="space-y-9">
