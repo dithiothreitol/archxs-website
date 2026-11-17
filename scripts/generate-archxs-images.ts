@@ -978,6 +978,32 @@ TECHNICAL: 16:9, axonometric, thin ink linework, one accent colour.
 ${ARCHXS_STYLE_GUIDE}`,
   },
 
+  {
+    id: "work-county-road",
+    outputPath: "img/work/powiatowka-shared-road-game.png",
+    width: 1600,
+    height: 900,
+    aspectRatio: "16:9",
+    prompt: `SCENE: An axonometric drawing of a long two-lane country road winding
+gently across a flat landscape of fields and a few tree rows, seen from above at
+a calm angle. Along it, as small technical models: one small car on the road,
+a roadside billboard on two posts with a blank panel, a short concrete viaduct
+over the road with a stretch of noise wall beside it, a level crossing with its
+striped barrier raised, a small roundabout with a grass island, and a short bridge
+over a narrow river with reeds. Thin dashed dimension lines with end ticks run
+along the road edge, with short kilometre ticks spaced evenly along its length.
+The frame of the billboard panel is drafting red-orange; everything else is ink
+and flat muted fills.
+IMPORTANT: the road must read as one continuous road shared by everything on it;
+the billboard panel must be visibly empty.
+CRITICAL: the drawing carries no labels, no callouts, no lettering, no logos and
+no digits of any kind, including on the billboard, signs, the car and the
+kilometre ticks.
+BACKGROUND: drafting paper, faint grid, generous empty space.
+TECHNICAL: 16:9, axonometric, thin ink linework, one accent colour.
+${ARCHXS_STYLE_GUIDE}`,
+  },
+
   // ── Method ──────────────────────────────────────────────────────────────
   {
     id: "method-loop",

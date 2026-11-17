@@ -1,0 +1,126 @@
+---
+title: "Gra, w której wszyscy jadą tą samą prawdziwą drogą"
+summary: "Jak zbudować grę przeglądarkową na jednej wspólnej polskiej drodze powiatowej, przy której billboardy należą do prawdziwych właścicieli, ściany maluje się wspólnie, a przepisy pochodzą z prawdziwego kodeksu, i to tak, żeby serwer nie musiał dźwigać każdego gracza, który tylko jedzie."
+sector: "Produkty własne, gra przeglądarkowa"
+period: "2026"
+disclosure: "public"
+metrics:
+  - label: "Trasa"
+    value: "97,6 km prawdziwej drogi: 42 miejscowości, 17 rond, 5 przejazdów kolejowych, 640 znaków"
+  - label: "Wejście"
+    value: "Jazda bez konta, początkowy JavaScript poniżej 400 KB"
+  - label: "Wspólny świat"
+    value: "Billboardy, ściany i rankingi publikowane jako pliki statyczne"
+  - label: "Wytwarzanie"
+    value: "Trzynaście faz w sześć tygodni, na żywo pod powiatowka.com"
+capabilities:
+  - "Wytwarzanie oprogramowania"
+  - "Applied AI"
+  - "Procesy biznesowe"
+stack:
+  - "React 19, React Three Fiber, Three.js"
+  - "Vite, Tamagui"
+  - "Hono, Drizzle, PostgreSQL 18"
+  - "WebSocket do malowania"
+  - "Import z OpenStreetMap i numerycznego modelu terenu"
+  - "Moderacja Claude, structured outputs"
+  - "Stripe Checkout i Connect"
+  - "Caddy, Docker Compose, PWA"
+order: 29
+---
+
+## Kontekst
+
+Powiatówka to gra przeglądarkowa o jednej wspólnej polskiej drodze powiatowej. Każdy gracz jedzie tą
+samą drogą i widzi ten sam świat: te same billboardy, to samo graffiti na ekranach dźwiękochłonnych i
+wiaduktach, te same rankingi. Droga jest prawdziwa, ma 97,6 km z Radzymina przez Wyszków do Ostrołęki,
+razem z miejscowościami, skrzyżowaniami, rondami, przejazdami kolejowymi, mostami, w tym tym na Bugu, i
+znakami. Jazda jest darmowa. Gra zarabia na miejscach reklamowych przy drodze, prowizji od ich
+odsprzedaży i farbie do graffiti.
+
+## Problem
+
+Jeden wspólny świat brzmi jak problem serwera czasu rzeczywistego. Jeśli każdy jadący gracz trzyma
+połączenie na żywo i pyta serwer, jak wygląda świat, koszt rośnie razem z ludźmi, którzy w większości
+tylko patrzą, a na to darmowej gry nie stać.
+
+Prawdziwa droga podnosi stawkę każdej reguły. Gracze wiedzą, co powinien zrobić fotoradar, przejście dla
+pieszych czy rondo, i oceniają grę według drogi, którą jeżdżą naprawdę. Mandat, który przychodzi, zanim
+fotoradar widać, wygląda na oszustwo, cokolwiek mówi kod.
+
+Biznes dokłada trzecią trudność. Miejsce reklamowe sprzedawane każdemu oznacza obrazy od obcych ludzi
+wstawiane do świata, który widzą wszyscy, a graffiti malowane przez każdego oznacza to samo w skali
+piksela.
+
+## Podejście
+
+Droga jest daną. Geometria i każdy obiekt, który ma tożsamość, leżą w wersjonowanym pliku importowanym z
+OpenStreetMap i numerycznego modelu terenu, z raportem importu, który wymienia braki w danych mapy i to,
+co importer musiał wywnioskować. Dodanie kilometrów albo nowego rodzaju obiektu zmienia plik, a nie
+grę, i tak samo jest z krajem: znaki, tablice rejestracyjne i ograniczenia prędkości przychodzą w
+pakiecie krajowym.
+
+Odczyt świata nigdy nie dotyka serwera aplikacji. Własność billboardów, ich obrazy, obrazy ścian i rankingi
+są publikowane jako pliki statyczne serwowane z pamięcią podręczną, gotowe na CDN przed serwerem. Serwer
+obsługuje tylko zapisy: zakupy, malowanie i raporty przejazdów zalogowanych graczy. Połączenie WebSocket
+ma tylko gracz, który stoi przy ścianie w edytorze malowania. Każdy piksel jest dopisywany do dziennika
+zdarzeń w tej samej transakcji, która zużywa farbę, a serwer co kilka sekund publikuje zmienione ściany
+jako wersjonowane obrazy, więc ścianę zawsze da się odtworzyć z jej historii.
+
+Droga wygląda na uczęszczaną, nawet gdy nikt inny nie jest akurat w grze. Auta graczy, którzy jechali
+w ostatniej godzinie, są odtwarzane z zapisu ich przejazdów, trzymają się swojego pasa, stają na
+czerwonym, przed zamkniętym przejazdem i przed pieszym i nigdy nie przenikają przez auto gracza.
+Kierowcy porozumiewają się tylko klaksonem i mruganiem świateł, więc nie ma czatu do moderowania. Wejście
+ma swój budżet: jazda zaczyna się bez konta, początkowy JavaScript mieści się poniżej 400 KB, kieruje się
+jednym palcem, a tempomat trzyma ograniczenie prędkości.
+
+Billboardy są jednocześnie scenografią i biznesem. Pusty mówi „tu może być twoja reklama”. Kupujący
+wybiera okres 30, 90 albo 365 dni, po jego końcu ma siedem dni pierwszeństwa do przedłużenia i może
+włączyć automatyczne przedłużenie kartą. Billboard można odsprzedać, a prowizja platformy rozlicza się
+przez Stripe Connect, z publiczną historią przeniesień na stronie billboardu. Każdą reklamę ocenia
+Claude przed płatnością, więc odrzucona reklama nigdy nie trafia do kasy. Kategorie regulowane idą do
+kolejki człowieka, a autor ma jedno odwołanie. Tekst widoczny na obrazie, także skierowany do modelu,
+jest wyciągany i oceniany jak każda inna treść. Właściciele mogą też prowadzić kampanie kuponów w cenie
+billboardu. Kody są przyznawane po zaliczonym przejeździe, odkrywa się je gestem zdrapki i można je
+wymieniać na tablicach ogłoszeń przy drodze. Ściany są moderowane po fakcie, w kaflach po 64 piksele:
+odrzucony kafel wraca do ostatniej zaakceptowanej wersji, konta, które namalowały w nim więcej niż próg,
+tracą na dobę prawo do malowania, a wydatki na model mają dzienny budżet, którego nie dotyczą kafle
+zgłoszone przez graczy.
+
+Przepisy pochodzą z prawdziwego kodeksu. Dwa fotoradary w tygodniu i patrol co trzy godziny mierzą
+średnią prędkość, a mandaty i punkty karne idą według taryfikatora z 2026 roku. Za dużo punktów albo
+duże przekroczenie zatrzymuje prawo jazdy na dobę, a auto jedzie wtedy samo, z graczem jako pasażerem.
+Kary spowalniają grę, ale nigdy nie zabierają niczego wartościowego: kupony, rankingi i farba zostają.
+Kiedy gracze zgłosili, że fotoradar wystawia mandat, zanim go widać, pomiar przeniesiono tak, żeby
+zaczynał się od znaku ostrzegawczego, czyli od tego, co kierowca faktycznie widzi.
+
+Postępów nie da się kupić ani wyfarmić. Podróż biegnie etapami, z pieczątką w paszporcie za każdą
+miejscowość i numerem finiszera za pierwszą pełną trasę. Czterokilometrowy odcinek dnia jest taki sam
+dla wszystkich i buduje serię, jest wspólny cel tygodnia, a w garażu czeka osiem lakierów. Cotygodniowa
+jazda na czas daje wszystkim te same warunki: piesi, ruch i roboty drogowe losują się z ziarna tygodnia,
+a serwer sam przelicza czas i mandaty z raportów przejazdu. Ponieważ raporty przejazdu da się
+zautomatyzować, nagrody są kosmetyczne albo statusowe. Wszystko, co ma wartość, wynika wyłącznie z reguł
+sprawdzanych przez serwer. Wokół tego prowincja żyje własnym życiem: pora dnia idzie według czasu
+warszawskiego, nad Bugiem bywa mgła, jeździ konwój traktorów i orszak weselny, są stoiska przy drodze,
+dziury i roboty z wahadłem oraz pory roku.
+
+## Rezultat
+
+Gra działa pod adresem [powiatowka.com](https://powiatowka.com), po polsku i po angielsku, jako aplikacja
+PWA, która działa także na starszych iPhone'ach. Od pierwszego commita do trzynastu faz minęło sześć
+tygodni: prawdziwa trasa, konta i rankingi, billboardy z moderacją, zakupem i odsprzedażą, wspólne
+ściany, kampanie kuponów i tablice ogłoszeń, przejazdy kolejowe i skrzyżowania, podróż z paszportem,
+policja i fotoradary, cotygodniowa jazda na czas i życie prowincji. Gracze zgłaszają problemy na
+Discordzie, a poprawki ich zgłoszeń trafiały na produkcję tego samego dnia.
+
+## Wnioski
+
+To, jak oddzielony jest odczyt świata od jego zmiany, decyduje o tym, ile kosztuje wspólny świat. Gdy
+odczyt jest plikiem statycznym, serwer dźwiga ludzi, którzy coś zmieniają, a nie tych, którzy patrzą, a
+w grze większość tylko patrzy.
+
+Drugi wniosek dotyczy reguł zapożyczonych z rzeczywistości. Fotoradar i piesi na przejściach przechodzili
+testy, a mimo to zachowywali się na drodze źle. Pierwszy błąd wyłapali gracze. Drugi wyłapało
+nagrywanie co 40 milisekund, gdzie naprawdę są piesi i auta, zamiast zapewniania, gdzie powinni być. Gra,
+która naśladuje prawdziwe przepisy, jest oceniana według rzeczywistości, więc uczciwość trzeba mierzyć
+od tego, co gracz widzi.

@@ -1,6 +1,6 @@
 ---
 title: "A platform one side visits once and the other has to open every day"
-summary: "How to plan and build a platform connecting homeowners with local photovoltaic and energy storage crews when the crews decide whether the map stays full, and why the price catalogue moved from a late phase into the core of the MVP."
+summary: "How to plan and build a platform connecting homeowners with local photovoltaic and energy storage crews when the crews decide whether the map stays full, why the price catalogue moved from a late phase into the core of the MVP, and how a second specification, for running the crews' sales and back office, landed on the same models."
 sector: "Renewable energy, installer marketplace"
 period: "2026"
 disclosure: "anonymised"
@@ -10,7 +10,7 @@ metrics:
   - label: "Languages"
     value: "Polish and English for homeowners, Ukrainian and Russian for crews"
   - label: "Schema migrations"
-    value: "79 in the first five weeks, each with a checkpoint document"
+    value: "98 in nine weeks, each with a checkpoint document"
   - label: "Planned running cost"
     value: "≈ €15–30 a month on one VPS"
 capabilities:
@@ -25,6 +25,7 @@ stack:
   - "Next.js 16, Expo, Tamagui"
   - "MapLibre, OpenFreeMap"
   - "Transactional outbox, Expo Push, Web Push"
+  - "Telephony and e-signature behind provider interfaces"
   - "Hetzner, Docker Compose, Caddy"
 order: 15
 ---
@@ -35,7 +36,9 @@ A client in the renewable energy market wanted a platform with two audiences. Ho
 photovoltaic system, an energy storage unit or a heat pump find a local installation crew on a map and run
 the project with them in one place. Crews get a lightweight CRM, a calendar, an investment room shared
 with the client, a catalogue of wholesale prices and access to formal services such as grid operator
-applications and subsidies. One website, one mobile application for both roles, one backend.
+applications and subsidies. One website, one mobile application for both roles, one backend. Seven weeks
+in, the scope widened from finding a crew to running an installation company: its sales team, its
+office and the installations it orders from other companies.
 
 ## Problem
 
@@ -90,15 +93,34 @@ pattern, upload pipeline and shared cross-platform screens. Where that earlier c
 did not actually follow, I settled each one explicitly, for example by putting every access decision in
 one policy class instead of hundreds of per-method annotations.
 
+Seven weeks in, the client brought a second specification: sixteen proposals that turn the platform
+from a place to find a crew into the system an installation company runs on. It covers salespeople
+working by phone and in the field, with first-contact timers of 12 and 48 hours and an exchange where
+leads are reassigned; managers with a view of their team; an office that handles contracts, grid
+operator notifications, subsidies and settlements as cases with deadlines; offers with variants, built
+from a company price list with component rules and discount limits; and installations ordered from
+another company, with negotiation and a deadline for the answer. The specification's own rule was
+minimum change, extending the existing models, and the code mostly allowed it. It resisted in three
+places: every lead and investment belonged to a crew, accepting an offer created the investment, and the
+sales pipeline allowed any transition between statuses. None of them needed a table rebuilt. A
+salesperson's leads belong to the company's default crew, accepting an offer became a declaration of
+the chosen variant with the investment created at the contract, and the pipeline gained tracks that the
+service filters. The parts that touch the law sit behind switches. A salesperson's location is read
+only while the app is open in a work session, with consent given to that specific company; telephony
+and electronic signature wait behind provider interfaces until vendors are chosen; and commissions stay
+off until there is a legal opinion.
+
 ## Outcome
 
-Five weeks after the start, the foundation phase is closed and the remaining eight are partly
+Nine weeks after the start, the foundation phase is closed and the remaining eight are partly
 implemented: company verification and crew publication, search and contact, a CRM with tasks and
 reminders, the catalogue with five kinds of price alerts, the investment room with conversation,
-documents, photo requests and formalities, and the administration panel. The project documentation
-states plainly that "implemented" means code and described tests, not production readiness. Device tests
-of the camera and push notifications, production keys for payments and SMS, and the launch itself are
-still ahead.
+documents, photo requests and formalities, and the administration panel. The sales, office and B2B
+scope followed in fifteen blocks on the web and in the app, in all four languages, and then three rounds
+of feedback from testers, the administrator and a sales manager. The project documentation states
+plainly that "implemented" means code and described tests, not production readiness. Device tests of the
+camera and push notifications, production keys for payments and SMS, the choice of telephony and
+signature vendors, the legal opinion on commissions and the launch itself are still ahead.
 
 ## What it taught me
 

@@ -1,6 +1,6 @@
 ---
 title: "Platforma, na którą jedna strona wchodzi raz, a druga musi zaglądać codziennie"
-summary: "Jak zaplanować i zbudować platformę łączącą właścicieli domów z lokalnymi ekipami montującymi fotowoltaikę i magazyny energii, gdy to ekipy decydują, czy mapa będzie pełna, i dlaczego katalog cen przeszedł z jednej z ostatnich faz do rdzenia MVP."
+summary: "Jak zaplanować i zbudować platformę łączącą właścicieli domów z lokalnymi ekipami montującymi fotowoltaikę i magazyny energii, gdy to ekipy decydują, czy mapa będzie pełna, dlaczego katalog cen przeszedł z jednej z ostatnich faz do rdzenia MVP i jak druga specyfikacja, obejmująca sprzedaż i zaplecze firm montażowych, zmieściła się w tych samych modelach."
 sector: "Odnawialne źródła energii, platforma dla ekip montażowych"
 period: "2026"
 disclosure: "anonymised"
@@ -10,7 +10,7 @@ metrics:
   - label: "Języki"
     value: "Polski i angielski dla klientów, ukraiński i rosyjski dla ekip"
   - label: "Migracje schematu"
-    value: "79 w pierwszych pięciu tygodniach, każda z dokumentem checkpointu"
+    value: "98 w dziewięć tygodni, każda z dokumentem checkpointu"
   - label: "Planowany koszt utrzymania"
     value: "≈ 15–30 € miesięcznie na jednym VPS"
 capabilities:
@@ -25,6 +25,7 @@ stack:
   - "Next.js 16, Expo, Tamagui"
   - "MapLibre, OpenFreeMap"
   - "Transakcyjny outbox, Expo Push, Web Push"
+  - "Telefonia i podpis elektroniczny za interfejsami dostawców"
   - "Hetzner, Docker Compose, Caddy"
 order: 15
 ---
@@ -35,7 +36,9 @@ Klient z rynku odnawialnych źródeł energii chciał platformy dla dwóch grup 
 który szuka instalacji fotowoltaicznej, magazynu energii albo pompy ciepła, znajduje na mapie lokalną
 ekipę montażową i prowadzi z nią inwestycję w jednym miejscu. Ekipy dostają lekki CRM, kalendarz, pokój
 inwestycji wspólny z klientem, katalog cen hurtowni i dostęp do usług formalnych, takich jak wnioski do
-operatora sieci i dotacje. Jedna strona WWW, jedna aplikacja mobilna dla obu ról, jeden backend.
+operatora sieci i dotacje. Jedna strona WWW, jedna aplikacja mobilna dla obu ról, jeden backend. Po
+siedmiu tygodniach zakres rozszerzył się ze znalezienia ekipy na prowadzenie firmy montażowej: jej
+zespołu sprzedaży, biura i montaży zamawianych u innych firm.
 
 ## Problem
 
@@ -91,14 +94,34 @@ tożsamości, potok uploadu i wspólne ekrany web i mobile. Tam, gdzie tamten ko
 w rzeczywistości nie stosował, rozstrzygnąłem każdą jawnie, na przykład umieszczając wszystkie decyzje o
 dostępie w jednej klasie polityki zamiast w setkach adnotacji przy metodach.
 
+Po siedmiu tygodniach klient przyniósł drugą specyfikację: szesnaście propozycji, które zmieniają
+platformę z miejsca, w którym szuka się ekipy, w system, na którym działa firma montażowa. Obejmuje
+sprzedawców pracujących przez telefon i w terenie, z licznikami pierwszego kontaktu 12 i 48 godzin oraz
+giełdą, na której zapytania przechodzą do innych osób; managerów z widokiem na swój zespół; biuro, które
+prowadzi umowy, zgłoszenia do operatora sieci, dotacje i rozliczenia jako sprawy z terminami; oferty z
+wariantami, budowane z cennika firmy z regułami komponentów i limitami rabatów; oraz montaże zamawiane u
+innej firmy, z negocjacją i terminem odpowiedzi. Sama specyfikacja przyjęła zasadę minimum zmian i
+rozszerzania istniejących modeli, a kod w większości na to pozwolił. Opór stawiał w trzech miejscach:
+każde zapytanie i każda inwestycja należały do ekipy, akceptacja oferty tworzyła inwestycję, a pipeline
+sprzedaży dopuszczał dowolne przejście między statusami. Żadne z nich nie wymagało przebudowy tabeli.
+Zapytania sprzedawcy należą do domyślnej ekipy firmy, akceptacja oferty stała się deklaracją wybranego
+wariantu, a inwestycja powstaje przy umowie, pipeline zaś dostał ścieżki filtrowane w serwisie. Elementy
+dotykające prawa stoją za przełącznikami. Położenie sprzedawcy jest odczytywane tylko wtedy, gdy
+aplikacja jest otwarta w trybie pracy, ze zgodą udzieloną tej konkretnej firmie; telefonia i podpis
+elektroniczny czekają za interfejsami dostawców, dopóki dostawcy nie zostaną wybrani; prowizje pozostają
+wyłączone do czasu opinii prawnej.
+
 ## Rezultat
 
-Pięć tygodni po starcie faza fundamentu jest zamknięta, a pozostałe osiem jest częściowo wdrożonych:
+Dziewięć tygodni po starcie faza fundamentu jest zamknięta, a pozostałe osiem jest częściowo wdrożonych:
 weryfikacja firm i publikacja ekip, wyszukiwanie i kontakt, CRM z zadaniami i przypomnieniami, katalog z
 pięcioma rodzajami alertów cenowych, pokój inwestycji z rozmową, dokumentami, prośbami o zdjęcia i
-formalnościami oraz panel administratora. Dokumentacja projektu mówi wprost, że „wdrożone” oznacza kod i
+formalnościami oraz panel administratora. Zakres sprzedaży, biura i B2B doszedł w piętnastu blokach, w
+przeglądarce i w aplikacji, we wszystkich czterech językach, a po nim trzy rundy uwag od testerów,
+administratora i kierownika sprzedaży. Dokumentacja projektu mówi wprost, że „wdrożone” oznacza kod i
 opisane testy, a nie gotowość produkcyjną. Testy aparatu i powiadomień push na urządzeniach, produkcyjne
-klucze płatności i SMS oraz samo uruchomienie są jeszcze przed nami.
+klucze płatności i SMS, wybór dostawców telefonii i podpisu, opinia prawna w sprawie prowizji oraz samo
+uruchomienie są jeszcze przed nami.
 
 ## Wnioski
 

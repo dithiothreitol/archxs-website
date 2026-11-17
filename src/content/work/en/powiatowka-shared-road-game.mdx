@@ -1,0 +1,123 @@
+---
+title: "A game in which every player drives the same real road"
+summary: "How to build a browser game on one shared Polish county road, where billboards along it belong to real owners, walls are painted together and the traffic rules come from the actual code, without the server having to carry every player who is only driving."
+sector: "Own products, browser game"
+period: "2026"
+disclosure: "public"
+metrics:
+  - label: "Route"
+    value: "97.6 km of a real road: 42 towns, 17 roundabouts, 5 level crossings, 640 signs"
+  - label: "Entry"
+    value: "Driving without an account, initial JavaScript under 400 KB"
+  - label: "Shared world"
+    value: "Billboards, walls and rankings published as static files"
+  - label: "Delivery"
+    value: "Thirteen phases in six weeks, live at powiatowka.com"
+capabilities:
+  - "Software delivery"
+  - "Applied AI"
+  - "Business processes"
+stack:
+  - "React 19, React Three Fiber, Three.js"
+  - "Vite, Tamagui"
+  - "Hono, Drizzle, PostgreSQL 18"
+  - "WebSocket for painting"
+  - "OpenStreetMap and terrain model import"
+  - "Claude moderation, structured outputs"
+  - "Stripe Checkout and Connect"
+  - "Caddy, Docker Compose, PWA"
+order: 29
+---
+
+## Context
+
+Powiatówka is a browser game about one shared Polish county road. Every player drives the same road and
+sees the same world: the same billboards, the same graffiti on noise walls and viaducts, the same
+leaderboards. The road is a real one, 97.6 km from Radzymin through Wyszków to Ostrołęka, with its
+towns, junctions, roundabouts, level crossings, bridges, including the one over the Bug, and road signs. Driving is free.
+The game earns from billboard space along the road, a commission on its resale, and paint for graffiti.
+
+## Problem
+
+A single shared world sounds like a real-time server problem. If every driving player holds a live
+connection and asks the server what the world looks like, the cost grows with people who are mostly
+just looking, and a free game cannot afford that.
+
+A real road raises the stakes of every rule. Players know what a speed camera, a pedestrian crossing or a
+roundabout should do, and they judge the game against the road they drive in real life. A fine that
+arrives before the camera is visible feels like cheating, whatever the code says.
+
+The business adds a third difficulty. Billboard space sold to anyone means images from strangers placed
+in a world that everyone else sees, and graffiti painted by anyone means the same thing at pixel scale.
+
+## Approach
+
+The road is data. Geometry and every object with an identity live in a versioned file, imported from
+OpenStreetMap and the national terrain model, with an import report that lists the gaps in the map data
+and what the importer had to infer. Adding kilometres or a new kind of object changes the file, not the
+game, and the same goes for a country: signs, number plates and speed limits come in a country package.
+
+Reading the world never touches the application server. Billboard ownership, billboard images, wall images
+and leaderboards are published as static files and served with caching, ready for a CDN in front. The
+server handles only writes: purchases, painting and drive reports from logged-in players. Only a player
+standing at a wall in the painting editor holds a WebSocket. Every pixel is appended to an event log in
+the same transaction that spends the paint, and the server publishes changed walls as versioned images
+every few seconds, so a wall can always be rebuilt from its history.
+
+The road feels used without anyone having to be online at the same time. Cars of players who drove in the
+last hour are replayed from their recorded drives, and they keep to their lane, stop at red lights,
+closed level crossings and pedestrians, and never pass through the player's car. Drivers communicate
+only with the horn and by flashing their lights, so there is no chat to moderate. Entry has a budget:
+driving starts without an account, the initial JavaScript stays under 400 KB, and steering takes one
+finger while cruise control holds the speed limit.
+
+Billboards are both the scenery and the business. An empty one says "your advert here". A buyer chooses
+a period of 30, 90 or 365 days, gets seven days of priority to renew after it ends, and can switch on
+automatic renewal by card. A billboard can be resold, with the platform's commission settled through
+Stripe Connect and the transfer history public on the billboard's page. Each advert is judged by Claude
+before payment, so a rejected advert never reaches the checkout. Regulated categories go to a human
+queue, and the author has one appeal. Text visible in an image, including text addressed to the model,
+is extracted and judged as content. Owners can also run coupon campaigns in the price of the billboard.
+Codes are awarded after a completed drive, revealed with a scratch-card gesture, and can be swapped at
+roadside notice boards. Walls are moderated after the fact, in 64-pixel tiles: a rejected tile returns to
+its last approved version, accounts that painted more than a threshold of it lose the right to paint
+for a day, and model
+spending has a daily budget that reported tiles bypass.
+
+The rules come from the real traffic code. Two speed cameras a week and a patrol every three hours measure
+average speed, and fines and penalty points follow the 2026 tariff. Too many points or a large excess
+suspends the licence for a day, and the car then drives itself with the player as a passenger.
+Penalties slow the game down and never take anything of value away: coupons, rankings and paint stay.
+When players reported a camera fining them before it was in sight, the measurement was moved to start
+at the warning sign, which is exactly what a driver can see.
+
+Progress is built so that it cannot be bought or farmed. A journey runs in stages, with a passport stamp
+for every town and a finisher number for the first full trip. A daily four-kilometre stretch is the same
+for everyone and builds a streak, there is a weekly community goal, and the garage holds eight paint jobs.
+The weekly time trial gives everyone the same conditions: pedestrians, traffic and roadworks are drawn
+from a seed for the week, and the server recomputes the time and the fines from the drive reports.
+Because drive reports can be automated, rewards are cosmetic or a matter of status. Anything of value
+comes only from rules the server verifies. Around all of it the province lives its own life: time of day
+follows Warsaw time, there is fog over the Bug, a tractor convoy and a wedding procession, roadside
+stalls, potholes and roadworks with alternating traffic, and the seasons.
+
+## Outcome
+
+The game is live at [powiatowka.com](https://powiatowka.com), in Polish and English, as a progressive web
+app that also runs on older iPhones. It went from the first commit to thirteen phases in six weeks: the
+real route, accounts and leaderboards, billboards with moderation, purchase and resale, shared walls,
+coupon campaigns and notice boards, level crossings and junctions, the journey and its passport, police
+and speed cameras, the weekly time trial and the life of the province. Players report problems on
+Discord, and the fixes for their reports have reached production on the same day.
+
+## What it taught me
+
+Separating how the world is read from how it is changed decides what a shared world costs. Once reading
+is a static file, the server carries the people who change something, not the people who look, and in a
+game most people only look.
+
+The second lesson is about rules borrowed from reality. The speed camera and the pedestrians at
+crossings both passed their tests and both behaved wrongly on the road. Players caught the first one.
+The second was caught by recording, every 40 milliseconds, where pedestrians and cars actually were,
+rather than by asserting where they should be. A game that imitates real rules is judged against
+reality, so fairness has to be measured from what the player can see.
