@@ -2,6 +2,7 @@
 
 import { Moon, Sun } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useEffect } from "react";
 
 /**
  * No React state at all: the theme lives on <html class="dark">, and which icon
@@ -10,6 +11,21 @@ import { useTranslations } from "next-intl";
  */
 export function ThemeToggle() {
   const t = useTranslations("nav");
+
+  // Safety net: if <html> is ever re-created on the client (a root-layout
+  // re-mount), the pre-paint script does not run again, so re-apply the
+  // stored theme here. A no-op in the normal case.
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("archxs-theme");
+      const dark =
+        stored === "dark" ||
+        (!stored && window.matchMedia("(prefers-color-scheme: dark)").matches);
+      document.documentElement.classList.toggle("dark", dark);
+    } catch {
+      /* storage disabled — keep whatever the document has */
+    }
+  }, []);
 
   function toggle() {
     const next = !document.documentElement.classList.contains("dark");
