@@ -1,18 +1,18 @@
 ---
-title: "Ten internal systems without ten separate stacks"
-summary: "How to build a dozen internal systems for a manufacturing plant and its sales operation without reaching the point where maintenance costs more than the build."
+title: "Twenty internal systems without twenty separate stacks"
+summary: "How to build more than twenty internal systems for a manufacturing plant and its sales operation without reaching the point where maintenance costs more than the build, and why the platform underneath could move from a rented server to one in the plant without rewriting them."
 sector: "Pet food manufacturing, B2B private label"
 period: "2026"
 disclosure: "anonymised"
 metrics:
   - label: "Systems on shared infrastructure"
-    value: "About 10, on a single VPS"
+    value: "More than 20, on one identity provider and one database cluster"
+  - label: "Hosting"
+    value: "Rented VPS to an on-premises server, reachable from the internet only through an allow-listed edge"
   - label: "Supplier price list validation"
     value: "8–12 h of manual work to ~5 min plus 15–30 min of review"
   - label: "Shelf audit"
     value: "2,827 photographs to 26,864 product observations"
-  - label: "Marketing automation"
-    value: "19 workflows"
 capabilities:
   - "Enterprise architecture"
   - "Business processes"
@@ -27,6 +27,7 @@ stack:
   - "PostgreSQL"
   - "Keycloak"
   - "Redis"
+  - "LiteLLM / Langfuse"
   - "KSeF"
 order: 2
 ---
@@ -35,15 +36,17 @@ order: 2
 
 A private-label pet food manufacturer with B2B partners across several European countries ran its plant
 and its sales operation on a set of spreadsheets, email threads and knowledge held in a few people's
-heads. The demand was not for one system but for a dozen: production planning and monitoring, document
-workflow, recipe compliance, sales, warehousing, recruitment.
+heads. The demand was not for one system but for many: production planning and maintenance, recipe
+compliance, document workflow and accounting, sales in the field and at trade fairs, export, warehousing,
+fleet, recruitment, legal.
 
 ## Problem
 
-The instinctive response is to buy a dozen products or to build a dozen applications. Both options run
-into the same wall. Every application wants its own authentication, its own database, its own deployment,
-its own notification channel. At ten systems and one team, maintenance starts costing more than the
-build, and integration becomes a separate product that nobody ordered.
+The instinctive response is to buy a product per need or to build an application per need. Both options
+run into the same wall. Every application wants its own authentication, its own database, its own
+deployment, its own notification channel. At ten systems and one team, maintenance starts costing more
+than the build, and integration becomes a separate product that nobody ordered. At twenty, it stops being
+a cost question and becomes a question of whether the estate can be run at all.
 
 The second difficulty is substantive, because some of these processes are regulated or computationally hard:
 recipes have to comply with FEDIAF and EU regulation, invoices with KSeF requirements, and the production
@@ -54,14 +57,15 @@ plan has to respect the real constraints of the lines. These are domains where a
 
 The first decision, ahead of any feature, was the shared layer: one Keycloak with one realm, one
 PostgreSQL cluster with a database per application, one Redis with allocated database numbers, one
-reverse proxy, one WhatsApp gateway routing traffic to five applications, one LLM gateway with full cost
+reverse proxy, one WhatsApp gateway routing traffic to several applications, one LLM gateway with full cost
 observability. Every new system receives those as inputs rather than rebuilding them. Bounded context
 boundaries are justified in ADRs, because without that discipline "reuse" turns, within a few months,
-into a single monolith carrying ten names.
+into a single monolith carrying twenty names.
 
 The production layer is built to ISA-95 (APS/MOM), with data acquisition over OPC UA and MQTT/Sparkplug B
-and time series in TimescaleDB. Conformance to the ISA-95 model earns its place here, because it is the only way I know of to make the words "resource", "operation" and "order" mean the same thing in a
-conversation with a controls engineer, in the interface and in the database schema.
+and time series in TimescaleDB. Conformance to the ISA-95 model earns its place here, because it is the only
+way I know of to make the words "resource", "operation" and "order" mean the same thing in a conversation
+with a controls engineer, in the interface and in the database schema.
 
 One rule governs the AI layer: AI proposes, a person decides. Models read documents, classify,
 summarise and prepare the decision. Approval stays with a human everywhere the effect is external or
@@ -69,11 +73,32 @@ regulated. The cost of that rule is explicit: full automation cannot be promised
 a review queue kept running. So is the gain: no system creates an obligation nobody approved, and each
 one can be defended in an audit.
 
+Once the estate outgrew a single rented server, the platform moved to a server inside the plant. Every
+application is reachable only from the company network; the internet sees one edge behind a tunnel, with
+no open port in the office and an explicit list of hosts and paths that may pass, everything else
+answering 404. Each application is installed afresh from a single commit and its data is moved once, on
+the day it switches over, with automations and integrations running in exactly one place at any moment so
+that nothing is sent twice.
+
 ## Outcome
 
-About ten internal systems run on the shared infrastructure, production planning and monitoring,
-document workflow with KSeF, recipe compliance in R&D, sales and marketing automation (19 workflows),
-e-commerce, an ATS. The warehouse system is still being built. All of it is maintained on a single VPS.
+More than twenty internal systems run on the shared infrastructure. Several of them have their own case
+studies: [production planning](/en/work/reproducible-production-planning/) with
+[maintenance](/en/work/maintenance-cmms-shopfloor/) inside it,
+[recipe compliance](/en/work/feed-compliance-deterministic-core/),
+[accounting with KSeF](/en/work/group-accounting-ksef/),
+[field sales](/en/work/field-sales-offline-first/),
+[trade fair orders over WhatsApp](/en/work/event-ordering-over-whatsapp/),
+[export](/en/work/export-expansion-engine/),
+[marketing automation](/en/work/multi-brand-marketing-automation/),
+[carton packing](/en/work/carton-packing-operator-approval/),
+[the warehouse](/en/work/warehouse-system-second-warehouse/),
+[the fleet](/en/work/fleet-reminders-that-persist/),
+[recruitment](/en/work/high-risk-ai-recruitment/),
+[projects and CRM](/en/work/project-crm-build-vs-adopt/) and
+[building permit documentation](/en/work/building-design-package-generator/). The
+[consumer storefront](/en/work/commerce-platform-erp-boundary/) shares the same building with a
+deliberately different answer to what it shares.
 
 Two operational changes can be stated in numbers. Supplier price list validation, previously 8–12 hours
 of manual work, is now around 5 minutes of processing and 15–30 minutes of human review. The shelf audit
@@ -81,9 +106,12 @@ turned 2,827 photographs into 26,864 product observations.
 
 ## What it taught me
 
-A dozen internal systems are not a dozen projects; they are one platform and a dozen features. The
+Twenty internal systems are not twenty projects; they are one platform and twenty features. The
 decision that settles which of the two you get is taken before the first line of feature code, and it is
-in practice irreversible later without rewriting every deployment.
+in practice irreversible later without rewriting every deployment. The move to the plant's own server
+was its test: because every system took identity, storage and routing from the platform, the move was
+one repeatable procedure applied twenty times rather than twenty different migrations.
 
-The second lesson concerns how far AI reaches in a manufacturing and regulated environment. The limit of usefulness sits where accountability for the outcome begins.
-Systems that draw that line explicitly get used daily. Systems that do not stay in pilot.
+The second lesson concerns how far AI reaches in a manufacturing and regulated environment. The limit of
+usefulness lies not where model accuracy ends but where accountability for the outcome begins. Systems
+that draw that line explicitly get used daily. Systems that do not stay in pilot.

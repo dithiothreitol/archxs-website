@@ -3,7 +3,7 @@
     "hero": {
       "kicker": "Advisory and engineering practice",
       "title": "Exactly as much architecture as needed.",
-      "lead": "ArchXS works by an architecture-on-demand method: architectural effort is limited to the decisions that cannot be cheaply reversed, and the time recovered goes into building the working system. This is how I advised on a bank's core system replacement. It is also how I now run a platform of around ten production systems, from production planning to document flow.",
+      "lead": "ArchXS works by an architecture-on-demand method: architectural effort is limited to the decisions that cannot be cheaply reversed, and the time recovered goes into building the working system. This is how I advised on a bank's core system replacement. It is also how I now run a platform of more than twenty production systems, from production planning to document flow.",
       "figureCaption": "System layers: infrastructure, processes, decisions",
       "proof": [
         {

@@ -1,18 +1,18 @@
 ---
-title: "Dziesięć systemów wewnętrznych bez dziesięciu osobnych stosów"
-summary: "Jak zbudować kilkanaście systemów wewnętrznych dla zakładu produkcyjnego i jego sprzedaży, nie doprowadzając do sytuacji, w której utrzymanie kosztuje więcej niż budowa."
+title: "Dwadzieścia systemów wewnętrznych bez dwudziestu osobnych stosów"
+summary: "Jak zbudować ponad dwadzieścia systemów wewnętrznych dla zakładu produkcyjnego i jego sprzedaży, nie doprowadzając do sytuacji, w której utrzymanie kosztuje więcej niż budowa, i dlaczego platformę pod nimi dało się przenieść z wynajętego serwera do zakładu bez przepisywania systemów."
 sector: "Produkcja karmy dla zwierząt, private label B2B"
 period: "2026"
 disclosure: "anonymised"
 metrics:
   - label: "Systemy na wspólnej infrastrukturze"
-    value: "Około 10, na jednym VPS"
+    value: "Ponad 20, na jednym dostawcy tożsamości i jednym klastrze baz"
+  - label: "Hosting"
+    value: "Z wynajętego VPS na serwer w zakładzie, dostępny z internetu tylko przez brzeg z listą dozwolonych ścieżek"
   - label: "Walidacja cennika dostawcy"
     value: "8–12 h pracy ręcznej do ~5 min plus 15–30 min przeglądu"
   - label: "Audyt półkowy"
     value: "2 827 zdjęć do 26 864 obserwacji produktowych"
-  - label: "Automatyzacja marketingu"
-    value: "19 workflow"
 capabilities:
   - "Architektura korporacyjna"
   - "Procesy biznesowe"
@@ -27,6 +27,7 @@ stack:
   - "PostgreSQL"
   - "Keycloak"
   - "Redis"
+  - "LiteLLM / Langfuse"
   - "KSeF"
 order: 2
 ---
@@ -35,15 +36,17 @@ order: 2
 
 Producent karmy dla zwierząt w modelu private label, z partnerami B2B w kilku krajach Europy, prowadził
 zakład i sprzedaż na zestawie arkuszy, poczty i wiedzy w głowach kilku osób. Zapotrzebowanie nie
-dotyczyło jednego systemu, lecz kilkunastu: planowania i monitoringu produkcji, obiegu dokumentów,
-zgodności receptur, sprzedaży, magazynu, rekrutacji.
+dotyczyło jednego systemu, lecz wielu: planowania produkcji i utrzymania ruchu, zgodności receptur, obiegu
+dokumentów i księgowości, sprzedaży w terenie i na targach, eksportu, magazynu, floty, rekrutacji,
+spraw prawnych.
 
 ## Problem
 
-Naturalną reakcją jest kupić kilkanaście produktów albo zbudować kilkanaście aplikacji. Oba warianty
-rozbijają się o to samo. Każda aplikacja chce własnego uwierzytelniania, własnej bazy, własnego
-wdrożenia, własnego kanału powiadomień. Przy dziesięciu systemach i jednym zespole utrzymanie zaczyna
-kosztować więcej niż budowa, a integracja staje się osobnym produktem, którego nikt nie zamawiał.
+Naturalną reakcją jest kupić produkt albo zbudować aplikację pod każdą potrzebę. Oba warianty rozbijają
+się o to samo. Każda aplikacja chce własnego uwierzytelniania, własnej bazy, własnego wdrożenia, własnego
+kanału powiadomień. Przy dziesięciu systemach i jednym zespole utrzymanie zaczyna kosztować więcej niż
+budowa, a integracja staje się osobnym produktem, którego nikt nie zamawiał. Przy dwudziestu przestaje to
+być pytanie o koszt, a staje się pytaniem, czy da się tym w ogóle zarządzać.
 
 Druga trudność jest merytoryczna, bo część tych procesów jest regulowana albo obliczeniowo trudna:
 receptury muszą być zgodne z FEDIAF i przepisami UE, faktury z wymogami KSeF, plan produkcji musi
@@ -54,13 +57,14 @@ ma żadnej wartości.
 
 Pierwszą decyzją, przed jakąkolwiek funkcjonalnością, była warstwa współdzielona: jeden Keycloak z jednym
 realmem, jeden klaster PostgreSQL z bazą per aplikacja, jeden Redis z przydziałem numerów baz, jeden
-reverse proxy, jeden gateway WhatsApp routujący ruch do pięciu aplikacji, jeden gateway LLM z pełną
+reverse proxy, jeden gateway WhatsApp routujący ruch do kilku aplikacji, jeden gateway LLM z pełną
 obserwowalnością kosztu. Każdy nowy system dostaje te elementy jako dane wejściowe, a nie buduje je od
 nowa. Granice bounded contextów są uzasadniane ADR-ami, bo bez tego „reuse" po kilku miesiącach zamienia
-się w jeden monolit noszący dziesięć nazw.
+się w jeden monolit noszący dwadzieścia nazw.
 
 Warstwa produkcyjna jest zbudowana zgodnie z ISA-95 (APS/MOM), z akwizycją danych przez OPC UA
-i MQTT/Sparkplug B oraz szeregami czasowymi w TimescaleDB. Zgodność z modelem ISA-95 zarabia tu na swoje miejsce, bo jest jedynym znanym mi sposobem, żeby słowa „zasób", „operacja" i „zlecenie" znaczyły to samo
+i MQTT/Sparkplug B oraz szeregami czasowymi w TimescaleDB. Zgodność z modelem ISA-95 zarabia tu na swoje
+miejsce, bo jest jedynym znanym mi sposobem, żeby słowa „zasób", „operacja" i „zlecenie" znaczyły to samo
 w rozmowie z automatykiem, w interfejsie i w schemacie bazy.
 
 W warstwie AI obowiązuje jedna zasada: AI proponuje, człowiek decyduje. Modele czytają dokumenty,
@@ -69,11 +73,32 @@ skutek jest zewnętrzny albo regulowany. Koszt tej zasady jest jawny: nie da si�
 automatyzacji, a przy każdym procesie trzeba utrzymać kolejkę do przeglądu. Zysk również: żaden system nie
 wytwarza zobowiązania, którego nikt nie zatwierdził, i każdy da się obronić przed audytem.
 
+Gdy zestaw systemów przerósł jeden wynajęty serwer, platforma przeszła na serwer w zakładzie. Każda
+aplikacja jest dostępna wyłącznie z sieci firmowej; internet widzi jeden brzeg za tunelem, bez otwartego
+portu w biurze i z jawną listą hostów i ścieżek, które mogą przejść, a wszystko inne dostaje 404. Każda
+aplikacja jest instalowana od nowa z jednego commita, a jej dane przenoszone jednorazowo w dniu
+przełączenia, przy czym automaty i integracje działają w każdej chwili dokładnie w jednym miejscu, żeby nic
+nie zostało wysłane dwa razy.
+
 ## Rezultat
 
-Na wspólnej infrastrukturze pracuje około dziesięciu systemów wewnętrznych, planowanie i monitoring
-produkcji, obieg dokumentów z KSeF, zgodność receptur w R&D, automatyzacja sprzedaży i marketingu
-(19 workflow), e-commerce, ATS. Magazyn pozostaje w budowie, a całość utrzymuje się na jednym VPS.
+Na wspólnej infrastrukturze pracuje ponad dwadzieścia systemów wewnętrznych. Część z nich ma własne
+opracowania: [planowanie produkcji](/pl/work/reproducible-production-planning/) z
+[utrzymaniem ruchu](/pl/work/maintenance-cmms-shopfloor/) w środku,
+[zgodność receptur](/pl/work/feed-compliance-deterministic-core/),
+[księgowość z KSeF](/pl/work/group-accounting-ksef/),
+[sprzedaż w terenie](/pl/work/field-sales-offline-first/),
+[zamówienia targowe przez WhatsApp](/pl/work/event-ordering-over-whatsapp/),
+[eksport](/pl/work/export-expansion-engine/),
+[automatyzacja marketingu](/pl/work/multi-brand-marketing-automation/),
+[dobór kartonów](/pl/work/carton-packing-operator-approval/),
+[magazyn](/pl/work/warehouse-system-second-warehouse/),
+[flota](/pl/work/fleet-reminders-that-persist/),
+[rekrutacja](/pl/work/high-risk-ai-recruitment/),
+[projekty i CRM](/pl/work/project-crm-build-vs-adopt/) oraz
+[dokumentacja projektowa inwestycji](/pl/work/building-design-package-generator/).
+[Sklep dla klientów](/pl/work/commerce-platform-erp-boundary/) stoi w tym samym budynku, z celowo inną
+odpowiedzią na pytanie, co współdzieli.
 
 Dwie zmiany operacyjne można podać liczbami. Walidacja cennika dostawcy, wcześniej 8–12 godzin pracy
 ręcznej, to dziś około 5 minut przetwarzania i 15–30 minut przeglądu przez człowieka. Audyt półkowy
@@ -81,9 +106,12 @@ przetworzył 2 827 zdjęć w 26 864 obserwacje produktowe.
 
 ## Wnioski
 
-Kilkanaście systemów wewnętrznych to nie kilkanaście projektów, tylko jedna platforma i kilkanaście
+Dwadzieścia systemów wewnętrznych to nie dwadzieścia projektów, tylko jedna platforma i dwadzieścia
 funkcji. Decyzja, która o tym rozstrzyga, podejmowana jest przed pierwszą linią kodu funkcjonalnego
-i praktycznie nie daje się odwrócić później bez przepisania wszystkich wdrożeń.
+i praktycznie nie daje się odwrócić później bez przepisania wszystkich wdrożeń. Przeniesienie na własny
+serwer zakładu było jej sprawdzianem: skoro każdy system brał tożsamość, składowanie i routing
+z platformy, przeprowadzka była jedną powtarzalną procedurą zastosowaną dwadzieścia razy, a nie
+dwudziestoma różnymi migracjami.
 
 Drugi wniosek dotyczy zasięgu AI w środowisku produkcyjnym i regulowanym. Granica użyteczności nie leży
 tam, gdzie kończy się dokładność modelu, ale tam, gdzie zaczyna się odpowiedzialność za skutek. Systemy,

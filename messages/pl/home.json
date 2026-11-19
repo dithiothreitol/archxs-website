@@ -3,7 +3,7 @@
     "hero": {
       "kicker": "Praktyka doradczo-inżynierska",
       "title": "Dokładnie tyle architektury, ile trzeba.",
-      "lead": "ArchXS pracuje metodą architektury na żądanie: nakład architektoniczny ograniczam do decyzji, których nie da się tanio odwrócić, a odzyskany czas oddaję budowie działającego systemu. Tą metodą doradzałem przy wymianie systemu centralnego banku rozwoju. Nią utrzymuję dziś platformę, na której działa około dziesięciu systemów produkcyjnych, od planowania produkcji po obieg dokumentów.",
+      "lead": "ArchXS pracuje metodą architektury na żądanie: nakład architektoniczny ograniczam do decyzji, których nie da się tanio odwrócić, a odzyskany czas oddaję budowie działającego systemu. Tą metodą doradzałem przy wymianie systemu centralnego banku rozwoju. Nią utrzymuję dziś platformę, na której działa ponad dwadzieścia systemów produkcyjnych, od planowania produkcji po obieg dokumentów.",
       "figureCaption": "Warstwy systemu: infrastruktura, procesy, decyzje",
       "proof": [
         {
